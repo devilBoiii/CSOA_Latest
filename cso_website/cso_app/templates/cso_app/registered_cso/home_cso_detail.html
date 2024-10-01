@@ -1,0 +1,132 @@
+{% extends 'cso_app/layouts/main.html' %}
+{% load static %}
+{% block content %}
+<title>List of PBOs - CSOA</title>
+<link rel="stylesheet" href="{% static 'css/registered_csos.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<style>
+    #important_links{
+        margin-top: -10em;
+    }
+    .logo{
+        display: block;
+        margin: 0 auto;
+        width: 150px;
+        height: 150px;
+    }
+    ul{
+        list-style: none;
+    }
+</style>
+
+<div class="container">
+    <div class="row">
+        <div class="col text-center">
+            <img src="{{ cso.cso_logo.url }}" alt="{{ cso.cso_name }} Logo" class="logo">
+        </div>
+        <div class="col text-center">
+            <h3><b>{{ cso.cso_name }}</b></h3>
+            <h4>Registration Number: <b>{{ cso.registration_no }}</b></h4>
+        </div>
+    </div>
+    <hr>
+    <div class="row">
+        <div class="col-12 col-md-4">
+            <h4 class="text-center"><b>Contact</b></h4>
+            <ul>
+                <li>Website: {{cso.cso_url}}</li>
+                <li>Email Address: {{cso.cso_email}}</li>
+                <li>Mobile No: {{cso.cso_contact}}</li>
+                <li>Phone No: {{cso.fixed_phone_no}}</li>
+                <li>Address: {{cso.address}}</li>
+                <li>P.O. Box: {{cso.po_box}}</li>
+            </ul>
+        </div>
+        <div class="col-12 col-md-4">
+            <h4 class="text-center"><b>Executive Director</b></h4>
+            <ul>
+                <li>Website: {{cso.cso_url}}</li>
+                <li>Email Address: {{cso.executive_email}}</li>
+                <li>Mobile No: {{cso.cso_contact}}</li>
+                <li>Phone No: {{cso.fixed_phone_no}}</li>
+                <li>Address: {{cso.address}}</li>
+                <li>P.O. Box: {{cso.po_box}}</li>
+            </ul>
+        </div>
+        <div class="col-12 col-md-4">
+            <h4 class="text-center"><b>Financial Summary</b></h4>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Financial Year(DD:MM:YYYY)</th>
+                        <th>Income</th>
+                        <th>Expenditure</th>
+                        <th>Audited Financial Statement</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if attachment_history %}
+                        <tr>
+                            <td>{{ cso.cso_registered_date|date:"d:m:Y" }}</td>
+                            <td></td>
+                            <td></td>
+                            <td style="text-align: center;"><a href="{{ attachment_history.annual_general_report.url }}" download class="download">Download <i class="fa-solid fa-download"></i></a></td>
+                            <td></td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td>No files uploaded yet!</td>
+                        </tr>
+                    {% endif %}
+                </tbody>                         
+            </table>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 col-md-6">
+            <h4 class="text-center"><b>CSO Purpose</b></h4>
+            <p id="cso-purpose">
+                {{ cso.purpose }}
+            </p>
+        </div>
+        <div class="col-12 col-md-6">
+            <h4 class="text-center"><b>CSO Objective</b></h4>
+            <p id="cso-objective">
+                {{ cso.objectives }}
+            </p>   
+        </div>
+    </div>
+    <a href="https://{{cso.cso_url}}" class="btn btn-info" target="_blank">Click here to see more</a><br><br><br>   
+</div>
+<br><br><br>
+<div class="row" id="important_links">
+    {% include 'cso_app/layouts/important_links.html' %}
+</div>
+
+<script>
+    // Function to format text based on separators
+    function formatText(id) {
+        const element = document.getElementById(id);
+        let text = element.innerHTML;
+
+        // Regular expression for separators like 1), 1}, a), b)
+        const regex = /(\d+|[a-z])[\)}]/g;
+
+        // Replace the separators with line breaks and proper formatting
+        text = text.replace(regex, '<br>$1.     ');
+
+        // Update the content of the element
+        element.innerHTML = text;
+    }
+
+    // Call the function on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        formatText('cso-purpose');
+        formatText('cso-objective');
+    });
+</script>
+
+{% include 'cso_app/layouts/footer.html' %}
+
+{% endblock %}

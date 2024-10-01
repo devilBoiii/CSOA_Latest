@@ -1,0 +1,172 @@
+{% extends 'cso_app/layouts/main.html' %}
+{% load static %}
+{% block content %}
+<title>Vision&Mission - CSOA</title>
+<link rel="stylesheet" href="{% static 'css/cso_about.css' %}">
+
+<style>
+    #important_links{
+        margin-top: -10em;
+    }
+    #vision{
+        text-align: center;
+    }
+    #vision p{
+        font-size: 1.3em;
+    }
+    #slider,
+    .wrap,
+    .slide-content {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    width: 100%;
+    height: 200px;
+    overflow-x: hidden;
+    }
+
+    .wrap {
+    position: relative;
+    }
+
+    .slide {
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    }
+
+.slide1 {
+    background-image: url("https://www.bbs.bt/news/wp-content/uploads/2023/10/adb-story.jpg");
+}
+.slide2 {
+    background-image: url("https://www.bbs.bt/news/wp-content/uploads/2019/11/CSO-copy.jpg");
+}
+.slide3 {
+    background-image: url("https://kuenselonline.com/wp-content/uploads/2021/11/CSO-1.jpg");
+}
+
+.arrow {
+    cursor: pointer;
+    position: absolute;
+    top: 50%;
+    margin-top: -35px;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    display: none;
+}
+    
+    .wrap:hover .arrow{
+        display: block;
+    }
+
+#arrow-left {
+  border-width: 30px 40px 30px 0;
+  border-color: transparent #fff transparent transparent;
+  left: 0;
+  margin-left: 30px;
+}
+
+#arrow-right {
+  border-width: 30px 0 30px 40px;
+  border-color: transparent transparent transparent #fff;
+  right: 0;
+  margin-right: 30px;
+}
+
+</style>
+
+<div class="container" id="vision">
+    <div class="row">
+        <div class="col-lg-8 col-md-auto">
+            <h3>Vision</h3>
+            <p>To create a vibrant and trusted civil society that promotes the values of Gross National Happiness.</p>
+            <hr>
+            <h3>Mission</h3>
+            <p>To promote and facilitate good governence in the civil society and ensure compliance with the regulatory framework.</p>
+            <hr>
+            <h3>Core Values</h3>
+            <p>Independence, Accountable, Transparent, Responsive and Integrity</p>
+        </div>
+        <div class="col-lg-4 col-md-auto">
+            <div class="wrap">
+                <div id="arrow-left" class="arrow"></div>
+                <div id="slider">
+                    <div class="slide slide1">
+                    <div class="slide-content">
+                    </div>
+                    </div>
+                    <div class="slide slide2">
+                    <div class="slide-content">
+                    </div>
+                    </div>
+                    <div class="slide slide3">
+                    <div class="slide-content">
+                    </div>
+                    </div>
+                </div>
+                <div id="arrow-right" class="arrow"></div>
+            </div>
+        </div>
+    </div>
+    <div class="row" id="important_links">
+        {% include 'cso_app/layouts/important_links.html' %}
+    </div>
+</div>
+
+{% include 'cso_app/layouts/footer.html' %}
+
+<script>
+    let sliderImages = document.querySelectorAll(".slide"),
+  arrowLeft = document.querySelector("#arrow-left"),
+  arrowRight = document.querySelector("#arrow-right"),
+  current = 0;
+
+// Clear all images
+function reset() {
+  for (let i = 0; i < sliderImages.length; i++) {
+    sliderImages[i].style.display = "none";
+  }
+}
+
+// Init slider
+function startSlide() {
+  reset();
+  sliderImages[0].style.display = "block";
+}
+
+// Show prev
+function slideLeft() {
+  reset();
+  sliderImages[current - 1].style.display = "block";
+  current--;
+}
+
+// Show next
+function slideRight() {
+  reset();
+  sliderImages[current + 1].style.display = "block";
+  current++;
+}
+
+// Left arrow click
+arrowLeft.addEventListener("click", function() {
+  if (current === 0) {
+    current = sliderImages.length;
+  }
+  slideLeft();
+});
+
+// Right arrow click
+arrowRight.addEventListener("click", function() {
+  if (current === sliderImages.length - 1) {
+    current = -1;
+  }
+  slideRight();
+});
+
+startSlide();
+
+</script>
+
+{% endblock %}

@@ -1,0 +1,45 @@
+1. docker build --tag python-django .
+2. docker run --publish 8000:8000 django_web
+
+For Compose Build File
+
+1. docker-compose build
+2. docker-compose run --rm app django-admin startproject "project_name"
+3. docker-compose up -d
+
+From Git Bash Command
+1. source venv/Scripts/activate
+2. docker build -t csoa_image .
+3. docker run -d --name csoa_container -p 8001:8000 csoa_image
+4. docker stop csoa_container
+5. docker rm csoa_container (Remove)
+# To create a link between the host and the container app so that the updates can be seen in both
+6. docker run -d --name csoa_container -v /d/Anime/Ugyen/CSO_portal/cso_website:/cso_app_django -p 8001:8000 csoa_image
+#Command to run docker with docker-compose.yml File
+7. docker compose up -d
+
+Database configuration
+There is no need of the Dockerfile and .dockerignore but however even if you don't delete it seems to work...
+1. docker compose up -d
+If there is port number already in used error
+2. sudo lsof -i :3307(Linux)
+3. netstat -aon | findstr :3307 (Windows powershell) OR 
+4. Get-Process -Id (Get-NetTCPConnection -LocalPort 3306).OwningProcess
+5. Stop-Process -Id 6756 (Don't kill the process or else all of the database will be getting deleted!)
+
+
+#New Command to run docker
+1. bash docker-compose-run.sh
+or directly 
+2. ./docker-compose-run.sh
+
+# To remove all the spaces & container, images by one command:
+1. docker stop $(docker ps -q) && docker rm $(docker ps -aq) && docker rmi $(docker images -q) && docker volume rm $(docker volume ls -q)
+2. docker-compose down --rmi all  # Remove all containers and images
+
+# To migrate the datas from dump file to container image:
+1. docker cp data.sql mysql_csoa:/data.sql
+2. $ docker exec -it mysql_csoa sh
+3. mysql -u root -p
+4. source /data.sql;
+        A. SHOW TABLES;

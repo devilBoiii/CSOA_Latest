@@ -1,0 +1,112 @@
+{% extends 'cso_app/layouts/back_end_navbar.html' %}
+{% load static %}
+{% block content %}
+<title>CSOA-Certificate Renewal</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap');
+
+    body {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    overflow-x: hidden;
+    background-color: #ffffff;
+    font-family: 'DM Sans';
+    font-family: "Nunito", sans-serif;
+    }
+    #back_end_home{
+    z-index: -1;
+    width: 100%;
+    }
+    #back_end_home .banner{
+    background-color: #888;
+    width:100%;
+    height: 37px;
+    }
+    #back_end_home .banner h3{
+    font-size:1em;
+    display: inline-block;
+    }
+    .banner h3 i{
+    padding-top: 5px;
+    }
+    .banner a{
+    color: #000;
+    text-decoration: none;
+    }
+    .banner a:hover{
+    text-decoration: underline;
+    }
+    #annual_report{
+    margin-left:12em;
+    }
+    #annual_report ul li{
+        list-style: none !important;
+    }
+    h4{
+        color: blue;
+    }
+    h5{
+        font-weight: 400;
+    }
+</style>
+<body>
+<br><br><br><br><br>
+    <div id="back_end_home" class="container">
+        <div class="banner">
+            <h3 style="padding: 0em 7em;"><i class="fa fa-home" aria-hidden="true"></i><a
+                    href="{% url 'administrator' %}">Home</a> > Annual Report History</h3>
+            <hr>
+        </div>
+        <br>
+        <div class="row" id="annual_report">
+            <h4>Submit Annual Report</h4>
+            <hr>
+            <h5>Guide to Submit Annual Report</h5>
+            <ul>
+                <li>1. CSOs cannot Process Report until its Application is Approved</li>
+                <li>2. CSOs under-inquiry of CSOA, can still submit annual report.</li>
+            </ul>
+            <br>
+            <h5>Annual Reports</h5>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Sl#</th>
+                        <th>Schedule Number</th>
+                        <th>Annual Report of Year</th>
+                        <th>Submitted Date</th>
+                        <th>Status</th>
+                        <th>View</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+            <hr>
+            <h5>*Initiate Annual Report Submission.</h5>
+            <a href="{% url 'submit_annual_report' %}">
+                <button class="btn btn-info">
+                    <i class="fa-regular fa-pen-to-square"></i> Submit Annual Report
+                </button>
+            </a>
+        </div>
+    </div>
+</body>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    // Adjust the width of the banner dynamically if needed
+    function adjustBannerWidth() {
+        const banner = document.querySelector('.banner');
+        banner.style.width = `${window.innerWidth}px`;
+    }
+
+    // Call the function on load and resize
+    window.onload = adjustBannerWidth;
+    window.onresize = adjustBannerWidth;
+</script>
+{% endblock %}

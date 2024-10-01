@@ -1,0 +1,200 @@
+{% extends 'cso_app/layouts/main.html' %}
+{% load static %}
+{% block content %}
+<!--  
+    Document Title
+    =============================================
+    -->
+    <head>
+        <title>CSO Home</title>
+    </head>
+    
+<style>
+    .video-player{
+        width: 100%;
+        height: 1100px;
+    }
+    .home-section{
+        height: 500px;
+    }
+    .work-item div{
+        width: 50%;
+        height: 50%;
+    }
+    .work-image img{
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    #services, #news{
+      margin: -100px 0px;
+    }
+    .post-thumbnail img{
+      width: 400px;
+      height: 300px;
+    }
+</style>
+<section class="home-section bg-dark-30" id="home">
+    <div class="video-player" data-property="{videoURL:'https://youtu.be/VOna8supvTc', containment:'.home-section', startAt:1.50, mute:true, autoPlay:true, loop:true, opacity:1, showControls:false, showYTLogo:false, vol:50}"></div>
+    <div class="video-controls-box">
+      <div class="container">
+        <div class="video-controls"><a class="fa fa-volume-up" id="video-volume" href="#" style="color: #000;">&nbsp;</a><a class="fa fa-pause" id="video-play" href="#" style="color: #000;">&nbsp;</a></div>
+      </div>
+    </div>
+    <div class="titan-caption">
+      <div class="caption-content">
+        <div class="font-alt mb-30 titan-title-size-1">Civil Society Organizations Authority.</div>
+        <div class="font-alt mb-40 titan-title-size-4">CSO</div><a class="section-scroll btn btn-border-w btn-round" href="{% url 'cso_authority' %}">Learn More</a>
+      </div>
+    </div>
+  </section>
+  <div class="main">
+      <hr>
+    {% include 'cso_app/layouts/important_links.html' %}
+
+  <hr class="divider-w">
+    <section class="module" id="news">
+      <div class="container">
+        <div class="row">
+          <div class="col-sm-6 col-sm-offset-3">
+            <h2 class="module-title font-alt">Latest Posts</h2>
+            <div class="module-subtitle font-serif">If we want any significant development, we must co-opt civil soiety. <br> - <b>Nelson Mandela</b></div>
+          </div>
+        </div>
+
+        <div class="row multi-columns-row post-columns">
+          {% for post in posts %}
+            <div class="col-sm-6 col-md-4 col-lg-4">
+              <div class="post mb-20">
+                <div class="post-thumbnail">
+                  <a href="#">
+                    {% if post.post_img %}
+                      <img src="{{ post.post_img.url }}" alt="{{ post.post_header }}"/>
+                    {% else %}
+                      <img src="{% static 'img/default_post.png' %}" alt="Default Post Thumbnail"/> <!-- Fallback image if no post_img -->
+                    {% endif %}
+                  </a>
+                </div>
+                <div class="post-header font-alt">
+                  <h2 class="post-title">
+                    <a href="{% url 'post_detail' post.post_id %}">{{ post.post_header }}</a>  <!-- Post title (post_header) -->
+                  </h2>
+                  <div class="post-meta">
+                    <i class="fa fa-clock-o" aria-hidden="true"></i> 
+                    {% if post.published_date %}
+                      {{ post.published_date|date:"d M Y" }}  <!-- Published date -->
+                    {% else %}
+                      No date available
+                    {% endif %} | 
+                    <i class="fa fa-tag" aria-hidden="true"></i> 
+                    {{ post.activity }}  <!-- Status of the post -->
+                  </div>
+                </div>
+                <div class="post-entry">
+                  <p style="margin-top: -15px; margin-bottom: 10px;">{{ post.post_description|truncatewords:20|safe }}</p> 
+                </div>
+                  <div class="post-more">
+                    <a class="more-link" href="{% url 'post_detail' post.post_id %}">Read more</a>
+                  </div>          
+              </div>
+            </div>
+        
+            {% if forloop.counter|divisibleby:3 %}
+              </div><div class="row multi-columns-row post-columns"> <!-- New row after every 3 posts -->
+            {% endif %}
+          {% endfor %}
+        </div>
+        
+
+
+
+        </div>
+      </div>
+    </section>
+
+
+
+    <section class="module bg-dark-60 pt-0 pb-0 parallax-bg testimonial" data-background="{% static 'img/our_flag.gif' %}">
+      <div class="testimonials-slider pt-140 pb-140">
+        <ul class="slides">
+          <li>
+            <div class="container">
+              <div class="row">
+                <div class="col-sm-12">
+                  <div class="module-icon"><span class="icon-quote"></span></div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-8 col-sm-offset-2">
+                  <blockquote class="testimonial-text font-alt">I am alone, and feel the charm of existence in this spot, which was created for the bliss of souls like mine.</blockquote>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-4 col-sm-offset-4">
+                  <div class="testimonial-author">
+                    <div class="testimonial-caption font-alt">
+                      <div class="testimonial-title">Jack Woods</div>
+                      <div class="testimonial-descr">SomeCompany INC, CEO</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="container">
+              <div class="row">
+                <div class="col-sm-12">
+                  <div class="module-icon"><span class="icon-quote"></span></div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-8 col-sm-offset-2">
+                  <blockquote class="testimonial-text font-alt">I should be incapable of drawing a single stroke at the present moment; and yet I feel that I never was a greater artist than now.</blockquote>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-4 col-sm-offset-4">
+                  <div class="testimonial-author">
+                    <div class="testimonial-caption font-alt">
+                      <div class="testimonial-title">Jim Stone</div>
+                      <div class="testimonial-descr">SomeCompany INC, CEO</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="container">
+              <div class="row">
+                <div class="col-sm-12">
+                  <div class="module-icon"><span class="icon-quote"></span></div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-8 col-sm-offset-2">
+                  <blockquote class="testimonial-text font-alt">I am so happy, my dear friend, so absorbed in the exquisite sense of mere tranquil existence, that I neglect my talents.</blockquote>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-4 col-sm-offset-4">
+                  <div class="testimonial-author">
+                    <div class="testimonial-caption font-alt">
+                      <div class="testimonial-title">Adele Snow</div>
+                      <div class="testimonial-descr">SomeCompany INC, CEO</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <hr class="divider-d">
+    {% include 'cso_app/layouts/footer.html' %}
+
+
+{% endblock %}

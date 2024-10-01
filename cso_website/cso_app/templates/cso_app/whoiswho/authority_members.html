@@ -1,0 +1,112 @@
+{% extends 'cso_app/layouts/main.html' %}
+{% load static %}
+{% block content %}
+<title>CSOA Authority - CSOA</title>
+<link rel="stylesheet" href="{% static 'css/cso_about.css' %}">
+<style>
+    #important_links{
+        margin-top: -10em;
+    }
+    #members p{
+        font-size: 1.3em;
+        text-align: left;
+        padding-right: 10px;
+    }
+    #members img{
+        width: 200px;
+        height: 200px;
+        border-radius: 50%;
+        margin: 0 auto;
+        display: flex;
+        justify-content: center;
+        align-items: center; 
+    }
+    .title{
+        text-align: center;
+        text-decoration: underline;
+        text-underline-offset: 8px;
+    }
+    p{
+        padding:1em 2em;
+        width: 100%;
+        text-align: center;
+    }
+</style>
+
+<div class="container" id="members">
+    <h3 class='title'>Authority Members</h3>
+    <hr>
+    <div class="row">
+        <br>
+        <div class="col-lg-3 col-md-auto">
+            <img src={% static 'img/member.png' %}>
+            <p class='details'>
+                <i class="fa fa-user" aria-hidden="true"></i> H.E. Lyenpo Tshering <br>
+                <i class="fa fa-address-card-o" aria-hidden="true"></i> Chairperson <br>
+                <i class="fa fa-superpowers" aria-hidden="true"></i> Ministry of Home Affairs 
+            </p>
+        </div>
+        <div class="col-lg-3 col-md-auto">
+            <img src={% static 'img/member1.jpg' %}>
+            <p>
+                <i class="fa fa-user" aria-hidden="true"></i> Mr. Passang Tshering <br>
+                <i class="fa fa-address-card-o" aria-hidden="true"></i> Authority Member <br>
+                <i class="fa fa-superpowers" aria-hidden="true"></i> Bhutan Toilet Organization <br>
+                <i class="fa fa-envelope-o" aria-hidden="true"></i> passu@passudiary.com <br>
+                <i class="fa fa-mobile" aria-hidden="true"></i> +975 17605030
+            </p>
+        </div>
+        <div class="col-lg-3 col-md-auto">
+            <img src={% static 'img/member3.png' %}>
+            <p>
+                <i class="fa fa-user" aria-hidden="true"></i> Mr. Tashi Namgay <br>
+                <i class="fa fa-address-card-o" aria-hidden="true"></i> Authority Member <br>
+                <i class="fa fa-superpowers" aria-hidden="true"></i> Bhutan Kidney Foundation <br>
+                <i class="fa fa-envelope-o" aria-hidden="true"></i> tashinamgay1@gmail.com <br>
+                <i class="fa fa-mobile" aria-hidden="true"></i> +975 17691745
+            </p>
+        </div>
+        <div class="col-lg-3 col-md-auto">
+            <img src={% static 'img/member4.png' %}>
+            <p>
+                <i class="fa fa-user" aria-hidden="true"></i> Mr. Passang Dorji <br>
+                <i class="fa fa-address-card-o" aria-hidden="true"></i> Authority Member <br>
+                <i class="fa fa-superpowers" aria-hidden="true"></i> Department of Law & Order <br>
+                <i class="fa fa-briefcase" aria-hidden="true"></i> Ministry of Home Affairs <br>
+            </p>
+        </div>
+    </div>
+    <div class="row">
+        <br>
+        <div class="col-lg-3 col-md-auto">
+            <img src={% static 'img/member5.png' %}>
+            <p>
+                <i class="fa fa-user" aria-hidden="true"></i> Ms. Pema Tshomo <br>
+                <i class="fa fa-address-card-o" aria-hidden="true"></i> Authority Member <br>
+                <i class="fa fa-superpowers" aria-hidden="true"></i> Department of Bilateral Affairs <br>
+                <i class="fa fa-briefcase" aria-hidden="true"></i> Ministry of Foreign Affairs & External Trade  
+            </p>
+        </div>
+        <div class="col-lg-3 col-md-auto">
+            <img src={% static 'img/member6.jpg' %}>
+            <p>
+                <i class="fa fa-user" aria-hidden="true"></i> Mr. Sherub Dorji <br>
+                <i class="fa fa-address-card-o" aria-hidden="true"></i> Member Secretary <br>
+                <i class="fa fa-superpowers" aria-hidden="true"></i> Civil Society Organizations Authority <br>
+                <i class="fa fa-envelope-o" aria-hidden="true"></i>sdorji@csoa.gov.bt <br>
+                <i class="fa fa-phone" aria-hidden="true"></i> +975 2324873 <br>
+                <i class="fa fa-mobile" aria-hidden="true"></i> 17673722
+            </p>
+        </div>
+    </div>
+    <hr>
+    <div class="row" id="important_links">
+        {% include 'cso_app/layouts/important_links.html' %}
+    </div>
+</div>
+
+
+
+{% include 'cso_app/layouts/footer.html' %}
+
+{% endblock %}

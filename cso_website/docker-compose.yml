@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:latest
+    container_name: mysql_csoa
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: csoa_database
+    ports:
+      - "3309:3306"  # Change as needed
+    networks:
+      - cso_website_network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot"]
+      interval: 10s  # Run health check every 10 seconds
+      timeout: 5s    # Timeout for health check
+      retries: 10     # Increase retries to wait for MySQL to be ready
+    restart: always
+    volumes:
+      - ./data.sql:/docker-entrypoint-initdb.d/data.sql  # Ensure this file exists and is correct
+
+  django:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: cso_website-django
+    container_name: django_csoa
+    environment:
+      DATABASE_URL: mysql://root:root@mysql:3307/csoa_database  # Adjusted for local MySQL Workbench connection
+      DATABASE_NAME: csoa_database
+      DATABASE_USER: root
+      DATABASE_PASSWORD: root
+      DATABASE_HOST: mysql
+      DATABASE_PORT: 3306
+    ports:
+      - "8000:8000"
+    depends_on:
+      mysql:
+        condition: service_healthy  # Wait for MySQL to be healthy
+    networks:
+      - cso_website_network
+
+networks:
+  cso_website_network:
+    driver: bridge

@@ -1,0 +1,205 @@
+{% extends 'cso_app/layouts/back_end_navbar.html' %}
+{% load static %}
+{% block content %}
+<title>CSOA Admin - CSOA</title>
+<link rel="stylesheet" href="{% static 'css/cso_admin_home.css' %}">
+<style>
+    #cso_logo {
+        height: 70px;
+        border-radius: 20%;
+        float: right;
+        padding: 0.1em;
+    }
+    table{
+        float: left;
+    }
+    .info p{
+        color: #fff;
+        font-size: 1.3em;
+        font-weight: 600;
+    }
+    tr,td,th{
+        border: 1px solid #ccc;
+        padding: 0.5em;	
+        color: #fff;
+        font-weight: 300;
+    }
+</style>
+<br><br><br><br><br>
+<div id="back_end_home" class="container">
+    <div class="banner">
+        <i class="fa fa-home" aria-hidden="true"></i> <h3>Home > <a href="{% url 'administrator' %}">Dashboard</a></h3>
+        <hr class="full-width-hr">
+    </div>
+    <br>
+    <div class="row" id="charts">
+        <section>
+            <div class="content container">
+                <div class="col-md-12 info">
+                    <p style="text-align: center;padding: 0.3em;">
+                        <img src="{{user_organization.cso_logo.url}}" alt="CSO Logo" class="img-fluid" id="cso_logo">
+                        CSO Name: <span class="movie-night">{{user_organization.cso_name}}</span><br>
+                    </p>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th><b>Sl</b></th>
+                                <th><b>Details</b></th>
+                                <th><b>Registration Date (YYYY-MM-DD)</b></th>
+                                <th><b>Validity Date (YYYY-MM-DD)</b></th>
+                                <th><b>Status</b></th>
+                                <th><b>Delayed (Days) || (Months)</b></th>
+                                <th><b>Fees(Nu)</b></th>
+                                <th><b>Remarks</b></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if days_fines <= 0 %}
+                            <tr>
+                                <td>1</td>
+                                <td>CSO Renewal Fees</td>
+                                <td>{{ user_organization.cso_registered_date|date:"Y-m-d" }}</td>
+                                <td>{{ user_organization.cso_validity_date|date:"Y-m-d" }}</td>
+                                <td>{{ user_organization.status }}</td>
+                                <td>{{ days_diff }} || {{months_diff}}</td>
+                                <td>{{ days_fines }}</td>
+                                <td>Great! renewal date is {{days_diff}} days away</td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td>1</td>
+                                <td>CSO Renewal Fees</td>
+                                <td>{{ user_organization.cso_registered_date|date:"Y-m-d" }}</td>
+                                <td>{{ user_organization.cso_validity_date|date:"Y-m-d" }}</td>
+                                <td>{{ user_organization.status }}</td>
+                                <td>{{ days_diff }} || {{months_diff}}</td>
+                                <td>{{ days_fines|add:3000 }}</td>
+                                <td>Please renewal action is required!</td>
+                            </tr>
+                            {% endif %}
+                            {% if user_organization.invalid_certificate_fines != '' %}
+                            <tr>
+                                <td>2</td>
+                                <td>CSO No Valid Certificate</td>
+                                <td></td>
+                                <td></td>
+                                <td>{{ user_organization.status }}</td>
+                                <td></td>
+                                <td>{{ user_organization.invalid_certificate_fines }}</td>
+                            </tr>
+
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+                    
+            </div>
+            
+            
+            <ul class="circles">
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+            </ul>
+        </section>
+
+
+        <div class="col-6">
+            <center><h3>Application Profile Overview</h3></center>
+            <canvas id="bar_chart"></canvas>
+        </div>
+        <div class="col-6">
+            <center><h3>Annual Report Overview</h3></center>
+            <canvas id="myChart1"></canvas>
+        </div>
+    </div>
+    <br>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const ctx = document.getElementById('bar_chart');
+
+    new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: ['Initiated', 'Submitted', 'Approved', 'Rejected', 'Closed'],
+        datasets: [{
+        label: 'Application Status',
+        data: [68, 2, 194, 19, 110],
+        borderWidth: 1,
+        backgroundColor: '#9BD0F5',
+        }]
+    },
+    options: {
+        scales: {
+        y: {
+            beginAtZero: true
+        }
+        },
+        title: {
+            display: true,
+            text: 'Application Profile Overview', 
+        }
+    }
+    });
+</script>
+
+<script>
+    var ctxx = document.getElementById("myChart1"); 
+    var myChart = new Chart(ctxx, { 
+    type: 'bar', 
+    data: { 
+        labels: ["Initiated", "Submitted" , "Approved" , "Pending", "Rejected"], 
+        datasets: [ 
+        { label: 'Total Application', 
+            data: [89,19,208,33,14], 
+            backgroundColor :['rgba(255, 99, 132, 0.2)', 
+                    'rgba(54, 162, 235, 0.2)', 
+                    'rgba(255, 206, 86, 0.2)', 
+                    'rgba(75, 192, 192, 0.2)', 
+                    'rgba(153, 102, 255, 0.2)'
+                    ], 
+    
+    borderColor: [ 
+                    'rgba(255,99,132,1)', 
+                    'rgba(54, 162, 235, 1)', 
+                    'rgba(255, 206, 86, 1)', 
+                    'rgba(75, 192, 192, 1)', 
+                    'rgba(153, 102, 255, 1)'
+                ], 
+    borderWidth : 1 
+        } 
+        ] 
+    }, 
+    options: { 
+            scales: { 
+                yAxes: [{ 
+                    ticks: { 
+                        beginAtZero:true 
+                    } 
+                }] 
+            } 
+        } 
+    }); 
+</script>
+<script></script>
+<script>
+     // Adjust the width of the banner dynamically if needed
+    function adjustBannerWidth() {
+        const banner = document.querySelector('.banner');
+        banner.style.width = `${window.innerWidth}px`;
+    }
+
+    // Call the function on load and resize
+    window.onload = adjustBannerWidth;
+    window.onresize = adjustBannerWidth;
+</script>
+{% endblock %}

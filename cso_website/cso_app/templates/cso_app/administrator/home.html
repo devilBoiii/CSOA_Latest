@@ -1,0 +1,278 @@
+{% extends 'cso_app/layouts/back_end_navbar.html' %}
+{% load static %}
+{% block content %}
+<title>CSOA Admin - CSOA</title>
+<link rel="stylesheet" href="{% static 'css/admin_home.css' %}">
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+    </style>
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        overflow-x: hidden;
+    }
+    #back_end_home{
+        z-index: -1;
+        width: 100%;
+    }
+    #back_end_home .banner{
+        background-color: #888;
+        width:100%;
+        height: 37px;
+    }
+    #back_end_home .banner h3, #back_end_home .banner i{
+        font-size:1em;
+        display: inline-block;
+        padding: 0em 11.5em;
+    }
+    #back_end_home .banner i{
+        padding-top: 0.5em;
+    }
+    #back_end_home .banner h3{
+        margin-left: -21em;
+    }
+    a{
+        cursor:pointer;
+        color: #000;
+        text-decoration: none;
+    }
+    a:hover{
+        text-decoration: underline;
+    }
+    #charts, #charts_second_row{
+        margin-left: 8em;
+    }
+    #charts h3, #charts_second_row h3{
+        font-size: 1.5em;
+        font-weight: bold;
+        font-family: "Kanit", sans-serif;
+    }
+    .full-width-hr {
+        width: 100vw;
+        position: relative;
+        left: 49%;
+        transform: translateX(-50%);
+        border: none;
+        border-top: 1px solid #000; /* You can customize this */
+    }
+</style>
+<br><br><br><br><br>
+<div id="back_end_home" class="container">
+    <div class="banner">
+        <i class="fa fa-home" aria-hidden="true"></i> <h3>Home > <a href="{% url 'administrator' %}">Dashboard</a></h3>
+        <hr class="full-width-hr">
+    </div>
+    <br>
+    <div class="row" id="charts">
+        <div class="col-6">
+            <center><h3>Application Profile Overview</h3></center>
+            <canvas id="bar_chart"></canvas>
+        </div>
+        <div class="col-6">
+            <center><h3>Annual Report Overview</h3></center>
+            <canvas id="myChart1"></canvas>
+        </div>
+    </div>
+    <br>
+    <div class="row" id="charts_second_row">
+        <div class="col-4">
+            <center><h3>CSOs Profile Status</h3></center>
+            <canvas id="pie_chart"></canvas>
+        </div>
+        <div class="col-4">
+            <center><h3>CSOs Status</h3></center>
+            <canvas id="pie_chart_2"></canvas>
+        </div>
+        <div class="col-4">
+            <center><h3>Membership Fee</h3></center>
+            <canvas id="pie_chart_3"></canvas>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const ctx = document.getElementById('bar_chart');
+
+    new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: ['Initiated', 'Submitted', 'Approved', 'Rejected', 'Closed'],
+        datasets: [{
+        label: 'Application Status',
+        data: [68, 2, 194, 19, 110],
+        borderWidth: 1,
+        backgroundColor: '#9BD0F5',
+        }]
+    },
+    options: {
+        scales: {
+        y: {
+            beginAtZero: true
+        }
+        },
+        title: {
+            display: true,
+            text: 'Application Profile Overview', 
+        }
+    }
+    });
+</script>
+
+<script>
+    var ctxx = document.getElementById("myChart1"); 
+    var myChart = new Chart(ctxx, { 
+    type: 'bar', 
+    data: { 
+        labels: ["Initiated", "Submitted" , "Approved" , "Pending", "Rejected"], 
+        datasets: [ 
+        { label: 'Total Application', 
+            data: [89,19,208,33,14], 
+            backgroundColor :['rgba(255, 99, 132, 0.2)', 
+                    'rgba(54, 162, 235, 0.2)', 
+                    'rgba(255, 206, 86, 0.2)', 
+                    'rgba(75, 192, 192, 0.2)', 
+                    'rgba(153, 102, 255, 0.2)'
+                    ], 
+    
+    borderColor: [ 
+                    'rgba(255,99,132,1)', 
+                    'rgba(54, 162, 235, 1)', 
+                    'rgba(255, 206, 86, 1)', 
+                    'rgba(75, 192, 192, 1)', 
+                    'rgba(153, 102, 255, 1)'
+                ], 
+    borderWidth : 1 
+        } 
+        ] 
+    }, 
+    options: { 
+            scales: { 
+                yAxes: [{ 
+                    ticks: { 
+                        beginAtZero:true 
+                    } 
+                }] 
+            } 
+        } 
+    }); 
+</script>
+<script>
+    const pie_chart = document.getElementById("pie_chart");
+    const my_pie_chart = new Chart(pie_chart, { 
+        type: 'pie', 
+        data: { 
+            labels: ["Pending-Update", "Active Users" , "Approved-Update Application" , "CSOA Users"], 
+            datasets: [ 
+            { label: 'User Profile', 
+                data: [21,131,194,18], 
+                backgroundColor :['rgba(255, 99, 132, 0.2)', 
+                        'rgba(54, 162, 235, 0.2)', 
+                        'rgba(75, 192, 192, 0.2)', 
+                        'rgba(153, 102, 255, 0.2)'
+                        ], 
+        
+        borderColor: [ 
+                        'rgba(255,99,132,1)', 
+                        'rgba(54, 162, 235, 1)', 
+                        'rgba(75, 192, 192, 1)', 
+                        'rgba(153, 102, 255, 1)'
+                    ], 
+        borderWidth : 1 
+            } 
+            ] 
+        }, 
+        options: { 
+                scales: { 
+                    yAxes: [{ 
+                        ticks: { 
+                            beginAtZero:true 
+                        } 
+                    }] 
+                } 
+            } 
+        }); 
+</script>
+<script>
+    const pie_chart_2 = document.getElementById("pie_chart_2");
+    const my_pie_chart_2 = new Chart(pie_chart_2, { 
+        type: 'doughnut', 
+        data: { 
+            labels: ["PBO", "MBO" , "FCSO"], 
+            datasets: [ 
+            { label: 'Total Users', 
+                data: [40,12,0], 
+                backgroundColor :['rgba(255, 99, 132, 0.2)', 
+                        'rgba(54, 162, 235, 0.2)', 
+                        'rgba(255, 206, 86, 0.2)'
+                        ], 
+        
+        borderColor: [ 
+                        'rgba(255,99,132,1)', 
+                        'rgba(54, 162, 235, 1)', 
+                        'rgba(255, 206, 86, 1)'
+                    ], 
+        borderWidth : 1 
+            } 
+            ] 
+        }, 
+        options: { 
+                scales: { 
+                    yAxes: [{ 
+                        ticks: { 
+                            beginAtZero:true 
+                        } 
+                    }] 
+                } 
+            } 
+        }); 
+</script>
+<script>
+    const pie_chart_3 = document.getElementById("pie_chart_3");
+    const my_pie_chart_3 = new Chart(pie_chart_3, { 
+        type: 'line', 
+        data: { 
+            labels: ["2018", "2019" , "2020"], 
+            datasets: [ 
+            { label: 'Fees', 
+                data: [35,29,5], 
+                backgroundColor :['rgba(255, 99, 132, 0.2)', 
+                        'rgba(54, 162, 235, 0.2)', 
+                        'rgba(255, 206, 86, 0.2)'
+                        ], 
+        
+        borderColor: [ 
+                        'rgba(255,99,132,1)', 
+                        'rgba(54, 162, 235, 1)', 
+                        'rgba(255, 206, 86, 1)'
+                    ], 
+        borderWidth : 1 
+            } 
+            ] 
+        }, 
+        options: { 
+                scales: { 
+                    yAxes: [{ 
+                        ticks: { 
+                            beginAtZero:true 
+                        } 
+                    }] 
+                } 
+            } 
+        }); 
+</script>
+<script>
+     // Adjust the width of the banner dynamically if needed
+     function adjustBannerWidth() {
+        const banner = document.querySelector('.banner');
+        banner.style.width = `${window.innerWidth}px`;
+    }
+
+    // Call the function on load and resize
+    window.onload = adjustBannerWidth;
+    window.onresize = adjustBannerWidth;
+</script>
+
+{% endblock %}

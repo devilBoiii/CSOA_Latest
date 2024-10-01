@@ -1,0 +1,820 @@
+{% extends 'cso_app/layouts/back_end_navbar.html' %}
+{% load static %}
+{% block content %}
+<title>List of CSOA</title>
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css"/>
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900&display=swap');
+    body {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        overflow-x: hidden;
+    }
+    #back_end_home{
+        z-index: -1;
+        width: 100%;
+    }
+    #back_end_home .banner{
+        background-color: #888;
+        width:100%;
+        height: 37px;
+    }
+    #back_end_home .banner h3{
+        font-size:1em;
+        display: inline-block;
+    }
+    .banner h3 a i{
+        padding-top: 5px;
+    }
+    .banner a{
+        color: #000;
+        text-decoration: none;
+    }
+    .banner a:hover{
+        text-decoration: underline;
+    }
+    #master_data_cso{
+        margin-left:9em;
+    }
+    #master_data h3{
+        text-align: center;
+    }
+    .nav-item .nav-link.active{
+        color: #20A3F5;
+    }
+    #tabs-1{
+        width: 90%;
+    }
+    .adding_icon{
+        display:flex;
+        float: right;
+    }
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .close {
+        padding: 0;
+        margin: 0;
+        background: none;
+        border: none;
+        font-size: 1.3em;
+    }
+    .process_form,.thematic_form, .attachment_form, .cso_closing_form{
+        padding: 0em 2em;
+    }
+    .dropdown-menu a button{
+        width: 100%;
+    }
+    tr td,tr th{
+        font-size:11px;
+        text-align:center;
+    }
+
+    .form-control {
+    resize: vertical; /* Allows users to resize the textarea vertically */
+    white-space: pre-wrap; /* Preserves white spaces and wraps text */
+    }
+</style>
+<br><br><br><br><br>
+<div id="back_end_home" class="container">
+    <div class="banner">
+        <h3 style="padding: 0em 7em;"><a href="{% url 'administrator' %}"><i class="fa fa-home" aria-hidden="true"></i> Home</a> > <a href="#">CSO Details</a> > <a href="{% url 'cso_master_links' %}">CSO Master</a> > All CSO Types</h3>
+        <hr>
+    </div>
+    <br>
+    <div class="row" id="master_data_cso">   
+        <ul class="nav nav-tabs" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" data-toggle="tab" href="#tabs-1" role="tab"><i class="fa-solid fa-folder"></i> PBO List</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#tabs-2" role="tab"><i class="fa-solid fa-folder-open"></i> MBO List</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#tabs-3" role="tab"><i class="fa-solid fa-paperclip"></i> FCSO List</a>
+            </li>
+        </ul><!-- Tab panes -->
+        <div class="tab-content">
+            <div class="tab-pane active" id="tabs-1" role="tabpanel">
+                <br>
+                <table id="PBO_table" class="display">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>CSO Name</th>
+                            <th>Registered Date</th>
+                            <th>Validity Date</th>
+                            <th>Focal Person</th>
+                            <th>Contact</th>
+                            <th>Email</th>
+                            <th>Website</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for i in pbo %}
+                        <tr>
+                            <td>{{forloop.counter}}</td>
+                            <td><a href="{% url 'cso_detail' i.cso_id %}">{{ i.cso_name }}</a></td>
+                            <td>{{i.cso_registered_date}}</td>
+                            <td>{{i.cso_validity_date}}</td>
+                            <td>{{i.cso_focal}}</td>
+                            <td>{{i.cso_contact}}</td>
+                            <td>{{i.cso_email}}</td>
+                            <td>{{i.cso_url}}</td>
+                            <td>{{i.status}}</td>    
+                            <td>
+                                <a class="edit-btn-pbo btn btn-info" href="#" data-toggle="modal" data-target="#editPBOs" 
+                                data-id="{{i.cso_id}}" 
+                                data-name="{{i.cso_name}}" 
+                                data-pbo_email="{{i.cso_email}}"
+                                data-fixed_phone="{{i.fixed_phone_no}}"
+                                data-po_box="{{i.po_box}}"
+                                data-public_mobile="{{i.public_contact}}"
+                                data-fax="{{i.fax}}"
+                                data-public_email="{{i.public_email}}"
+                                data-toll_free_no="{{i.toll_free_no}}"
+                                data-website="{{i.cso_url}}"
+                                data-pbo_address="{{i.address}}"
+                                data-pbo_ex_name="{{i.executive_director}}"
+                                data-pbo_ex_id="{{i.executive_ID}}"
+                                data-pbo_ex_email="{{i.executive_email}}"
+                                data-pbo_ex_phone="{{i.executive_phone}}"
+                                data-pbo_focal_name="{{i.cso_focal_name}}"
+                                data-pbo_focal_id="{{i.cso_focal_ID}}"
+                                data-pbo_focal_email="{{i.cso_focal_email}}"
+                                data-pbo_focal_phone="{{i.cso_focal_phone}}"
+                                data-areas_of_operation="{{i.operation_places}}"
+                                data-purpose="{{i.purpose}}"
+                                data-objectives="{{i.objectives}}"
+                                data-remarks="{{i.remarks}}"
+                                data-certificate="{{i.invalid_certificate_fines}}"
+                                data-status="{{i.status}}">
+                                Edit
+                                </a>
+                                <a href="#" class="btn btn-danger delete-link" data-cso-id="{{ i.cso_id }}" data-cso-name="{{ i.cso_name }}">Delete</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <div class="modal fade bd-example-modal-lg" id="editPBOs" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="editModalLabel">Edit CSO | PBO Type</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form method="POST" enctype="multipart/form-data" action="{% url 'update_pbos' %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" id="pbo_cso_id" name="pbo_cso_id">
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label for="pbo_cso_name">CSO Name</label>
+                                                <input type="text" class="form-control" id="pbo_cso_name" name="pbo_cso_name" required>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label for="pbo_cso_email">Email</label>
+                                                <input type="text" class="form-control" id="pbo_cso_email" name="pbo_cso_email" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <h5>Public Contact Address</h5>
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label for="pbo_fixed_phone">Fixed Phone No.</label>
+                                                <input type="text" class="form-control" id="pbo_fixed_phone" name="pbo_fixed_phone" required>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label for="pbo_po_box">P.O. Box</label>
+                                                <input type="text" class="form-control" id="pbo_po_box" name="pbo_po_box" required>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label for="pbo_public_mobile">Mobile No.</label>
+                                                <input type="text" class="form-control" id="pbo_public_mobile" name="pbo_public_mobile" required>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label for="pbo_fax">Fax</label>
+                                                <input type="number" class="form-control" id="pbo_fax" name="pbo_fax" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label for="pbo_public_email">Email</label>
+                                                <input type="email" class="form-control" id="pbo_public_email" name="pbo_public_email" required>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label for="pbo_website">Website</label>
+                                                <input type="text" class="form-control" id="pbo_website" name="pbo_website" required>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label for="pbo_toll_free_no">Toll Free No.</label>
+                                                <input type="number" class="form-control" id="pbo_toll_free_no" name="pbo_toll_free_no" required>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label for="pbo_address">Address</label>
+                                                <input type="text" class="form-control" id="pbo_address" name="pbo_address" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <hr>
+                                    <div class="row">
+                                        <h5>Executive Director</h5>
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label for="pbo_ex_name">Executive Director</label>
+                                                <input type="text" class="form-control" id="pbo_ex_name" name="pbo_ex_name" required>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label for="pbo_ex_id">ID Number</label>
+                                                <input type="type" class="form-control" id="pbo_ex_id" name="pbo_ex_id" required>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label for="pbo_ex_email">Email</label>
+                                                <input type="email" class="form-control" id="pbo_ex_email" name="pbo_ex_email" required>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label for="pbo_ex_phone">Phone</label>
+                                                <input type="text" class="form-control" id="pbo_ex_phone" name="pbo_ex_phone" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <hr>
+                                    <div class="row">
+                                        <h5>CSO Focal Person</h5>
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label for="pbo_focal_name">Focal Person</label>
+                                                <input type="text" class="form-control" id="pbo_focal_name" name="pbo_focal_name" required>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label for="pbo_focal_id">ID Number</label>
+                                                <input type="text" class="form-control" id="pbo_focal_id" name="pbo_focal_id" required>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label for="pbo_focal_email">Email</label>
+                                                <input type="email" class="form-control" id="pbo_focal_email" name="pbo_focal_email" required>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label for="pbo_focal_phone">Phone</label>
+                                                <input type="number" class="form-control" id="pbo_focal_phone" name="pbo_focal_phone" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="areas_of_operations">Area's of Operation</label>
+                                        <input type="text" class="form-control" id="areas_of_operations" name="areas_of_operations" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="pbo_purpose">Purpose</label>
+                                        <textarea class="form-control" id="pbo_purpose" name="pbo_purpose" rows="4" required></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="pbo_objectives">Objectives</label>
+                                        <textarea class="form-control" id="pbo_objectives" name="pbo_objectives" rows="4" required></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="pbo_objectives">Remarks</label>
+                                        <input class="form-control" id="pbo_remarks" name="pbo_remarks" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="invalid_certificate_fines" style="color: red;font-weight: 600;">Invalid Certificate Payments</label>
+                                        <select class="form-select form-control" name="invalid_certificate_fines" id="invalid_certificate_fines">
+                                            <option value="0" selected>Nu. 0</option>
+                                            <option value="50000">Nu. 50,000</option>
+                                            <option value="100000">Nu. 100,000</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Status</label><br>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="pbo_cso_status" id="activeRadio" value="Active" checked>
+                                            <label class="form-check-label" for="activeRadio">Active</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="pbo_cso_status" id="inactiveRadio" value="Inactive">
+                                            <label class="form-check-label" for="inactiveRadio">Inactive</label>
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <button type="submit" class="btn btn-primary">Save changes</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+
+            <div class="tab-pane" id="tabs-2" role="tabpanel">
+                <br>
+                <table id="MBO_table" class="display">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>CSO Name</th>
+                            <th>Registered Date</th>
+                            <th>Validity Date</th>
+                            <th>Focal Person</th>
+                            <th>Contact</th>
+                            <th>Website</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for i in mbo %}
+                        <tr>
+                            <td>{{forloop.counter}}</td>
+                            <td><a href="{% url 'cso_detail' i.cso_id %}">{{ i.cso_name }}</a></td>
+                            <td>{{i.cso_registered_date}}</td>
+                            <td>{{i.cso_validity_date}}</td>
+                            <td>{{i.cso_focal}}</td>
+                            <td>{{i.cso_contact}}</td>
+                            <td>{{i.cso_url}}</td>
+                            <td>{{i.status}}</td>    
+                            <td>
+                                <a class="edit-btn-mbo btn btn-info" href="#" 
+                                data-toggle="modal" 
+                                data-target="#editMBOs" 
+                                data-mbo_id="{{i.cso_id}}" 
+                                data-name="{{i.cso_name}}" 
+                                data-mbo_email="{{i.cso_email}}"
+                                data-fixed_phone="{{i.fixed_phone_no}}"
+                                data-po_box="{{i.po_box}}"
+                                data-public_mobile="{{i.public_contact}}"
+                                data-fax="{{i.fax}}"
+                                data-public_email="{{i.public_email}}"
+                                data-toll_free_no="{{i.toll_free_no}}"
+                                data-website="{{i.cso_url}}"
+                                data-mbo_address="{{i.address}}"
+                                data-mbo_ex_name="{{i.executive_director}}"
+                                data-mbo_ex_id="{{i.executive_ID}}"
+                                data-mbo_ex_email="{{i.executive_email}}"
+                                data-mbo_ex_phone="{{i.executive_phone}}"
+                                data-mbo_focal_name="{{i.cso_focal_name}}"
+                                data-mbo_focal_id="{{i.cso_focal_ID}}"
+                                data-mbo_focal_email="{{i.cso_focal_email}}"
+                                data-mbo_focal_phone="{{i.cso_focal_phone}}"
+                                data-areas_of_operation="{{i.operation_places}}"
+                                data-purpose="{{i.purpose}}"
+                                data-objectives="{{i.objectives}}"
+                                data-remarks="{{i.remarks}}"
+                                data-certificate="{{i.invalid_certificate_fines}}"
+                                data-status="{{i.status}}">
+                                Edit
+                                </a>
+                                <a href="#" class="btn btn-danger delete-link" data-cso-id="{{ i.cso_id }}" data-cso-name="{{ i.cso_name }}">Delete</a>
+
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <div class="modal fade bd-example-modal-lg" id="editMBOs" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="editModalLabel">Edit CSO | MBO Type</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form method="POST" enctype="multipart/form-data" action="{% url 'update_mbos' %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" id="mbo_cso_id" name="mbo_cso_id">
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label for="mbo_cso_name">CSO Name</label>
+                                                <input type="text" class="form-control" id="mbo_cso_name" name="mbo_cso_name" required>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label for="mbo_cso_email">Email</label>
+                                                <input type="text" class="form-control" id="mbo_cso_email" name="mbo_cso_email" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <h5>Public Contact Address</h5>
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label for="mbo_fixed_phone">Fixed Phone No.</label>
+                                                <input type="text" class="form-control" id="mbo_fixed_phone" name="mbo_fixed_phone" required>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label for="mbo_po_box">P.O. Box</label>
+                                                <input type="text" class="form-control" id="mbo_po_box" name="mbo_po_box" required>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label for="mbo_public_mobile">Mobile No.</label>
+                                                <input type="text" class="form-control" id="mbo_public_mobile" name="mbo_public_mobile" required>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label for="mbo_fax">Fax</label>
+                                                <input type="number" class="form-control" id="mbo_fax" name="mbo_fax" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label for="mbo_public_email">Email</label>
+                                                <input type="email" class="form-control" id="mbo_public_email" name="mbo_public_email" required>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label for="mbo_website">Website</label>
+                                                <input type="text" class="form-control" id="mbo_website" name="mbo_website" required>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label for="mbo_toll_free_no">Toll Free No.</label>
+                                                <input type="text" class="form-control" id="mbo_toll_free_no" name="mbo_toll_free_no" required>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label for="mbo_address">Address</label>
+                                                <input type="text" class="form-control" id="mbo_address" name="mbo_address" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <hr>
+                                    <div class="row">
+                                        <h5>Executive Director</h5>
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label for="mbo_ex_name">Executive Director</label>
+                                                <input type="text" class="form-control" id="mbo_ex_name" name="mbo_ex_name" required>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label for="mbo_ex_id">ID Number</label>
+                                                <input type="type" class="form-control" id="mbo_ex_id" name="mbo_ex_id" required>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label for="mbo_ex_email">Email</label>
+                                                <input type="email" class="form-control" id="mbo_ex_email" name="mbo_ex_email" required>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label for="mbo_ex_phone">Phone</label>
+                                                <input type="text" class="form-control" id="mbo_ex_phone" name="mbo_ex_phone" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <hr>
+                                    <div class="row">
+                                        <h5>CSO Focal Person</h5>
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label for="mbo_focal_name">Focal Person</label>
+                                                <input type="text" class="form-control" id="mbo_focal_name" name="mbo_focal_name" required>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label for="mbo_focal_id">ID Number</label>
+                                                <input type="text" class="form-control" id="mbo_focal_id" name="mbo_focal_id" required>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label for="mbo_focal_email">Email</label>
+                                                <input type="email" class="form-control" id="mbo_focal_email" name="mbo_focal_email" required>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label for="mbo_focal_phone">Phone</label>
+                                                <input type="number" class="form-control" id="mbo_focal_phone" name="mbo_focal_phone" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="areas_of_operations">Area's of Operation</label>
+                                        <input type="text" class="form-control" id="areas_of_operations" name="areas_of_operations" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="mbo_purpose">Purpose</label>
+                                        <textarea class="form-control" id="mbo_purpose" name="mbo_purpose" rows="4" required></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="mbo_objectives">Objectives</label>
+                                        <textarea class="form-control" id="mbo_objectives" name="mbo_objectives" rows="4" required></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="mbo_remarks">Remarks</label>
+                                        <input class="form-control" id="mbo_remarks" name="mbo_remarks" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="mbo_invalid_certificate_fines" style="color: red;font-weight: 600;">Invalid Certificate Payments</label>
+                                        <select class="form-select form-control" name="mbo_invalid_certificate_fines" id="mbo_invalid_certificate_fines">
+                                            <option value="0" selected>Nu. 0</option>
+                                            <option value="50000">Nu. 50,000</option>
+                                            <option value="100000">Nu. 100,000</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Status</label><br>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="mbo_cso_status" id="activeRadio" value="Active" checked>
+                                            <label class="form-check-label" for="activeRadio">Active</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="mbo_cso_status" id="inactiveRadio" value="Inactive">
+                                            <label class="form-check-label" for="inactiveRadio">Inactive</label>
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <button type="submit" class="btn btn-primary">Save changes</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>            
+            
+            <div class="tab-pane" id="tabs-3" role="tabpanel">
+                
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+<script type="text/javascript">
+    $('#PBO_table').DataTable({
+        "pageLength": 50
+    });
+    $('#MBO_table').DataTable({
+        "pageLength": 50
+    });
+</script>
+<script>
+    // Adjust the width of the banner dynamically if needed
+        function adjustBannerWidth() {
+        const banner = document.querySelector('.banner');
+        banner.style.width = `${window.innerWidth}px`;
+    }
+
+    // Call the function on load and resize
+    window.onload = adjustBannerWidth;
+    window.onresize = adjustBannerWidth;
+</script>
+<script>
+    $(document).ready(function() {
+    // Handle delete button click
+        document.querySelectorAll('.delete-link').forEach(link => {
+            link.addEventListener('click', function(event) {
+                event.preventDefault();
+                const csoId = this.getAttribute('data-cso-id');
+                const csoName = this.getAttribute('data-cso-name');
+                confirm_cso_delete(csoId, csoName);
+            });
+        });
+
+        // Function to confirm CSO deletion
+        function confirm_cso_delete(csoId, csoName) {
+            console.log('This is the cso_id and cso_name: ', csoId, csoName);
+
+            Swal.fire({
+                title: `Are you sure you want to delete the CSO "${csoName}"?`,
+                text: "This action cannot be undone.",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Yes, delete it!",
+                cancelButtonText: "No, cancel!"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch('{% url "delete_cso_list" 9999 %}'.replace('9999', csoId), {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRFToken': '{{ csrf_token }}',
+                        }
+                    }).then(response => {
+                        if (response.ok) {
+                            Swal.fire("Deleted!", "The CSO has been deleted.", "success").then(() => {
+                                window.location.reload(); // Reload the page after deletion
+                            });
+                        } else {
+                            Swal.fire("Failed!", "Failed to delete CSO.", "error");
+                        }
+                    });
+                } else if (result.dismiss === Swal.DismissReason.cancel) {
+                    Swal.fire("Cancelled", "Your CSO is safe :)", "info");
+                }
+            });
+        }
+    });
+
+    $(document).ready(function() {
+        // Retrieve the active tab from localStorage
+        var activeTab = localStorage.getItem('activeTab');
+        if (activeTab) {
+            $('.nav-tabs a[href="' + activeTab + '"]').tab('show');
+        } else {
+            $('.nav-tabs a[href="#tabs-1"]').tab('show'); // Default tab
+        }
+
+        // Save the active tab to localStorage
+        $('a[data-toggle="tab"]').on('shown.bs.tab', function(e) {
+            var currentTab = $(e.target).attr('href');
+            localStorage.setItem('activeTab', currentTab);
+        });
+
+        // Event handler for clicking the edit button
+        $('.edit-btn-pbo').on('click', function(event) {
+            event.preventDefault();
+
+            // Retrieve data attributes from the clicked element
+            var pboId = $(this).data('id');
+            var pboName = $(this).data('name');
+            var pboEmail = $(this).data('pbo_email');
+            var pboFixedPhone = $(this).data('fixed_phone');
+            var pboPobox = $(this).data('po_box');
+            var pboMobile = $(this).data('public_mobile');
+            var pboFax = $(this).data('fax');
+            var pboPublicEmail = $(this).data('public_email');
+            var pboWebsite = $(this).data('website');
+            var pboTollFreeNo = $(this).data('toll_free_no');
+            var pboAddress = $(this).data('pbo_address');
+            var pboExName = $(this).data('pbo_ex_name');
+            var pboExID = $(this).data('pbo_ex_id');
+            var pboExEmail = $(this).data('pbo_ex_email');
+            var pboExPhone = $(this).data('pbo_ex_phone');
+            var pboFocalName = $(this).data('pbo_focal_name');
+            var pboFocalID = $(this).data('pbo_focal_id');
+            var pboFocalEmail = $(this).data('pbo_focal_email');
+            var pboFocalPhone = $(this).data('pbo_focal_phone');
+            var pboAreasOfOperations = $(this).data('areas_of_operation');
+            var pboPurpose = $(this).data('purpose');
+            var pboObjectives = $(this).data('objectives');
+            var pboRemarks = $(this).data('remarks');
+            var pboInvalidCertificate = $(this).data('certificate');
+            var pboStatus = $(this).data('status');
+
+            // Populate modal form fields with retrieved data
+            $('#editPBOs #pbo_cso_id').val(pboId);
+            $('#editPBOs #pbo_cso_name').val(pboName);
+            $('#editPBOs #pbo_cso_email').val(pboEmail);
+            $('#editPBOs #pbo_fixed_phone').val(pboFixedPhone);
+            $('#editPBOs #pbo_po_box').val(pboPobox);
+            $('#editPBOs #pbo_public_mobile').val(pboMobile);
+            $('#editPBOs #pbo_fax').val(pboFax);
+            $('#editPBOs #pbo_public_email').val(pboPublicEmail);
+            $('#editPBOs #pbo_website').val(pboWebsite);
+            $('#editPBOs #pbo_toll_free_no').val(pboTollFreeNo);
+            $('#editPBOs #pbo_address').val(pboAddress);
+            $('#editPBOs #pbo_ex_name').val(pboExName);
+            $('#editPBOs #pbo_ex_id').val(pboExID);
+            $('#editPBOs #pbo_ex_email').val(pboExEmail);
+            $('#editPBOs #pbo_ex_phone').val(pboExPhone);
+            $('#editPBOs #pbo_focal_name').val(pboFocalName);
+            $('#editPBOs #pbo_focal_id').val(pboFocalID);
+            $('#editPBOs #pbo_focal_email').val(pboFocalEmail);
+            $('#editPBOs #pbo_focal_phone').val(pboFocalPhone);
+            $('#editPBOs #areas_of_operations').val(pboAreasOfOperations);
+            $('#editPBOs #pbo_purpose').val(pboPurpose);
+            $('#editPBOs #pbo_objectives').val(pboObjectives);
+            $('#editPBOs #pbo_remarks').val(pboRemarks);
+            $('#editPBOs #invalid_certificate_fines').val(pboInvalidCertificate);
+
+            // Set the status radio button
+            if (pboStatus === 'Active') {
+                $('#editPBOs #activeRadio').prop('checked', true);
+            } else {
+                $('#editPBOs #inactiveRadio').prop('checked', true);
+            }
+            // Update modal title dynamically
+            $('#editPBOs .modal-title').text('Edit PBO CSO Type- ' + pboName);
+        });
+        //attachment autofill
+        $('.edit-btn-mbo').on('click', function(event) {
+            event.preventDefault();
+        
+            // Retrieve data attributes from the clicked element
+            var mboId = $(this).data('mbo_id');
+            var mboName = $(this).data('name');
+            var mboEmail = $(this).data('mbo_email');
+            var mboFixedPhone = $(this).data('fixed_phone');
+            var mboPobox = $(this).data('po_box');
+            var mboMobile = $(this).data('public_mobile');
+            var mboFax = $(this).data('fax');
+            var mboPublicEmail = $(this).data('public_email');
+            var mboWebsite = $(this).data('website');
+            var mboTollFreeNo = $(this).data('toll_free_no');
+            var mboAddress = $(this).data('mbo_address');
+            var mboExName = $(this).data('mbo_ex_name');
+            var mboExID = $(this).data('mbo_ex_id');
+            var mboExEmail = $(this).data('mbo_ex_email');
+            var mboExPhone = $(this).data('mbo_ex_phone');
+            var mboFocalName = $(this).data('mbo_focal_name');
+            var mboFocalID = $(this).data('mbo_focal_id');
+            var mboFocalEmail = $(this).data('mbo_focal_email');
+            var mboFocalPhone = $(this).data('mbo_focal_phone');
+            var mboAreasOfOperations = $(this).data('areas_of_operation');
+            var mboPurpose = $(this).data('purpose');
+            var mboObjectives = $(this).data('objectives');
+            var mboRemarks = $(this).data('remarks');
+            var invalideCertificate = $(this).data('certificate');
+            var mboStatus = $(this).data('status');
+
+            // Populate modal form fields with retrieved data
+            $('#editMBOs #mbo_cso_id').val(mboId);
+            $('#editMBOs #mbo_cso_name').val(mboName);
+            $('#editMBOs #mbo_cso_email').val(mboEmail);
+            $('#editMBOs #mbo_fixed_phone').val(mboFixedPhone);
+            $('#editMBOs #mbo_public_mobile').val(mboMobile);
+            $('#editMBOs #mbo_po_box').val(mboPobox);
+            $('#editMBOs #mbo_fax').val(mboFax);
+            $('#editMBOs #mbo_public_email').val(mboPublicEmail);
+            $('#editMBOs #mbo_website').val(mboWebsite);
+            $('#editMBOs #mbo_toll_free_no').val(mboTollFreeNo);
+            $('#editMBOs #mbo_address').val(mboAddress);
+            $('#editMBOs #mbo_ex_name').val(mboExName);
+            $('#editMBOs #mbo_ex_id').val(mboExID);
+            $('#editMBOs #mbo_ex_email').val(mboExEmail);
+            $('#editMBOs #mbo_ex_phone').val(mboExPhone);
+            $('#editMBOs #mbo_focal_name').val(mboFocalName);
+            $('#editMBOs #mbo_focal_id').val(mboFocalID);
+            $('#editMBOs #mbo_focal_email').val(mboFocalEmail);
+            $('#editMBOs #mbo_focal_phone').val(mboFocalPhone);
+            $('#editMBOs #areas_of_operations').val(mboAreasOfOperations);
+            $('#editMBOs #mbo_purpose').val(mboPurpose);
+            $('#editMBOs #mbo_objectives').val(mboObjectives);
+            $('#editMBOs #mbo_remarks').val(mboRemarks);
+            $('#editMBOs #mbo_invalid_certificate_fines').val(invalideCertificate);
+            // Set the status radio button
+            if (mboStatus === 'Active') {
+                $('#editMBOs #activeRadio').prop('checked', true);
+            } else {
+                $('#editMBOs #inactiveRadio').prop('checked', true);
+            }
+
+            // Update modal title dynamically
+            $('#editMBOs .modal-title').text('Edit MBO CSO Type - ' + mboName);
+        });
+
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,395 @@
+{% extends 'cso_app/layouts/main.html' %}
+{% load static %}
+{% block content %}
+<title>CSOA Accountability Ranks</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900&display=swap');
+    #title {
+        color: #fff;
+        font-size: 2.1em;
+        font-weight: 600;
+        text-shadow: 1px 1px 2px black;
+    }
+    .table-container {
+        max-height: 100vh; /* Adjust this height as needed */
+        overflow-y: auto;
+        backdrop-filter: blur(5px);
+        filter: drop-shadow(0.4rem 0.8rem 0.8rem rgba(0, 0, 0, 0.6));
+    }
+    .table tr td, .table tr th {
+        text-align: center;
+        font-family: "Kanit", sans-serif;  
+        font-size: 2em;  
+        color: #fff;
+        text-shadow: 1px 1px 2px black;
+    }
+    .post_pic {
+        width: 100%;
+        min-height: 250px;
+        backface-visibility: hidden;
+        vertical-align: top;
+    }
+    .post-content {
+        color: #fff;
+        font-size: 1.5em;
+        font-weight: 500;
+        font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    }
+    h1 {
+        font-size: 2em;
+        font-family: "Kanit", sans-serif;
+        color: #fff;
+    }
+</style>
+
+<style>
+    .glass-div {
+        background: rgba(255, 255, 255, 0.2); /* Transparent white */
+        backdrop-filter: blur(10px); /* Blur effect */
+        -webkit-backdrop-filter: blur(10px); /* Safari support */
+        border: 1px solid rgba(255, 255, 255, 0.3); /* Subtle border */
+        border-radius: 15px; /* Rounded corners */
+        padding: 20px;
+        color: #fff;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Soft shadow */
+        text-align: left;
+        margin-bottom: 20px; /* Space below the glass div */
+    }
+    .glass-div h5 {
+        font-size: 1.5em;
+        font-weight: 600;
+        margin-bottom: 15px; /* Add space between the heading and the list */
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    }
+    .categories {
+        list-style: none;
+        padding-left: 0;
+        margin: 0;
+    }
+    .categories li {
+        font-size: 1.3em;
+        font-family: "Kanit", sans-serif;
+        padding: 10px 15px;
+        margin: 5px 0;
+        background: rgba(255, 255, 255, 0.1); /* Slight background color */
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.3s ease; /* Smooth hover effect */
+        text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3);
+    }
+    .categories li a {
+        color: #fff;
+    }
+    .categories li:hover {
+        background-color: rgba(255, 255, 255, 0.3); /* Lighter background on hover */
+        color: #cce5ff; /* Light blue text color on hover */
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add subtle shadow on hover */
+        transform: translateY(-5px); /* Slight lift effect */
+    }
+    
+    .nav-tabs {
+        border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+    }
+    .nav-tabs > li > a {
+        color: #fff;
+        background-color: rgba(0, 0, 0, 0.2);
+        border: none;
+    }
+    .nav-tabs > li.active > a {
+        background-color: rgba(255, 255, 255, 0.3);
+        color: #20A3F5;
+        border: none;
+    }
+    .list-group-item {
+        background-color: rgba(255, 255, 255, 0.1);
+        color: #fff;
+        border: none;
+    }
+    .list-group-item:hover {
+        background-color: rgba(255, 255, 255, 0.3);
+        color: #20A3F5;
+    }
+    .post-card {
+        display: flex;
+        background-color: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        margin-bottom: 20px;
+        padding: 15px;
+        color: #fff;
+    }
+    .card-content {
+        display: flex;
+        width: 100%;
+    }
+    .post-description {
+        flex: 1; /* Allow it to take the remaining space */
+    }
+    .description-text {
+        max-height: 100px; /* Limit the height for long descriptions */
+        overflow: hidden; /* Hide overflow content */
+        transition: max-height 0.3s ease; /* Smooth transition */
+    }
+    @import url(https://fonts.googleapis.com/css?family=Source+Sans+Pro);
+    @import url(https://fonts.googleapis.com/css?family=Teko:700);
+
+
+    .snip *,
+    .snip *:before,
+    .snip *:after {
+    box-sizing: border-box;
+    transition: all 0.45s ease;
+    }
+
+    .snip {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    height: 250px;
+    max-width: 315px;
+    min-width: 230px;
+    font-family: "Source Sans Pro", sans-serif;
+    color: #fff;
+    font-size: 16px;
+    margin: 10px;
+    text-align: left;
+    transform: translateZ(0);
+    }
+
+    .snip:hover .snip__title,
+    .snip:hover .snip__text {
+    transform: translateY(0);
+    opacity: 0.9;
+    transition-delay: 0.2s;
+    }
+
+    .snip::before,
+    .snip::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: #125db8;
+    opacity: 0.5;
+    transition: all 0.45s ease;
+    }
+
+    .snip::before {
+    transform: skew(30deg) translateX(-80%);
+    }
+
+    .snip::after {
+    transform: skew(-30deg) translateX(-70%);
+    }
+
+    .snip:hover::before {
+    transform: skew(30deg) translateX(-20%);
+    transition-delay: 0.05s;
+    }
+
+    .snip:hover::after {
+    transform: skew(-30deg) translateX(-10%);
+    }
+
+    .snip:hover .snip__figcaption::before {
+    transform: skew(30deg) translateX(-40%);
+    transition-delay: 0.15s;
+    }
+
+    .snip:hover .snip__figcaption::after {
+    transform: skew(-30deg) translateX(-30%);
+    transition-delay: 0.1s;
+    }
+
+    .snip__figcaption {
+    position: absolute;
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    z-index: 1;
+    bottom: 0;
+    padding: 25px 40% 25px 20px;
+    }
+
+    .snip__figcaption::before,
+    .snip__figcaption::after {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: #1167a0;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.7);
+    content: "";
+    opacity: 0.5;
+    z-index: -1;
+    }
+
+    .snip__figcaption::before {
+    transform: skew(30deg) translateX(-100%);
+    }
+
+    .snip__figcaption::after {
+    transform: skew(-30deg) translateX(-90%);
+    }
+
+    .snip__title,
+    .snip__text {
+    margin: 0;
+    opacity: 0;
+    letter-spacing: 1px;
+    }
+
+    .snip__title {
+    font-family: "Teko", sans-serif;
+    font-size: 36px;
+    font-weight: 700;
+    line-height: 1em;
+    text-transform: uppercase;
+    }
+
+    .snip__text {
+    font-size: 0.9em;
+    }
+
+    .snip__link {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1;
+    }
+
+</style>
+
+<body style="background-image: url('https://images.pexels.com/photos/3721941/pexels-photo-3721941.jpeg'); background-position: center; background-size: cover; background-repeat: no-repeat;">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-8">
+                <div class="post-detail">
+                    <h1>{{ category_name }} Posts (Total: {{ total_posts }})</h1>
+                    {% for post in posts %}
+                        <div class="card post-card">
+                            <div class="card-content">
+                                {% if post.post_img %}
+                                    <figure class="snip">
+                                        <img src="{{ post.post_img.url }}" alt="{{ post.post_header }}" class="post_pic">
+
+                                        <figcaption class="snip__figcaption">
+                                        <h3 class="snip__title">Date:
+                                        </h3>
+                                        <p class="snip__text">
+                                            <i class="fa-regular fa-clock"></i> {{post.published_date}}
+                                        </p>
+                                        </figcaption>
+                                        <a class="snip__link" href="{% url 'post_detail' post.post_id %}"></a>
+                                        
+                                    </figure>
+                                {% else %}
+                                    <img src="{% static 'img/default_post.png' %}" alt="Default Post Image" class="post_pic">
+                                {% endif %}
+                                <div class="post-description">
+                                    <i class="fa-solid fa-tag"></i> {{ post.activity }}
+                                    <span style="float: right;"><i class="fa-solid fa-eye"></i> {{ post.views }}</span>
+
+                                    <h3>{{ post.post_header }}</h3>
+                                    <p class="description-text">{{ post.post_description|truncatewords:50|safe }}</p>
+                                    <a href="{% url 'post_detail' post.post_id %}"><button class="btn btn-primary">See More</button></a>
+                                </div>
+                                
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <br>
+            <div class="col-sm-4">
+                <div style="display: flex; align-items: center;">
+                    <input type="text" class="form-control" placeholder="Search..." style="flex: 1; margin-right: 10px;">
+                    <button class="btn btn-primary" type="button">
+                        <i class="fa fa-search"></i>
+                    </button>
+                </div>
+                <br>
+                <div class="glass-div">
+                    <h5>Categories</h5>
+                    <ul class="categories">
+                        <li><a href="{% url 'post_categories' 'All' %}">All ({{ total_posts }})</a></li>
+                        <li><a href="{% url 'post_categories' 'News' %}">News ({{ news_count }})</a></li>
+                        <li><a href="{% url 'post_categories' 'Announcement' %}">Announcement ({{ announcement_count }})</a></li>
+                        <li><a href="{% url 'post_categories' 'Vaccancy' %}">Vaccancy ({{ vacancy_count }})</a></li>
+                        <li><a href="{% url 'post_categories' 'Tender' %}">Tender ({{ tender_count }})</a></li>
+                    </ul>
+                </div>
+                <br>
+                <div class="glass-div">
+                    <!-- Nav tabs -->
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li class="active"><a href="#popular" role="tab" data-toggle="tab">Popular</a></li>
+                        <li><a href="#recent" role="tab" data-toggle="tab">Recent</a></li>
+                    </ul>
+            
+                    <!-- Tab panes -->
+                    <div class="tab-content">
+                        <!-- Popular Tab -->
+                        <div class="tab-pane active" id="popular">
+                            <ul class="list-group">
+                                {% for post in popular_posts %}
+                                <a href="{% url 'post_detail' post.post_id %}"><li class="list-group-item">{{post.post_header}}</li></a>
+                                {% endfor %}
+                            </ul>
+                        </div>
+            
+                        <!-- Recent Tab -->
+                        <div class="tab-pane" id="recent">
+                            <ul class="list-group">
+                                {% for post in recent_post %}
+                                <a href="{% url 'post_detail' post.post_id %}"><li class="list-group-item">{{post.post_header}}</li></a>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <br><br>
+    {% include 'cso_app/layouts/footer.html' %}
+</body>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- SweetAlert -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script type="text/javascript">
+    // Adjust the width of the banner dynamically if needed
+    function adjustBannerWidth() {
+        const banner = document.querySelector('.banner');
+        if (banner) {
+            banner.style.width = `${window.innerWidth}px`;
+        }
+    }
+
+    // Call the function on load and resize
+    window.onload = adjustBannerWidth;
+    window.onresize = adjustBannerWidth;
+
+    // Truncate and handle toggle for descriptions
+    $(document).ready(function () {
+        $('.description-text').each(function () {
+            const originalText = $(this).text(); // Get the full description text
+            if (originalText.length > 50) {
+                const truncatedText = originalText.substring(0, 50) + "..."; // Truncate and add ellipsis
+                $(this).text(truncatedText); // Update the displayed text
+                $(this).data('full-text', originalText); // Store the full text in a data attribute
+            }
+        });
+    });
+</script>
+{% endblock %}

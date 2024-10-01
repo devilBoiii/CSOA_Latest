@@ -1,0 +1,124 @@
+{% extends 'cso_app/layouts/back_end_navbar.html' %}
+{% load static %}
+{% block content %}
+<title>CSOA-Feedback Table</title>
+<style>
+    @import url("https://fonts.googleapis.com/css?family=DM+Sans:400,500|Jost:400,500,600&display=swap");
+
+    body {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    overflow-x: hidden;
+    background-color: #ffffff;
+    background: url(https://dl.dropbox.com/s/mpmu0gjtxv2x3fs/Webp.net-resizeimage%20%281%29.jpg?raw=1)
+        no-repeat center center fixed;
+    background-size: cover;
+    }
+    #back_end_home{
+    z-index: -1;
+    width: 100%;
+    }
+    #back_end_home .banner{
+    background-color: #888;
+    width:100%;
+    height: 37px;
+    }
+    #back_end_home .banner h3{
+    font-size:1em;
+    display: inline-block;
+    }
+    .banner h3 i{
+    padding-top: 5px;
+    }
+    .banner a{
+    color: #000;
+    text-decoration: none;
+    }
+    .banner a:hover{
+    text-decoration: underline;
+    }
+    #feedback_table{
+    margin-left:10em;
+    }
+
+    .card {
+    width: 100%;
+    background-color: rgba(255, 255, 255, 0.06);
+    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
+    margin: auto;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    border-radius: 8px;
+    -webkit-box-shadow: 20px 20px 22px rgba(0, 0, 0, 0.2);
+    box-shadow: 20px 20px 22px rgba(0, 0, 0, 0.2);
+    font-family: "Poppins", sans-serif;
+    }
+    table tr td, tr th{
+        color: #fff;
+        font-weight: 500;
+        font-size: 1em;
+        text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5);
+        border: 1px solid #fff;
+        text-align: center;
+        font-family: Verdana, Geneva, Tahoma, sans-serif;
+    }
+
+
+</style>
+<body>
+<br><br><br><br><br>
+    <div id="back_end_home" class="container">
+        <div class="banner">
+            <h3 style="padding: 0em 7em;"><i class="fa fa-home" aria-hidden="true"></i><a
+                    href="{% url 'administrator' %}">Home</a> > CSOA Feedback Table</h3>
+            <hr>
+        </div>
+        <br>
+        <div class="row" id="feedback_table">
+            <div class="card">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Sl.No.</th>
+                            <th>Full Name</th>
+                            <th>Email</th>
+                            <th>Mobile Number</th>
+                            <th>Subject</th>
+                            <th>Message</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for feedback in feedbacks %}
+                        <tr>
+                            <td>{{forloop.counter}}</td>
+                            <td>{{feedback.full_name}}</td>
+                            <td>{{feedback.email}}</td>
+                            <td>{{feedback.mobile_number}}</td>
+                            <td>{{feedback.subject}}</td>
+                            <td>{{feedback.message}}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>    
+            </div>
+        </div>
+    </div>
+</body>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    // Adjust the width of the banner dynamically if needed
+    function adjustBannerWidth() {
+        const banner = document.querySelector('.banner');
+        banner.style.width = `${window.innerWidth}px`;
+    }
+
+    // Call the function on load and resize
+    window.onload = adjustBannerWidth;
+    window.onresize = adjustBannerWidth;
+</script>
+{% endblock %}

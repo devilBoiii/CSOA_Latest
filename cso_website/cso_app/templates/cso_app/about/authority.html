@@ -1,0 +1,43 @@
+{% extends 'cso_app/layouts/main.html' %}
+{% load static %}
+{% block content %}
+<title>CSOA Authority - CSOA</title>
+<link rel="stylesheet" href="{% static 'css/cso_about.css' %}">
+<style>
+    #important_links{
+        margin-top: -10em;
+    }
+    #authority p, #authority span, #authority li{
+        font-size: 1.3em;
+    }
+</style>
+
+<div class="container" id="authority">
+    <div class="row">
+        <div class="col-md-auto">
+            <h3>Civil Society Organizations Authority</h3>
+            <p>The Civil Society Organizations Act of Bhutan was legislated on 20th June 2007 during the 87th Session of the then National Assembly of Bhutan, essentially to promote establishment and growth of Civil Society Organizations (CSO) in order to strengthen civil society, promote social welfare and improve the conditions and quality of life in Bhutan. Under the directives received from the government, the Ministry of Home and Cultural Affairs spearheaded the formation of the CSO Authority on 20th March 2009 as an appropriate regulatory agency to implement the CSO Act and subsequently the Secretariat was established in 2010. <br>
+            The Act was amended in 2022 by the 7th Session of the third Parliament of Bhutan.</p>
+            <hr>
+            <h3>Mandates of the CSOA</h3>
+            <ul><span>The CSO Authority is responsible to carry out the following functions:</span>
+                <li>Facilitate communication between Civil Society Organizations and the Government, particularly in advising the Government about the general activities and roles of CSOs;</li>
+                <li>Encourage and facilitate the CSOs to inform, promote, connect and strengthen individual Civil Society Organizations;</li>
+                <li>Review and approve all applications for registration of CSOs which satisfy the requirements of this Act,</li>
+                <li>Approve the accreditation of foreign CSOs within the provisions of the laws of Bhutan and this Act;</li>
+                <li>Monitor the activities of CSOs to ensure their compliance with this Act and with their own Articles of Associations or Charters, and the purposes for which they have been established</li>
+                <li>Liaise with other agencies of the Government and interested parties. Exercise other related powers and carry out responsibilities prescribed in the Civil Society Organizations Act and these regulations.</li>
+                <li>Institute inquries against the CSOs not in compliance with the Act or any other Laws of the Country and remove from the lsit of registered CSOs for violation of any Laws enforced in the Country or in any Country they may be operating.</li>
+            </ul>
+        </div>
+    </div>
+    <div class="row" id="important_links">
+        {% include 'cso_app/layouts/important_links.html' %}
+    </div>
+</div>
+
+
+
+{% include 'cso_app/layouts/footer.html' %}
+
+{% endblock %}

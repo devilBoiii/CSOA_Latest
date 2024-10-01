@@ -1,0 +1,858 @@
+{% extends 'cso_app/layouts/main.html' %}
+{% load static %}
+{% block content %}
+<title>CSOA-Pay Fees</title>
+<link rel="stylesheet" type="text/css" href="{% static 'css/pay_fees.css' %}">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+<style>
+    body {
+        background-image: url('https://images.pexels.com/photos/9982525/pexels-photo-9982525.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2');
+        background-size: cover;
+        overflow-x: hidden;
+        margin: 0; /* Ensure there is no margin on the body */
+    }
+    #cso-details{
+        color: #fff;
+        font-size: 1.2em;
+    }
+    .cso_logo{
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+    }
+    .form-group p{
+        text-align: center;
+        font-weight: 600;
+    }
+    .files_label{
+        font-size: 1.1em;
+        font-weight: 700;
+        color: #000;
+        text-transform: capitalize;
+        font-family: 'Courier New', Courier, monospace;
+    }
+</style>
+
+<!-- Multi-Step Form -->
+<body>
+    <!-- partial:index.partial.html -->
+    <div class="center-wrapper">
+        <section class="wizard-section">
+            <div class="row no-gutters">
+                <div class="col-lg-6 col-md-6">
+                    <div class="wizard-content-left d-flex justify-content-center align-items-center">
+                        <div id="cso-details" style="color:#fff;font-size:1.2em;"></div>  <!-- Placeholder for CSO details -->
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6">
+                    <div class="form-wizard">
+                        <form action="{% url 'pay_fees_form' %}" method="post" role="form" enctype="multipart/form-data" id="myForm">
+                            {% csrf_token %}
+                            <div class="form-wizard-header">
+                                <p>Fill all form field and click on next to go next step</p>
+                                <ul class="list-unstyled form-wizard-steps clearfix">
+                                    <li class="step" id="step-1"><span>1</span></li>
+                                    <li class="step" id="step-2"><span>2</span></li>
+                                    <li class="step" id="step-3"><span>3</span></li>
+                                    <li class="step" id="step-4"><span>4</span></li>
+                                </ul>                                
+                            </div>
+                            <fieldset class="wizard-fieldset show step-1">
+                                <h5>Personal Information</h5>
+                                <div class="form-group">
+                                    Choose The Type Of CSO:
+                                    <div class="wizard-form-radio">
+                                        <input name="radio-name" id="existing" type="radio" checked>
+                                        <label for="existing">Existing CSO</label>
+                                    </div>
+                                    <div class="wizard-form-radio">
+                                        <input name="radio-name" id="new_cso_radio" type="radio">
+                                        <label for="new_cso_radio">New CSO</label>
+                                    </div>
+                                </div>
+                                <div class="form-group" id="existing-cso-group">
+                                    <select class="form-select form-control" name="cso_name" id="cso_select">
+                                        <option value="" selected>Select An Existing CSO</option>
+                                        {% for cso in combined_cso_list %}
+                                            <option value="{{ cso.cso_id }}" data-cso-type="{{ cso.cso_type }}">{{ cso.cso_name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <div class="wizard-form-error"></div>
+                                </div>
+                                <div class="form-group" id="new-cso-group" style="display: none;">
+                                    <select class="form-select form-control" name="cso_name" id="cso_select1">
+                                        <option value="" selected>Select A New CSO</option>
+                                        {% for cso in new_cso %}
+                                            <option value="{{ cso.cso_id }}" data-cso-type="{{ cso.cso_type }}">{{ cso.cso_name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <div class="wizard-form-error"></div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6 col-md-6 col-sm-6">
+                                        <div class="form-group">
+                                            <input type="text" class="form-control wizard-required" id="full_name" name="full_name" required>
+                                            <label for="full_name" class="wizard-form-text-label">Full Name</label>
+                                            <div class="wizard-form-error"></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 col-md-6 col-sm-6">
+                                        <div class="form-group">
+                                            <input type="number" class="form-control wizard-required" id="cid" name="cid" required>
+                                            <label for="cid" class="wizard-form-text-label">Type Your CID Number</label>
+                                            <div class="wizard-form-error"></div>
+                                        </div>
+                                    </div>
+                                </div>                                                         
+                                <div class="form-group clearfix">
+                                    <a href="javascript:;" class="form-wizard-next-btn float-right" id="next-btn-1">Next</a>
+                                </div>
+                            </fieldset>                                
+                            <fieldset class="wizard-fieldset step-2">
+                                <h5>Payment Information</h5>
+                                <div class="form-group">
+                                    <select class="form-select form-control" name="fees_payment" id="fees_payment" required>
+                                        <option value="" selected>Select A Fees Or A Payment</option>
+                                        <option value="annual fees">Annual Fees Payment</option>
+                                        <option value="invalid certificate">No Valid Certificate Payment</option>
+                                        <option value="flat fine">Flat Fees</option>
+                                        <option value="late renewal fees">Late Renewal Fees Payment</option>
+                                        <option value="registration fee">Registration Fees Payment</option>
+                                        <option value="whole fees">Pay All Payment</option>
+                                    </select>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6 col-md-6 col-sm-6">
+                                        <div class="form-group">
+                                            <select class="form-select form-control" name="bank_type" id="bank_type" required>
+                                                <option value="" selected>Select A Bank</option>
+                                                <option value="bob">Bank Of Bhutan</option>
+                                                <option value="bnb">Bank National Bank</option>
+                                                <option value="pnb">Druk PNB Bank</option>
+                                                <option value="bdbl">Bhutan Development Bank Ltd</option>
+                                                <option value="digital_kidu">Bhutan Kidu Digital Bank</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 col-md-6 col-sm-6">
+                                        <div class="form-group">
+                                            <input type="number" class="form-control wizard-required" id="acc_numba" name="acc_numba" required>
+                                            <label for="acc_numba" class="wizard-form-text-label">Account Number</label>
+                                            <div class="wizard-form-error"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Amendment Fees Dropdown -->
+                                <div class="form-group" id="amendment-fees-group">
+                                    <select class="form-select form-control" name="amendment_fees" id="amendment_fees" required>
+                                        <option value="" selected>Select A Amendments</option>
+                                        <option value="one amendment">One Amendment</option>
+                                        <option value="two amendment">Two Amendments</option>
+                                        <option value="three amendment">Three Amendments</option>
+                                        <option value="four amendment">Four Amendments</option>
+                                        <option value="five amendment">Five Amendments</option>
+                                        <option value="whole amendment">Whole Document</option>
+                                    </select>
+                                    <div class="wizard-form-error"></div>
+                                </div>
+                                <div class="form-group clearfix">
+                                    <a href="javascript:;" class="form-wizard-previous-btn float-left">Previous</a>
+                                    <a href="javascript:;" class="form-wizard-next-btn float-right" id="next-btn-2">Next</a>
+                                </div>
+                            </fieldset>    
+                            <fieldset class="wizard-fieldset step-3">
+                                <h5>Bank Information</h5>
+                                <!-- Upload Documents Button -->
+                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" id="upload-documents-btn">
+                                    Upload Documents
+                                </button>
+                                <div class="form-group">
+                                    <input type="number" class="form-control wizard-required" id="amount" name="amount" required>
+                                    <label for="amount" class="wizard-form-text-label">Amount</label>
+                                    <div class="wizard-form-error"></div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6 col-md-6 col-sm-6">
+                                        <div class="form-group">
+                                            <input type="number" class="form-control wizard-required" id="otp" name="otp" required>
+                                            <label for="otp" class="wizard-form-text-label">OTP</label>
+                                            <div class="wizard-form-error"></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 col-md-6 col-sm-6">
+                                        <div class="form-group">
+                                            <input type="text" class="form-control wizard-required" id="acct_name" name="acct_name" required>
+                                            <label for="acct_name" class="wizard-form-text-label">Account Name</label>
+                                            <div class="wizard-form-error"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group clearfix">
+                                    <a href="javascript:;" class="form-wizard-previous-btn float-left">Previous</a>
+                                    <a href="javascript:;" class="form-wizard-next-btn float-right" id="next-btn-3">Next</a>
+                                </div>
+                            </fieldset>    
+                            <fieldset class="wizard-fieldset step-4">
+                                <h5>Final Information</h5>
+                                <div class="form-group">
+                                    <input type="text" class="form-control wizard-required" id="acct_email" name="acct_email" required>
+                                    <label for="acct_email" class="wizard-form-text-label">Your Email ID</label>
+                                    <div class="wizard-form-error" id="acct_email_error"></div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6 col-md-6 col-sm-6">
+                                        <div class="form-group">
+                                            <input type="text" class="form-control wizard-required" id="jrl_number" name="jrl_number" required>
+                                            <label for="jrl_number" class="wizard-form-text-label">Enter Payment Journal Number</label>
+                                            <div class="wizard-form-error" id="jrl_number_error"></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 col-md-6 col-sm-6">
+                                        <div class="form-group">
+                                            <input type="number" class="form-control wizard-required" id="mobile_no" name="mobile_no" required>
+                                            <label for="mobile_no" class="wizard-form-text-label">Your Mobile Number</label>
+                                            <div class="wizard-form-error" id="mobile_no_error"></div>
+                                            <input type="hidden" name="overall_fines" value="{{ overall_fines }}" id="overall-fines">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group clearfix">
+                                    <a href="javascript:;" class="form-wizard-previous-btn float-left">Previous</a>
+                                    <button type="submit" class="form-wizard-submit float-right" id="submit_btn">Submit</button>
+                                    <br><br><br><br><br><br>
+                                </div>
+                            </fieldset>                              
+                        </form>
+
+                        <!-- Modal -->
+                        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <form id="upload-form" method="POST" enctype="multipart/form-data">
+                                        {% csrf_token %}
+                                        <h5 class="modal-title" id="exampleModalLabel">Files Attachment Here</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                        </div>
+                                        <div class="modal-body">
+                                        <label for="annual_report_file" class="files_label">Annual Report File</label>
+                                        <input type="file" name="annual_report_file" id="annual_report_file" class="form-control"><br>
+                                        <label for="annual_report_file" class="files_label">Audit Report File</label>
+                                        <input type="file" name="audit_report_file" id="audit_report_file" class="form-control"><br>
+                                        <label for="audit_report_file" class="files_label">Two Years Work Plan File</label>
+                                        <input type="file" name="two_yrs_work_plan_file" id="two_yrs_work_plan_file" class="form-control"><br>
+                                        <input type="hidden" name="cso_id" id="cso_id" value="{{cso_id}}">
+                                        <div id="mbo-specific-files" style="display: none;">
+                                            <label for="annual_general_report_file" class="files_label">Annual General Report File</label>
+                                            <input type="file" name="annual_general_report_file" id="annual_general_report_file" class="form-control">
+                                        </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-primary" id="saveButton">Save changes</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    {% include 'cso_app/layouts/footer.html' %}
+</body>
+<!-- Include SweetAlert2 -->
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- SweetAlert -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    $(document).ready(function() {
+    // Handle payment selection changes
+        $('#select-payment').on('change', function() {
+            let selectedOption = $(this).val();
+            let fineAmount = 0;
+
+            if (selectedOption === 'invalid certificate' || selectedOption === 'whole fees') {
+                fineAmount = 50000;
+            } else {
+                // Your existing logic for other payment options
+            }
+
+            // Update the fine amount in the UI
+            $('#fine-amount').text(fineAmount);
+        });
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+    const existingCsoRadio = document.getElementById('existing');
+    const newCsoRadio = document.getElementById('new_cso_radio');
+    const amendmentFeesGroup = document.getElementById('amendment-fees-group');
+    const uploadDocumentsBtn = document.getElementById('upload-documents-btn');
+    const newCsoGroup = document.getElementById('new-cso-group');
+    const existingCsoGroup = document.getElementById('existing-cso-group');
+    const feesPaymentSelect = document.getElementById('fees_payment');
+
+        // Function to toggle visibility based on selected radio button
+        function toggleElements() {
+        if (newCsoRadio.checked) {
+            console.log("This is the newCSORadio: ", newCsoRadio.checked);
+            amendmentFeesGroup.style.display = 'none';
+            uploadDocumentsBtn.style.display = 'none';
+            newCsoGroup.style.display = 'block';
+            existingCsoGroup.style.display = 'none';
+        } else {
+            amendmentFeesGroup.style.display = 'block';
+            uploadDocumentsBtn.style.display = 'block';
+            newCsoGroup.style.display = 'none';
+            existingCsoGroup.style.display = 'block';
+        }
+    }
+
+        // Add event listeners to radio buttons
+        existingCsoRadio.addEventListener('change', toggleElements);
+        newCsoRadio.addEventListener('change', toggleElements);
+
+        // Initial call to set the correct state on page load
+        toggleElements();
+
+        function updatePaymentOptions() {
+        if (newCsoRadio.checked) {
+            // Show only the registration fee option
+            $('#fees_payment option').each(function() {
+                if ($(this).val() === 'registration fee') {
+                    $(this).show();
+                } else {
+                    $(this).hide();
+                }
+            });
+            // Optionally, set the default selection to "Registration Fees Payment"
+            $('#fees_payment').val('registration fee');
+        } else {
+            // Show all options if not a new CSO
+            $('#fees_payment option').show();
+        }
+    }
+
+    // Initial call to set the correct state on page load
+    updatePaymentOptions();
+
+    // Add event listener to the radio buttons
+    newCsoRadio.addEventListener('change', updatePaymentOptions);
+    });
+
+
+    document.addEventListener('DOMContentLoaded', function() {
+        var csoSelect = document.getElementById('cso_select');
+
+        csoSelect.addEventListener('change', function() {
+            var selectedOption = this.options[this.selectedIndex];
+            var csoType = selectedOption.getAttribute('data-cso-type');
+            console.log("CSO_Type: ", csoType);
+            var mboSpecificFilesDiv = document.getElementById('mbo-specific-files');
+
+            if (csoType === 'MBO') {
+                mboSpecificFilesDiv.style.display = 'block';
+            } else {
+                mboSpecificFilesDiv.style.display = 'none';
+            }
+        });
+
+        (function initializeModal() {
+            var csoSelect = document.getElementById('cso_select');
+            var selectedOption = csoSelect.options[csoSelect.selectedIndex];
+            var csoType = selectedOption.getAttribute('data-cso-type');
+            
+            var mboSpecificFilesDiv = document.getElementById('mbo-specific-files');
+
+            if (csoType === 'MBO') {
+                mboSpecificFilesDiv.style.display = 'block';
+            } else {
+                mboSpecificFilesDiv.style.display = 'none';
+            }
+        })();
+
+        document.getElementById('saveButton').addEventListener('click', function(event) {
+            event.preventDefault();
+
+            var selectedOption = csoSelect.options[csoSelect.selectedIndex];
+            var csoType = selectedOption ? selectedOption.getAttribute('data-cso-type') : null;
+            var annualReport = $('#annual_report_file').val();
+            var auditReport = $('#audit_report_file').val();
+            var twoYrsReport = $('#two_yrs_work_plan_file').val();
+            var annualGeneralReport = $('#annual_general_report_file').val();
+            // Check if the existing CSO radio button is selected
+
+            if (csoType === 'MBO') {
+                if (!annualReport) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Annual Report is required for MBO.'
+                    });
+                    return;
+                }
+                if (!auditReport) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Audit Report is required for MBO.'
+                    });
+                    return;
+                }
+                if (!twoYrsReport) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Two Years Report is required for MBO.'
+                    });
+                    return;
+                }
+                if (!annualGeneralReport) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Annual General Report is required for MBO.'
+                    });
+                    return;
+                }
+            } else if (csoType === 'PBO') {
+                if (!annualReport) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Annual Report is required for PBO.'
+                    });
+                    return;
+                }
+                if (!auditReport) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Audit Report is required for PBO.'
+                    });
+                    return;
+                }
+                if (!twoYrsReport) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Two Years Report is required for PBO.'
+                    });
+                    return;
+                }
+            }
+
+            // Perform the file upload
+            const formData = new FormData(document.getElementById('upload-form'));
+
+            fetch('/pay_fees_attachment/', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': document.querySelector('input[name="csrfmiddlewaretoken"]').value
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    Swal.fire('Success', 'Files uploaded successfully!', 'success').then(() => {
+                       // Disable the save button
+                        document.getElementById('saveButton').disabled = true;
+                        // Optionally, perform any additional actions here
+                    });
+                } else {
+                    Swal.fire('Error', 'Failed to upload files.', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                Swal.fire('Error', 'An error occurred while uploading files.', 'error');
+            });
+        });
+    });
+</script>
+
+<script>
+
+    $(document).ready(function() {
+
+    // Initial toggle based on the default checked radio button
+
+        // Toggle on radio button change
+        function validateFields(fieldset) {
+            let isValid = true;
+            $(fieldset).find('.wizard-required').each(function() {
+                if ($(this).val() === '') {
+                    $(this).addClass('input-error');
+                    isValid = false;
+                } else {
+                    $(this).removeClass('input-error');
+                }
+            });
+            return isValid;
+        }
+    
+        function updateStepIndicator(stepNumber) {
+            $('.form-wizard-steps li').removeClass('active').removeClass('activated');
+            $('.form-wizard-steps li').each(function(index) {
+                if (index < stepNumber - 1) {
+                    $(this).addClass('activated');
+                } else if (index === stepNumber - 1) {
+                    $(this).addClass('active');
+                }
+            });
+        }        
+    
+        $('#next-btn-1').on('click', function(e) {
+            e.preventDefault();
+            var csoSelect = document.getElementById('cso_select');
+            var csoSelect1 = document.getElementById('cso_select1');
+            var selectedCsoId = (csoSelect && csoSelect.value) || (csoSelect1 && csoSelect1.value);
+            var existingCsoRadioButton = document.getElementById('existing'); // Get the existing CSO radio button
+            var newCsoRadioButton = document.getElementById('new_cso_radio');
+
+            if (existingCsoRadioButton.checked) {
+                if (!selectedCsoId) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Please select a CSO.'
+                    });
+                    return;
+                }
+            }
+            if (newCsoRadioButton.checked) {
+                if (!selectedCsoId) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Please select a new CSO.'
+                    });
+                    return;
+                }
+            }
+            var cso_id = $('#cso_select').val();
+            var cso_id1 = $('#cso_select1').val();
+            var selectedCSOId = cso_id || cso_id1;
+            if (!validateFields('.wizard-fieldset.show')) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Please fill all the required fields!'
+                });
+                return; // Exit the function early if validation fails
+            }
+    
+            $.ajax({
+                url: '/validate-info/',
+                type: 'GET',
+                data: { cso_id: selectedCSOId },
+                success: function(response) {
+                    if (response.cso_info) {
+                        var csoInfo = response.cso_info;
+                        var csoDetails = `
+                            <h3 style="text-align:center;">${csoInfo.cso_name}</h3>
+                            <center><img class="cso_logo" src="${csoInfo.cso_logo}" alt="CSO Logo"></center>
+                            <table class="table">
+                                <tr>
+                                    <th>Types Of Fees</th>
+                                    <th>Details</th>
+                                    <th>Delayed Days</th>
+                                    <th>Amount(Nu)</th>
+                                </tr>
+                                <tr>
+                                    <td><h5><b>Annual Fees: </b></h5></td>
+                                    <td><h5><b>Validity Date: </b> ${csoInfo.cso_validity_date}</h5></td>
+                                    <td><h5>${csoInfo.days_diff}</h5></td>
+                                    <td><h5>${csoInfo.fine}</h5></td>
+                                </tr>
+                                <tr>
+                                    <td><h5><b>Total Fine: </b></h5></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td><b>${csoInfo.overall_fines}</b></td>
+                                </tr>
+                            </table>
+                        `;
+                        $('#cso-details').html(csoDetails);
+                        // Proceed to the next step if everything is correct
+                        var currentFieldset = $('.wizard-fieldset.show');
+                        currentFieldset.removeClass('show');
+                        $('.wizard-fieldset.step-2').addClass('show');
+                        
+                        // Update step indicator to step 2
+                        updateStepIndicator(2);
+                    } else {
+                        console.error('Error: No CSO info in response');
+                    }
+                },
+                error: function(error) {
+                    console.error('Error fetching CSO info:', error);
+                }
+            });
+        });
+    
+        $('.form-wizard-previous-btn').on('click', function() {
+            var currentFieldset = $('.wizard-fieldset.show');
+            var prevFieldset = currentFieldset.prev('.wizard-fieldset');
+            currentFieldset.removeClass('show');
+            prevFieldset.addClass('show');
+            
+            // Update step indicator based on the previous step
+            var stepNumber = $('.wizard-fieldset').index(prevFieldset) + 1;
+            updateStepIndicator(stepNumber);
+        });
+    
+        $('#next-btn-2').on('click', function(e) {
+            e.preventDefault();
+        
+            var cso_id0 = $('#cso_select').val();
+            var cso_id1 = $('#cso_select1').val();
+            var cso_id = cso_id0 || cso_id1;
+            var selectedCsoId = cso_id;
+            var amendment_fees = $('#amendment_fees').val();
+            var fees_payment = $('#fees_payment').val();
+            var bank_type = $('#bank_type').val();
+        
+            if (!fees_payment) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Please select a payment option!'
+                });
+                return; // Exit the function early if fees_payment is not selected
+            }
+            if (!bank_type) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Please select a Bank type'
+                });
+                return; // Exit the function early if bank_type is not selected
+            }
+        
+            if (selectedCsoId) {
+                $.ajax({
+                    url: '/validate-info/',
+                    type: 'GET',
+                    data: { cso_id: selectedCsoId, amendment_fees: amendment_fees, fees_payment: fees_payment },
+                    success: function(response) {
+                        if (response.cso_info) {
+                            var csoInfo = response.cso_info;
+                            var csoDetails = `
+                                <h3 style="text-align:center;">${csoInfo.cso_name}</h3>
+                                <center><img class="cso_logo" src="${csoInfo.cso_logo}" alt="CSO Logo"></center>
+                                <table class="table">
+                                    <tr>
+                                        <th>Types Of Fees</th>
+                                        <th>Details</th>
+                                        <th>Delayed Days</th>
+                                        <th>Amount(Nu)</th>
+                                    </tr>
+                                    <tr>
+                                        <td><h5><b>Annual Fees: </b></h5></td>
+                                        <td><h5><b>Validity Date: </b> ${csoInfo.cso_validity_date}</h5></td>
+                                        <td><h5>${csoInfo.days_diff}</h5></td>
+                                        <td><h5>${csoInfo.fine}</h5></td>
+                                    </tr>`;
+                            if (csoInfo.cso_status === 'Active') {
+                                csoDetails += `
+                                    <tr>
+                                        <td><h5><b>Amendment Fees: </b></h5></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td><h5>${csoInfo.cso_ammendment_fine}</h5></td>
+                                    </tr>`;
+                            }
+        
+                            // Add "No Valid Certificate Payment" row if the option is selected
+                            if (fees_payment === 'invalid certificate' || fees_payment === 'whole fees') {
+                                csoDetails += `
+                                    <tr>
+                                        <td><h5><b>Certificate Valid Payment Fees: </b></h5></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td><b>50,000</b></td>
+                                    </tr>`;
+                            }
+        
+                            csoDetails += `
+                                <tr>
+                                    <td><h5><b>Total Fine: </b></h5></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td><b>${csoInfo.overall_fines}</b></td>
+                                </tr>
+                            </table>`;
+        
+                            $('#cso-details').html(csoDetails);
+        
+                            if (validateFields('.wizard-fieldset.step-2.show')) {
+                                var currentFieldset = $('.wizard-fieldset.step-2.show');
+                                currentFieldset.removeClass('show');
+                                $('.wizard-fieldset.step-3').addClass('show');
+                                
+                                // Update step indicator to step 3
+                                updateStepIndicator(3);
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Oops...',
+                                    text: 'Please fill all the required fields too!'
+                                });
+                            }
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: 'No CSO info in response'
+                            });
+                        }
+                    },
+                    error: function(error) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Error fetching CSO info: ' + error.statusText
+                        });
+                    }
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Please select a CSO!'
+                });
+            }
+        });        
+    
+        $('#next-btn-3').on('click', function(e) {
+            e.preventDefault();
+    
+            if (validateFields('.wizard-fieldset.step-3.show')) {
+                var currentFieldset = $('.wizard-fieldset.step-3.show');
+                currentFieldset.removeClass('show');
+                $('.wizard-fieldset.step-4').addClass('show');
+                
+                // Update step indicator to step 4
+                updateStepIndicator(4);
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Please fill all the required fields too!'
+                });
+            }
+        });
+    
+        // Initialize step indicator on page load
+        updateStepIndicator(1);
+        $('#submit_btn').on('click', function(e) {
+        e.preventDefault(); // Prevent the default form submission
+
+        // Clear previous error messages
+        $('.wizard-form-error').text('');
+
+        // Collect form inputs
+        var email = $('#acct_email').val().trim();
+        var jrlNumber = $('#jrl_number').val().trim();
+        var mobileNo = $('#mobile_no').val().trim();
+
+        // Validation flags
+        var isValid = true;
+
+        // Basic validation checks
+        if (email === '') {
+            $('#acct_email_error').text('Email ID is required.');
+            isValid = false;
+        }
+        if (!email) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Please enter a valid email address'
+                });
+                return; // Exit the function early if fees_payment is not selected
+            }
+
+        if (jrlNumber === '') {
+            $('#jrl_number_error').text('Journal Number is required.');
+            isValid = false;
+        }
+        if (!jrlNumber) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Please enter a valid journel number'
+                });
+                return; // Exit the function early if fees_payment is not selected
+            }
+
+        if (mobileNo === '') {
+            $('#mobile_no_error').text('Mobile Number is required.');
+            isValid = false;
+        }
+        if (!mobileNo) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Please enter a valid mobile number'
+                });
+                return; // Exit the function early if fees_payment is not selected
+            }
+        // If form is valid, proceed with AJAX submission
+        if (isValid) {
+            var formData = $('#myForm').serialize(); // Serialize the form data
+
+            $.ajax({
+                url: $('#myForm').attr('action'), // Use the form's action attribute for the URL
+                type: 'POST',
+                data: formData,
+                headers: {
+                    'X-CSRFToken': $('input[name="csrfmiddlewaretoken"]').val() // Include CSRF token for security
+                },
+                success: function(response) {
+                    // Display success alert using SweetAlert
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Thank you!',
+                        text: 'After validating, we will send an email with the payment document to the given email ID.',
+                        imageUrl: "{% static 'img/thubs up neko.gif' %}",
+                        imageWidth: 150,
+                        imageHeight: 200,
+                        imageAlt: "Custom image",
+                        confirmButtonText: 'OK',
+                        footer: '<a href="/">Go back to home?</a>'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = "{% url 'pay_fees' %}";
+                        }
+                    });
+                },
+                error: function(xhr, status, error) {
+                    // Display error alert using SweetAlert
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Something went wrong. Please try again later.'
+                    });
+                }
+            });
+        }
+    });
+        
+    }); 
+</script>    
+<!-- /.Multi-Step Form -->
+
+<!-- Include custom JavaScript -->
+<script src="{% static 'js/pay_fees.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,95 @@
+{% extends 'cso_app/layouts/main.html' %}
+{% load static %}
+{% block content %}
+<title>CSOA Staff - CSOA</title>
+<link rel="stylesheet" href="{% static 'css/cso_about.css' %}">
+<style>
+    #important_links{
+        margin-top: -10em;
+    }
+    #staffs p{
+        font-size: 1.3em;
+        text-align: left;
+        padding-right: 10px;
+    }
+    #staffs img{
+        width: 200px;
+        height: 200px;
+        border-radius: 50%;
+        margin: 0 auto;
+        display: flex;
+        justify-content: center;
+        align-items: center; 
+    }
+    .title{
+        text-align: center;
+        text-decoration: underline;
+        text-underline-offset: 8px;
+    }
+    p{
+        padding:1em 2em;
+        width: 100%;
+        text-align: center;
+    }
+</style>
+
+<div class="container" id="staffs">
+    <h3 class='title'>Authority Staffs</h3>
+    <hr>
+    <div class="row">
+        <br>
+        <div class="col-lg-3 col-md-auto">
+            <img src={% static 'img/member6.jpg' %}>
+            <p>
+                <i class="fa fa-user" aria-hidden="true"></i> Mr. Sherub Dorji <br>
+                <i class="fa fa-address-card-o" aria-hidden="true"></i> Member Secretary <br>
+                <i class="fa fa-superpowers" aria-hidden="true"></i> Civil Society Organizations Authority <br>
+                <i class="fa fa-envelope-o" aria-hidden="true"></i> sdorji@csoa.gov.bt <br>
+                <i class="fa fa-phone" aria-hidden="true"></i> +975 2324873 <br>
+                <i class="fa fa-mobile" aria-hidden="true"></i> 17673722
+            </p>
+        </div>
+        <div class="col-lg-3 col-md-auto">
+            <img src={% static 'img/staff1.jpg' %}>
+            <p>
+                <i class="fa fa-user" aria-hidden="true"></i> Mr. Chogyal Tenzin <br>
+                <i class="fa fa-address-card-o" aria-hidden="true"></i> Sr. Program Officer<br>
+                <i class="fa fa-superpowers" aria-hidden="true"></i> Compliance and Inquiry Unit<br>
+                <i class="fa fa-envelope-o" aria-hidden="true"></i> ctenzin@csoa.gov.bt <br>
+                <i class="fa fa-phone" aria-hidden="true"></i> +975 2 324954 (Extn. 26)<br>
+            </p>
+        </div>
+        <div class="col-lg-3 col-md-auto">
+            <img src={% static 'img/staff2.jpg' %}>
+            <p>
+                <i class="fa fa-user" aria-hidden="true"></i> Ms. Chimi Denka <br>
+                <i class="fa fa-address-card-o" aria-hidden="true"></i> Asst. Program Officer<br>
+                <i class="fa fa-superpowers" aria-hidden="true"></i> Compliance and Inquiry Unit<br>
+                <i class="fa fa-envelope-o" aria-hidden="true"></i> cdenka@csoa.gov.bt<br>
+                <i class="fa fa-phone" aria-hidden="true"></i> +975 2 324954 (Extn. 28)
+                <br>
+            </p>
+        </div>
+        <div class="col-lg-3 col-md-auto">
+            <img src={% static 'img/staff3.jpg' %}>
+            <p>
+                <i class="fa fa-user" aria-hidden="true"></i> Ms. Kinley Zam <br>
+                <i class="fa fa-address-card-o" aria-hidden="true"></i> Legal Officer<br>
+                <i class="fa fa-superpowers" aria-hidden="true"></i> Secretarial Services<br>
+                <i class="fa fa-envelope-o" aria-hidden="true"></i> kzam@csoa.gov.bt<br>
+                <i class="fa fa-phone" aria-hidden="true"></i> +975 2 324954 (Extn. 27)
+                <br>
+            </p>
+        </div>
+    </div>
+    <hr>
+    <div class="row" id="important_links">
+        {% include 'cso_app/layouts/important_links.html' %}
+    </div>
+</div>
+
+
+
+{% include 'cso_app/layouts/footer.html' %}
+
+{% endblock %}

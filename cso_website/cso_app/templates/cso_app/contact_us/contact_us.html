@@ -1,0 +1,52 @@
+{% extends 'cso_app/layouts/main.html' %}
+{% load static %}
+{% block content %}
+<title>CSOA Contact Us - CSOA</title>
+<link rel="stylesheet" href="{% static 'css/cso_about.css' %}">
+<style>
+    .address ul{
+        list-style: none;
+        line-height:5em;
+    }
+    .address ul li{
+        font-size: 1.2em;
+        font-weight: bold;
+    }
+    .title{
+        font-size: 1.5em;
+        font-weight: bold;
+        text-transform: uppercase;
+        text-align: center;
+        text-decoration: underline;
+        text-underline-offset: 8px;
+    }
+</style>
+
+<body style="background-image: url('{% static 'img/contact.png' %}');background-position: center; background-size: cover; background-repeat: no-repeat;">    <div class="container">
+        <div class="row">
+            <div class="col-lg-6 col-md-auto address">
+                <h3 class="title">Postal Address</h3>
+                <ul>
+                    <li>Member Secretary</li>
+                    <li>Civil Society Organizations Authority</li>
+                    <li>Semya Lam, BICMA Building (Below Motithang HSS)</li>
+                    <li>P.O Box 317,Thimphu 11001,Bhutan</li>
+                    <li>Phone: +975 2324954/324873</li>
+                    <li>Fax: +975 2339217</li>
+                    <li>Email ID: admin@csoa.gov.bt</li>
+                </ul>
+            </div>
+            <div class="col-lg-6 col-md-auto" style="filter: drop-shadow(-3px -3px 10px #000);">
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3540.1101597355687!2d89.6426187736972!3d27.465829636105685!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39e194729361c49b%3A0x6bfc904a9205a0a2!2sCivil%20Society%20Organization%20Authority!5e0!3m2!1sen!2sbt!4v1716973277076!5m2!1sen!2sbt" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                <br><br><br><br>
+            </div>
+        </div>
+        <hr>
+    </div>
+</body>
+
+
+
+{% include 'cso_app/layouts/footer.html' %}
+
+{% endblock %}

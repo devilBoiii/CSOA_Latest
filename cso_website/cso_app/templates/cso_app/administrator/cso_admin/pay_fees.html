@@ -1,0 +1,367 @@
+{% extends 'cso_app/layouts/back_end_navbar.html' %}
+{% load static %}
+{% block content %}
+<title>CSOA-Pay Fees</title>
+<style>
+    @import url("https://fonts.googleapis.com/css?family=DM+Sans:400,500|Jost:400,500,600&display=swap");
+
+    body {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    overflow-x: hidden;
+    background-color: #ffffff;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='152' height='152' viewBox='0 0 152 152'%3E%3Cg fill-rule='evenodd'%3E%3Cg id='temple' fill='%230031ff' fill-opacity='0.4'%3E%3Cpath d='M152 150v2H0v-2h28v-8H8v-20H0v-2h8V80h42v20h20v42H30v8h90v-8H80v-42h20V80h42v40h8V30h-8v40h-42V50H80V8h40V0h2v8h20v20h8V0h2v150zm-2 0v-28h-8v20h-20v8h28zM82 30v18h18V30H82zm20 18h20v20h18V30h-20V10H82v18h20v20zm0 2v18h18V50h-18zm20-22h18V10h-18v18zm-54 92v-18H50v18h18zm-20-18H28V82H10v38h20v20h38v-18H48v-20zm0-2V82H30v18h18zm-20 22H10v18h18v-18zm54 0v18h38v-20h20V82h-18v20h-20v20H82zm18-20H82v18h18v-18zm2-2h18V82h-18v18zm20 40v-18h18v18h-18zM30 0h-2v8H8v20H0v2h8v40h42V50h20V8H30V0zm20 48h18V30H50v18zm18-20H48v20H28v20H10V30h20V10h38v18zM30 50h18v18H30V50zm-2-40H10v18h18V10z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+    #back_end_home{
+    z-index: -1;
+    width: 100%;
+    }
+    #back_end_home .banner{
+    background-color: #888;
+    width:100%;
+    height: 37px;
+    }
+    #back_end_home .banner h3{
+    font-size:1em;
+    display: inline-block;
+    }
+    .banner h3 i{
+    padding-top: 5px;
+    }
+    .banner a{
+    color: #000;
+    text-decoration: none;
+    }
+    .banner a:hover{
+    text-decoration: underline;
+    }
+    #pay_fees{
+    margin-left:9em;
+    }
+    #total_amount{
+        font-weight: 2.5em;
+    }
+</style>
+<body>
+<br><br><br><br><br>
+    <div id="back_end_home" class="container">
+        <div class="banner">
+            <h3 style="padding: 0em 7em;">
+                <i class="fa fa-home" aria-hidden="true"></i>
+                <a href="{% url 'administrator' %}">Home</a> > CSO Admin Pay Fees
+            </h3>
+            <hr>
+        </div>
+        <br>
+        <div id="pay_fees">
+            <div class="card">
+                <div class="card-header">
+                    <center><h5 class="card-title"><u>Fines Status</u></h5></center>
+                </div>
+                <div class="card-body">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Fine Types</th>
+                                <th></th>
+                                <th></th>
+                                <th>Fees Calculation</th>
+                                <th>Remarks</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Late Renewal Fines</td>
+                                <td>Registration Date: {{cso_details.cso_registered_date|date:"Y-m-d"}}</td>
+                                <td>Validity Date: {{cso_details.cso_validity_date}}</td>
+                                {% if days_diff > 90 %}
+                                <td>(90*100+{{morethan3months}}*200) + 3000= <br>Nu. {{morethan3monthsfine |add:3000}}</td>
+                                <td>First 90 days will be multiplied by nu.100 and remaining days with nu.200. <br>And the renewal fees is nu. 3000
+                                </td>
+                                {% elif days_diff <= 0 %}
+                                <td>None</td>
+                                <td>Great! Your renewal date is {{days_diff}} days away!</td>
+                                {% else %}
+                                <td>({{days_diff}} * 100) + 3000 = {{lessthan3monthsfine |add:3000}}</td>
+                                <td>First 90 days will be multiplied by nu.100
+                                    <br>And renewal fee is nu. 3000
+                                </td>
+                                {% endif %}
+                            </tr>
+                            {% if invalid_certificate_fines != '' and invalid_certificate_fines > 0 %}
+                            <tr>
+                                <td>Invalid Certificate Fine</td>
+                                <td></td>
+                                <td></td>
+                                <td>Nu. {{invalid_certificate_fines}}</td>
+                                <td></td>
+                            </tr>
+                            {% endif %}
+                            <tr>
+                                <td>Late Report Submission Fines</td>
+                                <td>Validity Date: {{cso_details.cso_validity_date}}</td>
+                                <td>Days Delayed Till Current Date: <br><b>{{days_diff}}</b></td>
+                                {% if days_diff <= 90 %}
+                                <td>Nu. {{late_report_fine}}</td>
+                                {% elif days_diff >= 90 %}
+                                <td>Nu. {{late_report_fine}}</td>
+                                {% else %}
+                                <td>Nu. {{late_report_fine}}</td>
+                                {% endif %}
+                                <td>
+                                    If your delayed days are up to 90 days past the due date, the fee is Nu. 10,000. If your delayed days are more than 90 days but less than 180 days past the due date, the fee is Nu. 30,000. <br> If your delayed days are more than 180 days past the due date, the fee is Nu. 100,000.
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><b>Total</b></td>
+                                <td></td>
+                                <td></td>
+                                <td><b>Nu. {{ invalid_certificate_fines|add:days_fines|add:3000 }}</b></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <a href="#" class="btn btn-primary" id="toggleForm" style="width: 100%;">Pay Now</a>
+                </div>
+            </div>
+        
+            <!-- Form -->
+            <div id="formContainer" style="display: none;">
+                <div class="card mt-3">
+                    <div class="card-header">
+                        Fines Payment Form 
+                        <button class="btn btn-secondary" id="closeForm" style="float: right;">Close</button>
+                    </div>
+                    <div class="card-body">
+                        <form id="csoPayFeesForm" action="{% url 'cso_admin_pay_fees_form' %}" enctype="multipart/form-data" method="POST">
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="form-group">
+                                    <label for="cso_name">CSO Name</label>
+                                    <input type="text" class="form-control" id="cso_name" name="cso_name" value="{{cso_details.cso_name}}" readonly>
+                                </div>
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label for="user_name">Full Name</label>
+                                        <input type="text" class="form-control" id="user_name" name="user_name" value="{{user.full_name}}">
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label for="cid">Citizenship Card Number</label>
+                                        <input type="number" class="form-control" id="user_cid" name="user_cid" value="{{user.CID}}">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label for="user_email">Email address</label>
+                                        <input type="email" class="form-control" id="user_email" name="user_email" value="{{user.email}}">
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label for="mobile_no">Mobile Number</label>
+                                        <input type="number" class="form-control" id="mobile_no" name="mobile_no" value="{{user.mobile_no}}">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label for="amount">Total Amount</label>
+                                        <input type="number" class="form-control" id="total_amount" name="total_amount" readonly>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label for="exampleInputPassword">Payment Type</label>
+                                        <select id="paymentType" class="custom-select form-control" name="fees_payment_type">
+                                            <option selected>Select A Payment Type</option>
+                                            {% if days_diff > 0 %}
+                                            <option value="late_renewal_fees">Late Renewal Fine</option>
+                                            <option value="late_report_fees">Late File Reports Fine</option>
+                                            {% endif %}
+                                            {% if invalid_certificate_fines != '' and invalid_certificate_fines > 0 %}
+                                            <option value="invalid_certificate_fees">No Valid Certificate Fine</option>
+                                            {% endif %}
+                                            <option value="pay_all">Pay All</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div><br>
+                            <input type="hidden" name="cso_id_id" value="{{cso_details.cso_id}}">
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    // Adjust the width of the banner dynamically if needed
+    function adjustBannerWidth() {
+        const banner = document.querySelector('.banner');
+        banner.style.width = `${window.innerWidth}px`;
+    }
+
+    // Call the function on load and resize
+    window.onload = adjustBannerWidth;
+    window.onresize = adjustBannerWidth;
+</script>
+<script>
+    // Get the elements
+    var toggleButton = document.getElementById("toggleForm");
+    var formContainer = document.getElementById("formContainer");
+    var closeButton = document.getElementById("closeForm");
+
+    // Show the form
+    toggleButton.onclick = function() {
+        formContainer.style.display = "block";
+        toggleButton.style.display = "none";
+    }
+
+    // Hide the form
+    closeButton.onclick = function() {
+        formContainer.style.display = "none";
+        toggleButton.style.display = "block";
+    }
+
+    // Optionally hide the form if clicking outside of it
+    window.onclick = function(event) {
+        if (event.target === formContainer) {
+            formContainer.style.display = "none";
+        }
+    }
+</script>
+<script>
+    // Wait until the DOM is fully loaded
+document.addEventListener("DOMContentLoaded", function() {
+    // Get the necessary elements
+    var paymentTypeDropdown = document.getElementById("paymentType");
+    var totalAmountInput = document.getElementById("total_amount");
+
+    // Function to calculate the fine
+    function calculateFine() {
+        var totalAmount = 0;
+    
+        var lateRenewalFine = 0;
+        var lateReportFine = 0;
+        var invalidCertificateFine = parseFloat("{{ invalid_certificate_fines }}") || 0;
+    
+        // Calculate Late Renewal Fine
+        var daysDiff = parseInt("{{ days_diff }}");
+        
+        if (daysDiff > 90) {
+            lateRenewalFine = 90 * 100 + (daysDiff - 90) * 200 + 3000;
+        } else if (daysDiff > 0) {
+            lateRenewalFine = daysDiff * 100 + 3000;
+        }
+    
+        // Calculate Late Report Fine
+        if (daysDiff > 180) {
+            lateReportFine = 100000;
+        } else if (daysDiff > 90) {
+            lateReportFine = 30000;
+        } else if (daysDiff > 0) {
+            lateReportFine = 10000;
+        }
+    
+        // Update the total amount based on selected payment type
+        switch (paymentTypeDropdown.value) {
+            case 'late_renewal_fees':
+                totalAmount = lateRenewalFine;
+                break;
+            case 'late_report_fees':
+                totalAmount = lateReportFine;
+                break;
+            case 'invalid_certificate_fees':
+                totalAmount = invalidCertificateFine;
+                break;
+            case 'pay_all':
+                totalAmount = lateRenewalFine + lateReportFine + invalidCertificateFine;
+                break;
+            default:
+                totalAmount = 0;
+                break;
+        }
+    
+        // Set the calculated amount in the total amount input field
+        totalAmountInput.value = totalAmount.toFixed(2);
+    }
+    
+    // Add event listener to dropdown
+    paymentTypeDropdown.addEventListener("change", calculateFine);
+    
+    // Initial calculation on page load if a type is already selected
+    calculateFine();
+});
+
+//showing response while saving the payment form
+document.addEventListener("DOMContentLoaded", function() {
+    const form = document.getElementById("csoPayFeesForm");
+    const paymentTypeDropdown = document.getElementById("paymentType");
+
+    form.addEventListener("submit", function(event) {
+        event.preventDefault(); // Prevent the default form submission
+
+        // Check if a valid payment type is selected
+        if (paymentTypeDropdown.value === "Select A Payment Type") {
+            Swal.fire({
+                title: 'Error!',
+                text: 'Please select a valid payment type before submitting the form.',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+            return; // Stop form submission
+        }
+
+        const formData = new FormData(form);
+
+        fetch(form.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': formData.get('csrfmiddlewaretoken') // CSRF token
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                Swal.fire({
+                    title: 'Success!',
+                    text: data.message,
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                }).then(() => {
+                    location.reload(); // Reload the page after the user clicks "OK"
+                });
+            } else {
+                Swal.fire({
+                    title: 'Error!',
+                    text: data.message,
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            }
+        })
+        .catch(error => {
+            Swal.fire({
+                title: 'Error!',
+                text: 'Something went wrong. Please try again later.',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+        });
+    });
+});
+
+
+</script>
+{% endblock %}

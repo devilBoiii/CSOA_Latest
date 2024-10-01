@@ -1,0 +1,907 @@
+{% extends 'cso_app/layouts/back_end_navbar.html' %}
+{% load static %}
+{% block content %}
+<title>CSOA Master Links</title>
+<link rel="stylesheet" href="{% static 'css/admin_home.css' %}">
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css"/>
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900&display=swap');
+    body {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        overflow-x: hidden;
+    }
+    #back_end_home{
+        z-index: -1;
+        width: 100%;
+    }
+    #back_end_home .banner{
+        background-color: #888;
+        width:100%;
+        height: 37px;
+    }
+    #back_end_home .banner h3, #back_end_home .banner i{
+        font-size:1em;
+        display: inline-block;
+        padding: 0em 9em;
+    }
+    #back_end_home .banner i{
+        padding-top: 0.5em;
+    }
+    #back_end_home .banner h3{
+        margin-left: -15em;
+    }
+    .banner a{
+        color: #000;
+        text-decoration: none;
+    }
+    .banner a:hover{
+        text-decoration: underline;
+    }
+    #master_data_cso{
+        margin-left:14em;
+        width: 1000px;
+    }
+    .nav-item a{
+        color: #000;
+        font-size: 0.9em;
+    }
+    .nav-item .nav-link.active{
+        color: #20A3F5;
+    }
+    #tabs-1{
+        margin-left: 10px;
+        width: 900px;
+    }
+    #tabs-1, #tabs-2, #tabs-3, #tabs-4{
+        width: 90%;
+    }
+    .adding_icon{
+        display:flex;
+        float: right;
+    }
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .close {
+        padding: 0;
+        margin: 0;
+        background: none;
+        border: none;
+        font-size: 1.3em;
+    }
+    .process_form,.thematic_form, .attachment_form, .cso_closing_form{
+        padding: 0em 2em;
+    }
+    .dropdown-menu a button{
+        width: 100%;
+    }
+</style>
+<br><br><br><br><br>
+<div id="back_end_home" class="container">
+    <div class="banner">
+        <i class="fa fa-home" aria-hidden="true"></i> <h3><a href="{% url 'administrator' %}">Home</a> > <a href="#">System Setup</a> > <a href="{% url 'cso_master_links' %}">CSO Master</a> > CSO Master Links</h3>
+        <hr>
+    </div>
+    <br>
+    <div class="row" id="master_data_cso">   
+        <ul class="nav nav-tabs" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" data-toggle="tab" href="#tabs-1" role="tab"><i class="fa-solid fa-folder"></i> Types Of CSOs</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#tabs-2" role="tab"><i class="fa-solid fa-folder-open"></i> Thematic Areas</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#tabs-3" role="tab"><i class="fa-solid fa-paperclip"></i> Profile Attachment</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#tabs-4" role="tab"><i class="fa-solid fa-ban"></i> CSO Closing Type</a>
+            </li>
+        </ul><!-- Tab panes -->
+        <div class="tab-content">
+            <div class="tab-pane active" id="tabs-1" role="tabpanel">
+                <br>
+                <!-- Large modal -->
+                <button type="button" class="btn btn-primary adding_icon" data-toggle="modal" data-target=".bd-example-modal-lg">Add</button>
+                <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="editModalLabel">Add New CSO Type</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <i class="fa fa-times close" aria-hidden="true"></i>
+                                </button>
+                            </div>
+                            <form class="process_form" method="post" enctype="multipart/form-data" action="{% url 'create_new_cso' %}">
+                                {% csrf_token %}
+                                <div class="row">
+                                    <label for="cso_name">Type Of CSO</label>
+                                    <input type="text" class="form-control" placeholder="Type New CSO Name" id="cso_name"
+                                        name="cso_name">
+                                </div>
+                                <div class="row">
+                                    <label for="cso_prefix">Prefix</label>
+                                    <input type="text" class="form-control" placeholder="CSO Prefix" id="cso_prefix" name="cso_prefix">
+                                </div>
+                                <br>
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-primary">Save</button>
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                </div>
+                                <br>
+                                {% if error_msg %}
+                                <div class="alert alert-danger" role="alert">
+                                    {{ error_msg }}
+                                </div>
+                                {% endif %}
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <br><br>
+                <table id="example" class="display">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Type Of CSO</th>
+                            <th>Prefix</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for i in cso_type %}
+                        <tr>
+                            <td>{{i.cso_id}}</td>
+                            <td>{{i.cso_type_name}}</td>
+                            <td>{{i.cso_prefix}}</td>
+                            <td>{{i.cso_status}}</td>
+                            <td>
+                                <div class="dropdown">
+                                    <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        Click
+                                    </button>
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                        <a class="dropdown-item edit-btn-cso" href="#" data-toggle="modal" data-target="#editModal" data-id="{{i.cso_id}}" data-name="{{i.cso_type_name}}" data-prefix="{{i.cso_prefix}}" data-status="{{i.cso_status}}"><button class="btn btn-info">Edit</button></a>
+                                        <a class="dropdown-item"><button class="btn btn-danger" onclick="confirm_cso_delete('{{ i.cso_id }}')">Delete</button></a>
+                                    </div>
+                                    </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="editModalLabel">Edit CSO Type</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="editForm" method="POST" enctype="multipart/form-data" action="{% url 'update_cso' %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" id="cso_id" name="cso_id">
+                                    <div class="form-group">
+                                        <label for="cso_name">Type Of CSO</label>
+                                        <input type="text" class="form-control" id="cso_name" name="cso_name" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="cso_prefix">Prefix</label>
+                                        <input type="text" class="form-control" id="edit_cso_prefix" name="cso_prefix" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Status</label><br>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="status" id="activeRadio" value="Active" checked>
+                                            <label class="form-check-label" for="activeRadio">Active</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="status" id="inactiveRadio" value="Inactive">
+                                            <label class="form-check-label" for="inactiveRadio">Inactive</label>
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <button type="submit" class="btn btn-primary">Save changes</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+
+            <div class="tab-pane" id="tabs-2" role="tabpanel">
+                <br>
+                <button type="button" class="btn btn-primary adding_icon" data-toggle="modal" data-target=".thematic-bd-example-modal-lg">Add</button>
+                <div class="modal fade thematic-bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="editModalLabel">Add New CSO Type</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <i class="fa fa-times close" aria-hidden="true"></i>
+                                </button>
+                            </div>
+                            <form class="thematic_form" method="post" enctype="multipart/form-data" action="{% url 'create_new_thematic_cso' %}">
+                                {% csrf_token %}
+                                <div class="row">
+                                    <label for="cso_name">Type Of CSO</label>
+                                    <input type="text" class="form-control" placeholder="Type New CSO Name" id="cso_name"
+                                        name="cso_name">
+                                </div>
+                                <br>
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-primary">Save</button>
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                </div>
+                                <br>
+                                {% if error_msg %}
+                                <div class="alert alert-danger" role="alert">
+                                    {{ error_msg }}
+                                </div>
+                                {% endif %}
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <br><br>
+                <table id="thematic_area_table" class="display">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Type Of CSO</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for i in thematic_areas %}
+                        <tr>
+                            <td>{{i.cso_id}}</td>
+                            <td>{{i.cso_name}}</td>
+                            <td>{{i.cso_status}}</td>
+                            <td>
+                                <div class="dropdown">
+                                    <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        Click
+                                    </button>
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                        <a class="dropdown-item edit-btn-thematic" href="#" data-toggle="modal" data-target="#editModal_thematic" data-id="{{i.cso_id}}" data-name="{{i.cso_name}}" data-status="{{i.cso_status}}"><button class="btn btn-info">Edit</button></a>
+                                        <a class="dropdown-item"><button class="btn btn-danger" onclick="confirm_thematic_delete('{{ i.cso_id }}')">Delete</button></a>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <div class="modal fade" id="editModal_thematic" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="editModalLabel">Edit Thematic CSO Type</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="editForm" method="POST" enctype="multipart/form-data" action="{% url 'update_thematic_cso' %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" id="cso_id" name="cso_id">
+                                    <div class="form-group">
+                                        <label for="cso_name">Type Of CSO</label>
+                                        <input type="text" class="form-control" id="cso_name" name="cso_name" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Status</label><br>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="status" id="activeRadio" value="Active" checked>
+                                            <label class="form-check-label" for="activeRadio">Active</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="status" id="inactiveRadio" value="Inactive">
+                                            <label class="form-check-label" for="inactiveRadio">Inactive</label>
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <button type="submit" class="btn btn-primary">Save changes</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>            
+            
+            <div class="tab-pane" id="tabs-3" role="tabpanel">
+                <br>
+                <button type="button" class="btn btn-primary adding_icon" data-toggle="modal" data-target=".attachment-bd-example-modal-lg">Add</button>
+                <div class="modal fade attachment-bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="editModalLabel">Add New Attachment</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <i class="fa fa-times close" aria-hidden="true"></i>
+                                </button>
+                            </div>
+                            <form class="attachment_form" method="post" enctype="multipart/form-data" action="{% url 'create_new_attachment' %}">
+                                {% csrf_token %}
+                                <div class="row">
+                                    <label for="attachment_name">New Attchment Name</label>
+                                    <input type="text" class="form-control" placeholder="Type New Attachment" id="attachment_name" name="attachment_name">
+                                </div><br>
+                                <div class="row">
+                                    <label for="attachment_description">New Attchment Description</label>
+                                    <input type="text" class="form-control" placeholder="Type New Attachment Description" id="attachment_description" name="attachment_description">
+                                </div><br>
+                                <label>Public Display</label><br>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="Yes">
+                                    <label class="form-check-label" for="inlineRadio1">Yes</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="No">
+                                    <label class="form-check-label" for="inlineRadio2">No</label>
+                                </div> <br><br>
+                                <div class="row">
+                                <label>Process</label>
+                                    <select class="form-select" aria-label="Process" name="process_option">
+                                        <option selected>Select Process </option>
+                                        <option value="Application">Application</option>
+                                        <option value="Deregister CSO">Deregister CSO</option>
+                                        <option value="Close CSO Inquiry">Close CSO Inquiry</option>
+                                    </select>
+                                <label><br>Check The CSO Type</label><br>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="PBO" name="cso_types">
+                                        <label class="form-check-label" for="inlineCheckbox1">PBO</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="checkbox" id="inlineCheckbox2" value="MBO" name="cso_types">
+                                        <label class="form-check-label" for="inlineCheckbox2">MBO</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="checkbox" id="inlineCheckbox3" value="FCSO" name="cso_types">
+                                        <label class="form-check-label" for="inlineCheckbox3">FCSO</label>
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-primary">Save</button>
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                </div>
+                                <br>
+                                {% if error_msg %}
+                                <div class="alert alert-danger" role="alert">
+                                    {{ error_msg }}
+                                </div>
+                                {% endif %}
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <br><br>
+                <table id="attachment_table" class="display">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>CSO Attchment</th>
+                            <th>Description</th>
+                            <th>CSO Type</th>
+                            <th>Public Display</th>
+                            <th>Process</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for i in attachment %}
+                        <tr>
+                            <td>{{i.cso_attachment_id}}</td>
+                            <td>{{i.cso_attachment_name}}</td>
+                            <td>{{i.cso_attachment_description}}</td>
+                            <td>{{i.cso_type}}</td>
+                            <td>{{i.public_display}}</td>
+                            <td>{{i.process}}</td>
+                            <td>{{i.status}}</td>
+                            <td>
+                                <div class="dropdown">
+                                    <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        Click
+                                    </button>
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                        <a class="dropdown-item edit-btn-attachment" href="#" data-toggle="modal" data-target="#editModal_attachment"
+                                        data-id="{{i.cso_attachment_id}}"
+                                        data-name="{{i.cso_attachment_name}}"
+                                        data-description="{{i.cso_attachment_description}}"
+                                        data-display="{{i.public_display}}"
+                                        data-process="{{i.process}}"
+                                        data-csotype="{{i.cso_type}}"
+                                        data-status="{{i.status}}">
+                                        <button class="btn btn-info">Edit</button>
+                                        </a>
+                                        <a class="dropdown-item"><button class="btn btn-danger" onclick="confirm_attachment_delete('{{ i.cso_attachment_id }}')">Delete</button></a>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <div class="modal fade" id="editModal_attachment" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="editModalLabel">Edit Thematic CSO Type</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="editForm" method="POST" enctype="multipart/form-data" action="{% url 'update_cso_attachment' %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" id="cso_id" name="cso_id">
+                                    <div class="form-group">
+                                        <label for="cso_name">Type Of CSO</label>
+                                        <input type="text" class="form-control" id="cso_name" name="cso_name" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="description">Description</label>
+                                        <input type="text" class="form-control" id="description" name="description" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="public_display">Public Display</label>
+                                        <select class="form-select" aria-label="Select a process" id="public_display" name="public_display" required>
+                                            <option value="Yes">Yes</option>
+                                            <option value="No">No</option>
+                                        </select>
+
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="process">Process</label>
+                                        <select class="form-select" aria-label="Select a process" id="process" name="process" required>
+                                            <option>Select a process</option>
+                                            <option value="Application">Application</option>
+                                            <option value="Deregister CSO">Deregister CSO</option>
+                                            <option value="Put CSO Unser-Inquiry">Put CSO Unser-Inquiry</option>
+                                            <option value="Close CSO Inquiry">Close CSO Inquiry</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="csotype">CSO Type</label> <br>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="PBO">
+                                            <label class="form-check-label" for="inlineCheckbox1">PBO</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="checkbox" id="inlineCheckbox2" value="MBO">
+                                            <label class="form-check-label" for="inlineCheckbox2">MBO</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="checkbox" id="inlineCheckbox3" value="FCSO">
+                                            <label class="form-check-label" for="inlineCheckbox3">FCSO</label>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Status</label><br>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="status" id="activeRadio" value="Active" checked>
+                                            <label class="form-check-label" for="activeRadio">Active</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="status" id="inactiveRadio" value="Inactive">
+                                            <label class="form-check-label" for="inactiveRadio">Inactive</label>
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <button type="submit" class="btn btn-primary">Save changes</button>
+                                </form>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tab-pane" id="tabs-4" role="tabpanel">
+                <br>
+                <button type="button" class="btn btn-primary adding_icon" data-toggle="modal"
+                    data-target=".closing-bd-example-modal-lg">Add</button>
+                <div class="modal fade closing-bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="editModalLabel">Create New Closing Type</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <i class="fa fa-times close" aria-hidden="true"></i>
+                                </button>
+                            </div>
+                            <form class="cso_closing_form" method="post" enctype="multipart/form-data"
+                                action="{% url 'create_new_cso_closing' %}">
+                                {% csrf_token %}
+                                <div class="row">
+                                    <label for="closing_type">New Closing Type</label>
+                                    <input type="text" class="form-control" placeholder="Type New Closing Type" id="closing_type" name="closing_type">
+                                </div><br>
+                                <div class="row">
+                                    <label for="closing_description">New Attchment Description</label>
+                                    <input type="text" class="form-control" placeholder="Type The Description"
+                                        id="closing_description" name="closing_description">
+                                </div>
+                                <br>
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-primary">Save</button>
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                </div>
+                                <br>
+                                {% if error_msg %}
+                                <div class="alert alert-danger" role="alert">
+                                    {{ error_msg }}
+                                </div>
+                                {% endif %}
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <br><br>
+                <table id="closing_table" class="table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Closing Type</th>
+                            <th>Description</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for i in closing_type %}
+                        <tr>
+                            <td>{{i.cso_closing_id}}</td>
+                            <td>{{i.cso_closing_type}}</td>
+                            <td>{{i.cso_closing_description}}</td>
+                            <td>{{i.status}}</td>
+                            <td>
+                                <div class="dropdown">
+                                    <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        Click
+                                    </button>
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                        <a class="dropdown-item edit-btn-closing" href="#" data-toggle="modal" data-target="#editModal_closing"
+                                        data-id="{{i.cso_closing_id}}"
+                                        data-name="{{i.cso_closing_type}}"
+                                        data-description="{{i.cso_closing_description}}"
+                                        data-status="{{i.status}}">
+                                        <button class="btn btn-info">Edit</button>
+                                        </a>
+                                        <a class="dropdown-item"><button class="btn btn-danger" onclick="confirm_closing_delete('{{ i.cso_closing_id }}')">Delete</button></a>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <div class="modal fade" id="editModal_closing" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="editModalLabel">Edit Closing Type</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="editForm" method="POST" enctype="multipart/form-data" action="{% url 'update_closing_type' %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" id="cso_closing_id" name="cso_closing_id">
+                                    <div class="form-group">
+                                        <label for="cso_closing_type">Closing Type</label>
+                                        <input type="text" class="form-control" id="cso_closing_type" name="cso_closing_type" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="cso_closing_description">Description</label>
+                                        <input type="text" class="form-control" id="cso_closing_description" name="cso_closing_description" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Status</label><br>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="status" id="activeRadio" value="Active" checked>
+                                            <label class="form-check-label" for="activeRadio">Active</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="status" id="inactiveRadio" value="Inactive">
+                                            <label class="form-check-label" for="inactiveRadio">Inactive</label>
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <button type="submit" class="btn btn-primary">Save changes</button>
+                                </form>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+<script type="text/javascript">
+    new DataTable('#example');
+    new DataTable('#thematic_area_table');
+    $('#attachment_table').DataTable({
+        "pageLength": 50
+    });
+    new DataTable('#closing_table');
+</script>
+<script>
+    // Adjust the width of the banner dynamically if needed
+        function adjustBannerWidth() {
+        const banner = document.querySelector('.banner');
+        banner.style.width = `${window.innerWidth}px`;
+    }
+
+    // Call the function on load and resize
+    window.onload = adjustBannerWidth;
+    window.onresize = adjustBannerWidth;
+</script>
+<script>
+    $(document).ready(function() {
+        // Retrieve the active tab from localStorage
+        var activeTab = localStorage.getItem('activeTab');
+        if (activeTab) {
+            $('.nav-tabs a[href="' + activeTab + '"]').tab('show');
+        } else {
+            $('.nav-tabs a[href="#tabs-1"]').tab('show'); // Default tab
+        }
+
+        // Save the active tab to localStorage
+        $('a[data-toggle="tab"]').on('shown.bs.tab', function(e) {
+            var currentTab = $(e.target).attr('href');
+            localStorage.setItem('activeTab', currentTab);
+        });
+
+        // Event handler for clicking the edit button
+        $('.edit-btn-cso').on('click', function(event) {
+            event.preventDefault();
+
+            // Retrieve data attributes from the clicked element
+            var csoId = $(this).data('id');
+            var csoName = $(this).data('name');
+            var prefix = $(this).data('prefix');
+            var status = $(this).data('status');
+
+            // Populate modal form fields with retrieved data
+            $('#editModal #cso_id').val(csoId);
+            $('#editModal #cso_name').val(csoName);
+            $('#editModal #edit_cso_prefix').val(prefix);
+
+            // Set the status radio button
+            if (status === 'Active') {
+                $('#editModal #activeRadio').prop('checked', true);
+            } else {
+                $('#editModal #inactiveRadio').prop('checked', true);
+            }
+
+            // Update modal title dynamically
+            $('#editModal .modal-title').text('Edit Thematic CSO Type - ' + csoName);
+        });
+
+        $('.edit-btn-thematic').on('click', function(event) {
+            event.preventDefault();
+
+            // Retrieve data attributes from the clicked element
+            var csoId = $(this).data('id');
+            var csoName = $(this).data('name');
+            var status = $(this).data('status');
+
+            // Populate modal form fields with retrieved data
+            $('#editModal_thematic #cso_id').val(csoId);
+            $('#editModal_thematic #cso_name').val(csoName);
+
+            // Set the status radio button
+            if (status === 'Active') {
+                $('#editModal_thematic #activeRadio').prop('checked', true);
+            } else {
+                $('#editModal_thematic #inactiveRadio').prop('checked', true);
+            }
+
+            // Update modal title dynamically
+            $('#editModal_thematic .modal-title').text('Edit Thematic CSO Type - ' + csoName);
+        });
+        //attachment autofill
+        $('.edit-btn-attachment').on('click', function(event) {
+            event.preventDefault();
+        
+            // Retrieve data attributes from the clicked element
+            var attachmentId = $(this).data('id');
+            var attachmentName = $(this).data('name');
+            var description = $(this).data('description');
+            var display = $(this).data('display');
+            var process = $(this).data('process');
+            var csotype = $(this).data('csotype');
+            var status = $(this).data('status');
+            console.log(csotype, "here");
+            // Populate modal form fields with retrieved data
+            $('#editModal_attachment #cso_id').val(attachmentId);
+            $('#editModal_attachment #cso_name').val(attachmentName);
+            $('#editModal_attachment #description').val(description);
+            $('#editModal_attachment #public_display').val(display);
+            $('#editModal_attachment #process').val(process);
+            $('#editModal_attachment input[type=checkbox]').prop('checked', false);
+            var csotypeArray = csotype.split(',').map(function(item) {
+                return item.trim(); // Trim whitespace from each item
+            });
+            csotypeArray.forEach(function(type) {
+                $('#editModal_attachment input[type=checkbox][value="' + type + '"]').prop('checked', true);
+            });
+            // Set the status radio button
+            if (status === 'Active') {
+                $('#editModal_attachment #activeRadio').prop('checked', true);
+            } else {
+                $('#editModal_attachment #inactiveRadio').prop('checked', true);
+            }
+        
+            // Update modal title dynamically
+            $('#editModal_attachment .modal-title').text('Edit CSO Attachment - ' + attachmentName);
+        });
+
+        $('.edit-btn-closing').on('click', function(event) {
+            event.preventDefault();
+            
+            // Retrieve data attributes from the clicked element
+            var closingId = $(this).data('id');
+            var closingType = $(this).data('name');
+            var closingDescription = $(this).data('description');
+            var status = $(this).data('status');
+            
+            // Populate modal form fields with retrieved data
+            $('#editModal_closing #cso_closing_id').val(closingId);
+            $('#editModal_closing #cso_closing_type').val(closingType);
+            $('#editModal_closing #cso_closing_description').val(closingDescription);
+            
+            // Set the status radio button
+            if (status === 'Active') {
+                $('#editModal_closing #activeRadio').prop('checked', true);
+            } else {
+                $('#editModal_closing #inactiveRadio').prop('checked', true);
+            }
+            
+            // Update modal title dynamically
+            $('#editModal_closing .modal-title').text('Edit Closing Type - ' + closingType);
+        });
+
+    });
+    
+
+    function confirm_cso_delete(cso_id) {
+        Swal.fire({
+            title: "Are you sure you want to delete this CSO?",
+            showCancelButton: true,
+            confirmButtonText: "Yes, delete it!",
+            cancelButtonText: "No, cancel!"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch('{% url "delete_cso" 9999 %}'.replace('9999', cso_id), {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}',
+                    }
+                }).then(response => {
+                    if (response.ok) {
+                        Swal.fire("Deleted!", "The CSO has been deleted.", "success").then(() => {
+                            window.location.reload(); // Reload the page after deletion
+                        });
+                    } else {
+                        Swal.fire("Failed!", "Failed to delete CSO.", "error");
+                    }
+                });
+            } else if (result.dismiss === Swal.DismissReason.cancel) {
+                Swal.fire("Cancelled", "Your CSO is safe :)", "info");
+            }
+        });
+    }
+    function confirm_thematic_delete(cso_id) {
+        Swal.fire({
+            title: "Are you sure you want to delete this CSO?",
+            showCancelButton: true,
+            confirmButtonText: "Yes, delete it!",
+            cancelButtonText: "No, cancel!"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch('{% url "delete_thematic_cso" 9999 %}'.replace('9999', cso_id), {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}',
+                    }
+                }).then(response => {
+                    if (response.ok) {
+                        Swal.fire("Deleted!", "The CSO has been deleted.", "success").then(() => {
+                            window.location.reload(); // Reload the page after deletion
+                        });
+                    } else {
+                        Swal.fire("Failed!", "Failed to delete CSO.", "error");
+                    }
+                });
+            } else if (result.dismiss === Swal.DismissReason.cancel) {
+                Swal.fire("Cancelled", "Your CSO is safe :)", "info");
+            }
+        });
+    }
+
+    function confirm_attachment_delete(cso_attachment_id) {
+        Swal.fire({
+            title: "Are you sure you want to delete this Attachment?",
+            showCancelButton: true,
+            confirmButtonText: "Yes, delete it!",
+            cancelButtonText: "No, cancel!"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch('{% url "delete_attachment" 9999 %}'.replace('9999', cso_attachment_id), {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}',
+                    }
+                }).then(response => {
+                    if (response.ok) {
+                        Swal.fire("Deleted!", "The Attachment has been deleted.", "success").then(() => {
+                            window.location.reload(); // Reload the page after deletion
+                        });
+                    } else {
+                        Swal.fire("Failed!", "Failed to delete Attachment.", "error");
+                    }
+                });
+            } else if (result.dismiss === Swal.DismissReason.cancel) {
+                Swal.fire("Cancelled", "Your attachment is safe :)", "info");
+            }
+        });
+    }
+
+    function confirm_closing_delete(cso_closing_id) {
+        Swal.fire({
+            title: "Are you sure you want to delete this closing type?",
+            showCancelButton: true,
+            confirmButtonText: "Yes, delete it!",
+            cancelButtonText: "No, cancel!"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch('{% url "delete_closing_type" 9999 %}'.replace('9999', cso_closing_id), {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}',
+                    }
+                }).then(response => {
+                    if (response.ok) {
+                        Swal.fire("Deleted!", "The closing type has been deleted.", "success").then(() => {
+                            window.location.reload(); // Reload the page after deletion
+                        });
+                    } else {
+                        Swal.fire("Failed!", "Failed to delete closing type.", "error");
+                    }
+                });
+            } else if (result.dismiss === Swal.DismissReason.cancel) {
+                Swal.fire("Cancelled", "Your closing type is safe :)", "info");
+            }
+        });
+    }
+</script>
+{% endblock %}

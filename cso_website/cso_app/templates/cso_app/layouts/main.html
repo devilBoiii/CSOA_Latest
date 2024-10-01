@@ -1,0 +1,133 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en-US" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="icon" href="{% static 'img/logo_circle.png' %}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+    <!-- Default stylesheets-->
+    <link href="{% static 'assets/lib/bootstrap/dist/css/bootstrap.min.css' %}" rel="stylesheet">
+    <!-- Template specific stylesheets-->
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed:400,700" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Volkhov:400i" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800" rel="stylesheet">
+    <link href="{% static 'assets/lib/animate.css/animate.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/lib/components-font-awesome/css/font-awesome.min.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/lib/et-line-font/et-line-font.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/lib/flexslider/flexslider.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/lib/owl.carousel/dist/assets/owl.carousel.min.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/lib/owl.carousel/dist/assets/owl.theme.default.min.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/lib/magnific-popup/dist/magnific-popup.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/lib/simple-text-rotator/simpletextrotator.css' %}" rel="stylesheet">
+    <!-- Main stylesheet and color file-->
+    <link href="{% static 'assets/css/style.css' %}" rel="stylesheet">
+    <link id="color-scheme" href="{% static 'assets/css/colors/default.css' %}" rel="stylesheet">
+    <link id="color-scheme" href="{% static 'css/main.css' %}" rel="stylesheet">
+
+  </head>
+	<style>
+		/* Total width */
+    ::-webkit-scrollbar {
+      width: 16px;
+    }
+
+    /* Background of the scrollbar track */
+    ::-webkit-scrollbar-track {
+      background: #095788;
+    }
+
+    /* Scrollbar handle */
+    ::-webkit-scrollbar-thumb {
+      background: #20A3F5;
+      border-radius: 10px;
+    }
+
+    /* Scrollbar handle on hover */
+    ::-webkit-scrollbar-thumb:hover {
+      background: #111;
+      cursor: pointer;
+    }
+
+    /* Scrollbar corner for both horizontal and vertical scrollbars */
+    ::-webkit-scrollbar-corner {
+      background: #f1f1f1;
+    }
+
+	</style>
+  <body data-spy="scroll" data-target=".onpage-navigation" data-offset="60">
+    <img src="{% static 'img/navbar.png' %}" id="nav_banner">
+    <main>
+      <div class="page-loader">
+        <div class="loader">Loading...</div>
+      </div>
+      <nav class="navbar navbar-custom navbar-transparent" role="navigation">
+        <div class="container">
+          <div class="navbar-header">
+            <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#custom-collapse"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">CSOA</a>
+          </div>
+          <div class="collapse navbar-collapse" id="custom-collapse">
+            <ul class="nav navbar-nav navbar-right">
+				<li class="dropdown"><a href="/">Home</a></li>
+				<li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">About Us</a>
+					<ul class="dropdown-menu">
+					<li class="dropdown"><a href="{% url 'cso_authority' %}">CSO Authority</a></li>
+					<li class="dropdown"><a href="{% url 'vision_mission' %}">Vision & Mission</a></li>
+					<li class="dropdown"><a href="{% url 'organogram' %}">Organogram</a></li>
+					</ul>
+				</li>
+				<li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">Who Is Who</a>
+				<ul class="dropdown-menu">
+					<li class="dropdown"><a href="{% url 'composition_of_authority' %}">Composition Of Authority</a></li>
+					<li class="dropdown"><a href="{% url 'authority_members' %}">Authority Members</a></li>
+					<li class="dropdown"><a href="{% url 'cso_staff' %}">CSOA Staff</a></li>
+				</ul>
+				</li>
+				<li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">Registered CSOs</a>
+				<ul class="dropdown-menu" role="menu">
+					<li class="dropdown"><a href="{% url 'pbos' %}">PBOs</a></li>
+					<li class="dropdown"><a href="{% url 'mbos' %}">MBOs</a></li>
+					<li class="dropdown"><a href="{% url 'foreign_cso' %}">Accredited Foreign CSOs</a></li>
+					<li class="dropdown"><a href="{% url 'thematic' %}">CSO - Thematic Group</a></li>
+				</ul>
+			</li>
+			<li class="dropdown"><a href="{% url 'news' %}">News</a></li>
+      <li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">Contact Us</a>
+				<ul class="dropdown-menu" role="menu">
+					<li class="dropdown"><a href="{% url 'contact_us' %}">Our Location</a></li>
+          <li class="dropdown"><a href="{% url 'feedback' %}">Feedback</a></li>
+				</ul>
+			</li>
+			<li class="dropdown"><a href="{% url 'cso_ranks_home' %}">BCAS Rank</a></li>
+      <li class="dropdown"><a href="{% url 'sign_in' %}">Login</a></li>
+      <li class="dropdown"><a href="{% url 'pay_fees' %}">Pay Fees</a></li>
+		</div>
+	</div>
+</nav>
+	
+	{% block content %}
+	{% endblock %}
+
+</main>
+    <!--  
+    JavaScripts
+    =============================================
+    -->
+    <script src="{% static 'assets/lib/jquery/dist/jquery.js' %}"></script>
+    <script src="{% static 'assets/lib/bootstrap/dist/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'assets/lib/wow/dist/wow.js' %}"></script>
+    <script src="{% static 'assets/lib/jquery.mb.ytplayer/dist/jquery.mb.YTPlayer.js' %}"></script>
+    <script src="{% static 'assets/lib/isotope/dist/isotope.pkgd.js' %}"></script>
+    <script src="{% static 'assets/lib/imagesloaded/imagesloaded.pkgd.js' %}"></script>
+    <script src="{% static 'assets/lib/flexslider/jquery.flexslider.js' %}"></script>
+    <script src="{% static 'assets/lib/owl.carousel/dist/owl.carousel.min.js' %}"></script>
+    {% comment %} <script src="{% static 'assets/lib/smoothscroll.js' %}"></script> {% endcomment %}
+    <script src="{% static 'assets/lib/magnific-popup/dist/jquery.magnific-popup.js' %}"></script>
+    <script src="{% static 'assets/lib/simple-text-rotator/jquery.simple-text-rotator.min.js' %}"></script>
+    <script src="{% static 'assets/js/plugins.js' %}"></script>
+    <script src="{% static 'assets/js/main.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+  </body>
+</html>

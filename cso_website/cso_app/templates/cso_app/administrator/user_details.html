@@ -1,0 +1,326 @@
+{% extends 'cso_app/layouts/back_end_navbar.html' %}
+{% load static %}
+{% block content %}
+<title>User Details - CSOA</title>
+<link rel="stylesheet" href="{% static 'css/admin_home.css' %}">
+<link rel = "stylesheet" type = "text/css" href = "https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css"/>
+
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+    body {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        overflow-x: hidden;
+    }
+    #back_end_home{
+        z-index: -1;
+        width: 100%;
+    }
+    #back_end_home .banner{
+        background-color: #888;
+        width:100%;
+        height: 37px;
+    }
+    #back_end_home .banner h3, #back_end_home .banner i{
+        font-size:1em;
+        display: inline-block;
+        padding: 0em 11em;
+    }
+    #back_end_home .banner i{
+        padding-top: 0.5em;
+    }
+    #back_end_home .banner h3{
+        margin-left: -19em;
+    }
+    .banner a{
+        color: #000;
+        text-decoration: none;
+    }
+    .banner a:hover{
+        text-decoration: underline;
+    }
+    #master_data{
+        margin-left:14em;
+        width: 1000px;
+    }
+    .img_border {
+        display: inline-block; /* Makes the container fit the image size */
+        padding: 5px; /* Space for the border */
+        border: 3px solid #ccc; /* Border color and width */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Drop shadow */
+        height: 250px;
+    }
+    .img_border img {
+        display: block; /* Removes the extra space below the image */
+        max-width: 100%; /* Makes the image responsive */
+        height: 100%;
+    }
+    .btn{
+        width: 100%;
+    }
+    .reset_details p i{
+        transform: rotate(-90deg);
+        color: blue;
+    }
+    .custom-margin {
+        margin-bottom: 5px;
+    }
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .close {
+        padding: 0;
+        margin: 0;
+        background: none;
+        border: none;
+        font-size: 1.7em;
+    }
+    .profile_pic_show{
+        width: 70px;
+        height: 70px;
+        margin: 1% 0%;
+    }
+</style>
+<br><br><br><br><br>
+<div id="back_end_home" class="container">
+    <div class="banner">
+        <i class="fa fa-home" aria-hidden="true"></i>
+        <h3><a href="{% url 'administrator' %}">Home</a> > <a href="#">System Setup</a> > <a
+                href="{% url 'master_data' %}">General Master</a> > Process Duration</h3>
+        <hr>
+    </div>
+    <br>
+    <div class="row" id="master_data">
+        <ul class="nav nav-tabs" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" data-toggle="tab" href="#tabs-1" role="tab"><i
+                        class="fa-solid fa-id-card"></i> Profile Detail<a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#tabs-2" role="tab"><i
+                        class="fa-solid fa-clock-rotate-left"></i> Recent Activity</a>
+            </li>
+        </ul><!-- Tab panes -->
+        {% if user != '' %}
+        <div class="tab-content">
+            <div class="tab-pane active" id="tabs-1" role="tabpanel">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-3" id="profile_img_div">
+                            <br>
+                            <div class="img_border">
+                                <img src="{{ user.profile_pic.url }}">
+                            </div>
+                            <!-- Button trigger modal -->
+                            <button type="button" class="btn btn-primary custom-margin" data-toggle="modal"
+                                data-target="#exampleModal">
+                                Update Info
+                            </button> 
+                            <button type="button" class="btn btn-warning custom-margin" data-toggle="modal" data-target=".bd-example-modal-1">Reset Password</button>                    
+                            <!-- Large modal -->
+                            <form method="post" enctype="multipart/form-data" action="{% url 'update_profile' user.user_id %}">
+                                {% csrf_token %}
+                                <div class="modal fade bd-example-modal-lg" id="exampleModal" tabindex="-1" role="dialog"
+                                    aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-lg" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLabel">Update User Details - {{user.full_name}}</h5>
+                                                <button type="button" class="close ml-auto" data-dismiss="modal" aria-label="Close">
+                                                    <i class="fa-regular fa-rectangle-xmark"></i>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="form-group row">
+                                                    <div class="col">
+                                                        <label for="cid">CID</label>
+                                                        <input type="number" class="form-control" id="cid" aria-describedby="emailHelp" name="cid" value="{{user.CID}}">
+                                                    </div>
+                                                    <div class="col">
+                                                        <label for="username">Username</label>
+                                                        <input type="text" class="form-control" id="username" name="username"
+                                                        value="{{user.username}}" readonly>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <div class="col">
+                                                        <label for="fullname">Fulll Name</label>
+                                                        <input type="text" class="form-control" id="fullname" name="full_name" value="{{user.full_name}}">
+                                                    </div>
+                                                    <div class="col">
+                                                        <label for="dob">Date Of Birth</label>
+                                                        <input type="date" class="form-control" id="dob" name="dob" value="{{ dob }}">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <div class="col">
+                                                        <label for="exampleInputEmail1">Email address</label>
+                                                        <input type="email" class="form-control" id="exampleInputEmail1" name="email"
+                                                        value="{{ user.email }}">
+                                                    </div>
+                                                    <div class="col">
+                                                        <label for="dob">Mobile Number</label>
+                                                        <input type="number" class="form-control" id="mobile_no" name="mobile_no"
+                                                        value="{{ user.mobile_no }}">
+                                                    </div>
+                                                </div>
+                                                <div class="row-group row">
+                                                    <div class="col">
+                                                        <label for="position">Position Title</label>
+                                                        <input type="text" class="form-control" id="position" name="position_title" value="{{ user.position_title }}">
+                                                    </div>
+                                                    <div class="col">
+                                                        <label for="user_role">User Role</label>
+                                                        <input type="text" class="form-control" id="user_role" name="user_role" value="{{ user.role }}" readonly>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <div class="col">
+                                                        <label for="organization">Select Organization</label>
+                                                        <input type="text" class="form-control" id="organization" name="organization"
+                                                        value="{{ user.organization }}">
+                                                    </div>
+                                                    <div class="col">
+                                                        <label for="profile_pic">Select Profile Picture</label>
+                                                        <input type="file" class="form-control" id="profile_pic" name="profile_pic">
+                                                    </div>
+                                                    <input type="hidden" name="password" value="{{ user.password }}">
+                                                    <img src="{{ user.profile_pic.url }}" class="profile_pic_show">
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                <button type="submit" class="btn btn-primary" >Save changes</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                            <!-- Small modal -->
+
+                            <div class="modal fade bd-example-modal-1" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">Reset Password - </h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <i class="fa-regular fa-rectangle-xmark"></i>
+                                        </button>
+                                    </div>
+                                    <div class="reset_details">
+                                        <p>
+                                            <i class="fa-solid fa-caret-down"></i> Username: <b style="color: orange">77758542</b><br>
+                                            <i class="fa-solid fa-caret-down"></i> New Password will be generated after clicking the "Reset Password". <br>
+                                            <i class="fa-solid fa-caret-down"></i> Please copy and save the generated password to login to the system
+                                        </p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary"><a>Reset Password</a></button>
+                                        <button type="button" class="btn btn-danger"><a>Save changes</a></button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            </div>
+                        </div>
+                        <div class="col-9">
+                            <h4>DevilBoi <span style="background: green;font-size:0.7em;color:white;padding:4px;"> Active</span></h4>
+                            <table class="table">
+                                <tbody>
+                                    <tr>
+                                        <th>Username</th>
+                                        <td>{{ user.username }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Full Name</th>
+                                        <td>{{ user.full_name }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Email | Mobile</th>
+                                        <td> {{ user.email }} | {{ user.mobile_no }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>CID No.|DoB	</th>
+                                        <td>{{ user.CID }} | {{ dob }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Organization</th>
+                                        <td><i class="fa-solid fa-location-dot"></i> {{ user.organization }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Position Title	</th>
+                                        <td>{{ user.position_title }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>User Role</th>
+                                        <td>{{ user.role }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Joined</th>
+                                        <td>{{ created_date }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Last Login</th>
+                                        <td>2024-05-16 12:03:41</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Last Logout</th>
+                                        <td>2024-05-16 12:08:30</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Last Accessed IP</th>
+                                        <td>118.103.138.123</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane" id="tabs-2" role="tabpanel">
+                Recent Activity
+            </div>
+        </div>
+        {% else %}
+        <h3>Encountered Some Error Maybe User Hasn't Been Saved In The Database</h3>
+        {% endif %}
+    </div>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+<script src = "https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+<script>
+    $(document).ready(function() {
+        // Retrieve the active tab from localStorage
+        var activeTab = localStorage.getItem('activeTab');
+        if (activeTab) {
+            $('.nav-tabs a[href="' + activeTab + '"]').tab('show');
+        } else {
+            $('.nav-tabs a[href="#tabs-1"]').tab('show'); // Default tab
+        }
+
+        // Save the active tab to localStorage
+        $('a[data-toggle="tab"]').on('shown.bs.tab', function(e) {
+            var currentTab = $(e.target).attr('href');
+            localStorage.setItem('activeTab', currentTab);
+        });
+    });
+    </script>
+    <script>
+        // Adjust the width of the banner dynamically if needed
+        function adjustBannerWidth() {
+            const banner = document.querySelector('.banner');
+            banner.style.width = `${window.innerWidth}px`;
+        }
+
+        // Call the function on load and resize
+        window.onload = adjustBannerWidth;
+        window.onresize = adjustBannerWidth;
+    </script>
+
+{% endblock %}

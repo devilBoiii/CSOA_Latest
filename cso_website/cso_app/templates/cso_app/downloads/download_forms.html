@@ -1,0 +1,52 @@
+{% extends 'cso_app/layouts/main.html' %}
+{% load static %}
+{% block content %}
+<title>CSOA Authority - CSOA</title>
+<link rel="stylesheet" href="{% static 'css/cso_about.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<style>
+    #important_links{
+        margin-top: -10em;
+    }
+    #authority p, #authority span, #authority li{
+        font-size: 1.3em;
+    }
+    .title{
+        text-align: center;
+        text-decoration: underline;
+        text-underline-offset: 8px;
+    }
+</style>
+
+<div class="container" id="authority">
+    <h3 class='title'>Download Forms</h3>
+    <div class="row">
+        <div class="col-md-auto">
+            <span>Forms to be downloaded are: </span>
+            <ul style="list-style: none;">
+                <li><a href="{% static 'downloads/Form 1. Nomination.pdf' %}" download>1. Form 1. Nomination papers to CSOA <i class="fa-solid fa-download"></i> Download & View</a></li>
+                <li><a href="{% static 'downloads/Form 2. Registration.pdf' %}" download>2. Form 2. Registration and Application form <i class="fa-solid fa-download"></i> Download & View</a></li>
+                <li><a href="{% static 'downloads/Form 3. The Memorand.pdf' %}" download>3. Form 3. The Memorandum of Association <i class="fa-solid fa-download"></i> Download & View</a></li>
+                <li><a href="{% static 'downloads/Form 4. The Article.pdf' %}" download>4. Form 4. The Article of Association <i class="fa-solid fa-download"></i> Download & View</a></li>
+                <li><a href="{% static 'downloads/Authoritys Governance.pdf' %}" download>5. Authority's Governance Manual <i class="fa-solid fa-download"></i> Download & View</a></li>
+                <li><a href="{% static 'downloads/CSOA Strategic Plan .pdf' %}" download>6. CSOA Strategic Plan 2021-2023 <i class="fa-solid fa-download"></i> Download & View</a></li>
+                <li><a href="{% static 'downloads/CSO Annual Report, December.pdf' %}" download>7. CSO Annual Report, December 2020 <i class="fa-solid fa-download"></i> Download & View</a></li>
+                <li><a href="{% static 'downloads/Bhutan Civil Society.pdf' %}" download>8. Bhutan Civil Society Accountability Standards (BCAS) 2023 <i class="fa-solid fa-download"></i> Download & View</a></li>
+                <li><a href="{% static 'downloads/Authority-CSOs Meet.pdf' %}" download>9. Authority's Governance Manual <i class="fa-solid fa-download"></i> Download & View</a></li>
+                <li><a href="{% static 'downloads/CSOA_Public_Service.pdf' %}" download>10. CSOA Public Service Code of Conduct <i class="fa-solid fa-download"></i> Download & View</a></li>
+                <li><a href="{% static 'downloads/Guidelines_for_CSOs.pdf' %}" download>11. Guidelines for CSOs <i class="fa-solid fa-download"></i> Download & View</a></li>
+            </ul>
+        </div>
+    </div>
+    <hr>
+    <br><br><br>
+    <div class="row" id="important_links">
+        {% include 'cso_app/layouts/important_links.html' %}
+    </div>
+</div>
+
+
+
+{% include 'cso_app/layouts/footer.html' %}
+
+{% endblock %}

@@ -1,0 +1,862 @@
+{% extends 'cso_app/layouts/back_end_navbar.html' %}
+{% load static %}
+{% block content %}
+<title>CSOA Admin - CSOA</title>
+<link rel="stylesheet" href="{% static 'css/admin_home.css' %}">
+<link rel = "stylesheet" type = "text/css" href = "https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css"/>
+
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+    body {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        overflow-x: hidden;
+    }
+    #back_end_home{
+        z-index: -1;
+        width: 100%;
+    }
+    #back_end_home .banner{
+        background-color: #888;
+        width:100%;
+        height: 37px;
+    }
+    #back_end_home .banner h3, #back_end_home .banner i{
+        font-size:1em;
+        display: inline-block;
+        padding: 0em 9em;
+    }
+    #back_end_home .banner i{
+        padding-top: 0.5em;
+    }
+    #back_end_home .banner h3{
+        margin-left: -15em;
+    }
+    .banner a{
+        color: #000;
+        text-decoration: none;
+    }
+    .banner a:hover{
+        text-decoration: underline;
+    }
+    #master_data{
+        margin-left:14em;
+        width: 1000px;
+    }
+    .nav-item a{
+        color: #000;
+        font-size: 0.9em;
+    }
+    .nav-item .nav-link.active{
+        color: #20A3F5;
+    }
+    #tabs-1{
+        margin-left: 10px;
+        width: 900px;
+    }
+    #tabs-1, #tabs-2, #tabs-3, #tabs-4, #tabs-5, #tabs-6, #tabs-7{
+        width: 90%;
+    }
+    .adding_icon{
+        display:flex;
+        float: right;
+    }
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .close {
+        padding: 0;
+        margin: 0;
+        background: none;
+        border: none;
+        font-size: 1.3em;
+    }
+    .process_form{
+        padding: 1em;
+    }
+    .dropdown-menu a button{
+        width: 100%;
+    }
+</style>
+<br><br><br><br><br>
+<div id="back_end_home" class="container">
+    <div class="banner">
+        <i class="fa fa-home" aria-hidden="true"></i> <h3><a href="{% url 'administrator' %}">Home</a> > <a href="#">System Setup</a> > <a href="{% url 'master_data' %}">General Master</a> > Process Duration</h3>
+        <hr>
+    </div>
+    <br>
+    <div class="row" id="master_data">   
+        <ul class="nav nav-tabs" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" data-toggle="tab" href="#tabs-1" role="tab"><i class="fa-regular fa-clock"></i> Process Duration</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#tabs-2" role="tab"><i class="fa-solid fa-house"></i> Gewog</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#tabs-3" role="tab"><i class="fa-solid fa-house-flag"></i> Dzongkhag</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#tabs-4" role="tab"><i class="fa-regular fa-gem"></i> System Modules</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#tabs-5" role="tab"><i class="fa-solid fa-arrow-down-1-9"></i> User Roles</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#tabs-6" role="tab"><i class="fa-solid fa-anchor"></i> System Status</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#tabs-7" role="tab"><i class="fa-solid fa-code"></i> System Process</a>
+            </li>
+        </ul><!-- Tab panes -->
+        <div class="tab-content">
+            <div class="tab-pane active" id="tabs-1" role="tabpanel">
+                <br>
+                <!-- Large modal -->
+                <button type="button" class="btn btn-primary adding_icon" data-toggle="modal" data-target=".bd-example-modal-lg">Add</button>
+                <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="editModalLabel">Create A New Process</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <i class="fa fa-times close" aria-hidden="true"></i>
+                            </button>
+                        </div>
+                        <form class="process_form" method="post" enctype="multipart/form-data" action="{% url 'create_new_process' %}">
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="col">
+                                    <label for="process_name">Process Name</label>
+                                    <input type="text" class="form-control" placeholder="Process Name" id="process_name" name="process_name">
+                                </div>
+                                <div class="col">
+                                    <label for="description">Description</label>
+                                    <input type="text" class="form-control" placeholder="Description" id="description" name="description">
+                                </div>
+                                <div class="col">
+                                    <label for="duration">Duration</label>
+                                    <input type="number" class="form-control" placeholder="Duration (In months)" id="duration" name="duration">
+                                </div>
+                            </div>
+                            <br>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-primary">Save</button>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            </div>
+                            <br>
+                            {% if error_msg %}
+                            <div class="alert alert-danger" role="alert">
+                                {{ error_msg }}
+                            </div>
+                            {% endif %}
+                        </form>
+                    </div>
+                </div>
+                </div>
+                <br><br>
+                <table id="example" class="display">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Process</th>
+                            <th>Description</th>
+                            <th>Duration(Months)</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for i in processes %}
+                        <tr>
+                            <td>{{i.id}}</td>
+                            <td>{{i.process}}</td>
+                            <td>{{i.description}}</td>
+                            <td>{{i.duration}}</td>
+                            <td>
+                                <div class="dropdown">
+                                    <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        Click
+                                    </button>
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                        <a class="dropdown-item edit-btn" href="#" data-toggle="modal" data-target="#editModal" data-id="{{i.id}}" data-process="{{i.process}}" data-description="{{i.description}}" data-duration="{{i.duration}}"><button class="btn btn-info">Edit</button></a>
+                                        <a class="dropdown-item"><button class="btn btn-danger" onclick="confirmDelete('{{ i.id }}')">Delete</button></a>
+                                    </div>
+                                    </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="editModalLabel">Edit Process</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="editForm" method="POST" enctype="multipart/form-data" action="{% url 'update_process' %}">
+                                    <input type="hidden" id="processId" name="process_id">
+                                    <div class="form-group">
+                                        <label for="processName">Process</label>
+                                        <input type="text" class="form-control" id="processName" name="process_name" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="processDescription">Description</label>
+                                        <input type="text" class="form-control" id="processDescription"  name="description" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="processDuration">Duration (Months)</label>
+                                        <input type="number" class="form-control" id="processDuration" name="duration" required>
+                                    </div>
+                                    <br>
+                                    <button type="submit" class="btn btn-primary">Save changes</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+
+
+            <div class="tab-pane" id="tabs-2" role="tabpanel">
+                <table id="gewogs_table" class="display">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Gewog</th>
+                            <th>Dzongkhag</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for gewog in gewogs %}
+                        <tr>
+                            <td>{{ gewog.gewog_id }}</td>
+                            <td>{{ gewog.gewog_name }}</td>
+                            <td>{{ gewog.dzongkhag }}</td>
+                            <td>{{ gewog.status }}</td>
+                            <td>
+                                <div class="dropdown">
+                                    <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        Click
+                                    </button>
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                        <a class="dropdown-item edit-btn-gewog" href="#" data-toggle="modal" data-target="#editModal_gewog" data-id="{{ gewog.gewog_id }}" data-name="{{ gewog.gewog_name }}" data-dzongkhag="{{ gewog.dzongkhag }}" data-status="{{ gewog.status }}">
+                                            <button class="btn btn-info">Edit</button>
+                                        </a>
+                                        <a class="dropdown-item delete-btn" href="#" data-id="{{ gewog.gewog_id }}">
+                                            <button type="button" class="btn btn-danger" onclick="confirmDelete('{{ gewog.gewog_id }}')">Delete</button>
+                                        </a>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Modal -->
+            <div class="modal fade" id="editModal_gewog" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="editModalLabel">Edit Gewog</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="editForm" method="POST" enctype="multipart/form-data" action="{% url 'update_gewog' %}">
+                                {% csrf_token %}
+                                <input type="hidden" id="gewogId" name="gewog_id">
+                                <div class="form-group">
+                                    <label for="gewogName">Gewog Name</label>
+                                    <input type="text" class="form-control" id="gewogName" name="gewog_name" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="gewogDzongkhag">Dzongkhag</label>
+                                    <input type="text" class="form-control" id="gewogDzongkhag" name="gewog_dzongkhag" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="gewogStatus">Status</label>
+                                    <input type="text" class="form-control" id="gewogStatus" name="status" required>
+                                </div>
+                                <br>
+                                <button type="submit" class="btn btn-primary">Save changes</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tab-pane" id="tabs-3" role="tabpanel">
+                <table id="dzo_tables" class="display">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Dzongkhag</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for dzo in dzongkhag %}
+                        <tr>
+                            <td>{{ dzo.dzongkhag_id }}</td>
+                            <td>{{ dzo.dzongkhag_name }}</td>
+                            <td>
+                                <div class="dropdown">
+                                    <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        Click
+                                    </button>
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                        <a class="dropdown-item edit-btn" href="#" data-toggle="modal" data-target="#editDzongkhagModal" data-id="{{ dzo.dzongkhag_id }}" data-name="{{ dzo.dzongkhag_name }}">
+                                            <button class="btn btn-info">Edit</button>
+                                        </a>
+                                        <a class="dropdown-item delete-btn" href="#" data-id="{{ dzo.dzongkhag_id }}">
+                                            <button type="button" class="btn btn-danger" onclick="confirmDeleteDzongkhag('{{ dzo.dzongkhag_id }}')">Delete</button>
+                                        </a>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Edit Modal for Dzongkhag -->
+            <div class="modal fade" id="editDzongkhagModal" tabindex="-1" role="dialog" aria-labelledby="editDzongkhagModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="editDzongkhagModalLabel">Edit Dzongkhag</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="editDzongkhagForm" method="POST" enctype="multipart/form-data" action="{% url 'update_dzongkhag' %}">
+                                {% csrf_token %}
+                                <input type="hidden" id="dzongkhagId" name="dzongkhag_id">
+                                <div class="form-group">
+                                    <label for="dzongkhagName">Dzongkhag Name</label>
+                                    <input type="text" class="form-control" id="dzongkhagName" name="dzongkhag_name" required>
+                                </div>
+                                <br>
+                                <button type="submit" class="btn btn-primary">Save changes</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tab-pane" id="tabs-4" role="tabpanel">
+                <br>
+                <table id="example1" class="table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Module</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>application</td>
+                            <td>Application</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>auth</td>
+                            <td>Application</td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>acl</td>
+                            <td>System Setup</td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td>cso</td>
+                            <td>CSO Registration and updates</td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td>annualreport</td>
+                            <td>Annual Report collection</td>
+                        </tr>
+                        <tr>
+                            <td>6</td>
+                            <td>feedback</td>
+                            <td>Feedback and Response</td>
+                        </tr>
+                        <tr>
+                            <td>7</td>
+                            <td>report</td>
+                            <td>Report</td>
+                        </tr>
+                        <tr>
+                            <td>8</td>
+                            <td>web</td>
+                            <td>Website</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="tab-pane" id="tabs-5" role="tabpanel">
+                <br>
+                <table id="example2" class="table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Role</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>Admin</td>
+                            <td>Administrator</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>Report Viewer</td>
+                            <td>Chief, Director to view report
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>Dealing Officer</td>
+                            <td>CSOA Dealing Officer, responsible for all the CSOs</td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td>CSO Admin</td>
+                            <td>CSO Admin, responsible for the whole of particular CSO</td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td>Editor</td>
+                            <td>CSO Editor, fit in Annual Report Data</td>
+                        </tr>
+                        <tr>
+                            <td>6</td>
+                            <td>public</td>
+                            <td>Public User for Registration & Application Tracking</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="tab-pane" id="tabs-6" role="tabpanel">
+                <br>
+                <table id="example3" class="table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Status</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>Initiated</td>
+                            <td>Transaction Initiated</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>Submitted</td>
+                            <td>Transaction Submitted by Applicant</td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>Approved</td>
+                            <td>Transaction approved by CSOA office</td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td>Rejected</td>
+                            <td>Application rejected by csoa office</td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td>Closed</td>
+                            <td>Application closed and terminated</td>
+                        </tr>
+                        <tr>
+                            <td>6</td>
+                            <td>Registration-Initiated</td>
+                            <td>CSO is newly created, and is in default</td>
+                        </tr>
+                        <tr>
+                            <td>7</td>
+                            <td>Registered</td>
+                            <td>All information details are up to date and registered</td>
+                        </tr>
+                        <tr>
+                            <td>8</td>
+                            <td>Under-inquiry</td>
+                            <td>CSO under inquiry</td>
+                        </tr>
+                        <tr>
+                            <td>9</td>
+                            <td>De-registered</td>
+                            <td>CSO is newly created, and is in default</td>
+                        </tr>
+                        <tr>
+                            <td>10</td>
+                            <td>Newly-registered</td>
+                            <td>CSO newly registered</td>
+                        </tr>
+                        <tr>
+                            <td>11</td>
+                            <td>Up-to-date</td>
+                            <td>CSO up to date</td>
+                        </tr>
+                        <tr>
+                            <td>12</td>
+                            <td>Due-Documents</td>
+                            <td>Some documents are still missing</td>
+                        </tr>
+                        <tr>
+                            <td>13</td>
+                            <td>Due-Documents-Received</td>
+                            <td>Documents are received but its late</td>
+                        </tr>
+                        <tr>
+                            <td>14</td>
+                            <td>Draft</td>
+                            <td>Post is pending</td>
+                        </tr>
+                        <tr>
+                            <td>15</td>
+                            <td>Published</td>
+                            <td>Post is published</td>
+                        </tr>
+                        <tr>
+                            <td>16</td>
+                            <td>Received</td>
+                            <td>Respond by the third party</td>
+                        </tr>
+                        <tr>
+                            <td>17</td>
+                            <td>Responded</td>
+                            <td>Responded</td>
+                        </tr>
+                        <tr>
+                            <td>18</td>
+                            <td>Active</td>
+                            <td>Active</td>
+                        </tr>
+                        <tr>
+                            <td>19</td>
+                            <td>Blocked</td>
+                            <td>Blocked</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="tab-pane" id="tabs-7" role="tabpanel">
+                <br>
+                <table id="example4" class="table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Process</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>Application</td>
+                            <td>Transaction Application</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>AnnualReport</td>
+                            <td>Annual Report</td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>CsoDetails</td>
+                            <td>Details of CSOs</td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td>SystemUsers</td>
+                            <td>System users</td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td>Deregister CSO</td>
+                            <td>Closing of CSOs</td>
+                        </tr>
+                        <tr>
+                            <td>6</td>
+                            <td>Put CSO Under-Inquiry</td>
+                            <td>Under Inquiry Cso</td>
+                        </tr>
+                        <tr>
+                            <td>7</td>
+                            <td>Close CSO Inquiry</td>
+                            <td>Close CSO inquiry</td>
+                        </tr>
+                        <tr>
+                            <td>8</td>
+                            <td>AnnualMemberFee</td>
+                            <td>Collect member fee year wise</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+    
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+<script src = "https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+<script type = "text/javascript">
+    new DataTable('#example');
+    new DataTable('#example1');
+    new DataTable('#example2');
+    new DataTable('#example3');
+    new DataTable('#example4');
+    new DataTable('#gewogs_table');
+    new DataTable('#dzo_tables');
+</script>
+<script>
+    $(document).ready(function() {
+        // Retrieve the active tab from localStorage
+        var activeTab = localStorage.getItem('activeTab');
+        if (activeTab) {
+            $('.nav-tabs a[href="' + activeTab + '"]').tab('show');
+        } else {
+            $('.nav-tabs a[href="#tabs-1"]').tab('show'); // Default tab
+        }
+
+        // Save the active tab to localStorage
+        $('a[data-toggle="tab"]').on('shown.bs.tab', function(e) {
+            var currentTab = $(e.target).attr('href');
+            localStorage.setItem('activeTab', currentTab);
+        });
+
+        $('#editModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget);
+            var id = button.data('id');
+            var process = button.data('process');
+            var description = button.data('description');
+            var duration = button.data('duration');
+    
+            var modal = $(this);
+            modal.find('#processId').val(id);
+            modal.find('#processName').val(process);
+            modal.find('#processDescription').val(description);
+            modal.find('#processDuration').val(duration);
+        });
+    
+        $('#editForm').on('submit', function(event) {
+            event.preventDefault();
+            var id = $('#processId').val();
+            var process = $('#processName').val();
+            var description = $('#processDescription').val();
+            var duration = $('#processDuration').val();
+    
+            // Add your AJAX request here to save the changes
+            // Example:
+            // $.ajax({
+            //     url: 'your-update-url',
+            //     type: 'POST',
+            //     data: {
+            //         id: id,
+            //         process: process,
+            //         description: description,
+            //         duration: duration
+            //     },
+            //     success: function(response) {
+            //         // Handle success
+            //     },
+            //     error: function(error) {
+            //         // Handle error
+            //     }
+            // });
+    
+            $('#editModal').modal('hide');
+        });
+    });
+</script>
+<script>
+        // Adjust the width of the banner dynamically if needed
+        function adjustBannerWidth() {
+            const banner = document.querySelector('.banner');
+            banner.style.width = `${window.innerWidth}px`;
+        }
+
+    // Call the function on load and resize
+    window.onload = adjustBannerWidth;
+    window.onresize = adjustBannerWidth;
+</script>
+<script>
+    function confirmDelete(processId) {
+        Swal.fire({
+            title: "Are you sure you want to delete this process?",
+            showCancelButton: true,
+            confirmButtonText: "Yes, delete it!",
+            cancelButtonText: "No, cancel!"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch('{% url "delete_process" 9999 %}'.replace('9999', processId), {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}',
+                    }
+                }).then(response => {
+                    if (response.ok) {
+                        Swal.fire("Deleted!", "The process has been deleted.", "success").then(() => {
+                            window.location.reload(); // Reload the page after deletion
+                        });
+                    } else {
+                        Swal.fire("Failed!", "Failed to delete process.", "error");
+                    }
+                });
+            } else if (result.dismiss === Swal.DismissReason.cancel) {
+                Swal.fire("Cancelled", "Your process is safe :)", "info");
+            }
+        });
+    }
+
+    //EditProcessForm
+    $(document).ready(function() {
+        $('.edit-btn').on('click', function() {
+            var processId = $(this).data('id');
+            var processName = $(this).data('process');
+            var processDescription = $(this).data('description');
+            var processDuration = $(this).data('duration');
+            
+            $('#processId').val(processId);
+            $('#processName').val(processName);
+            $('#processDescription').val(processDescription);
+            $('#processDuration').val(processDuration);
+        });
+    
+        $('#editForm').on('submit', function(e) {
+            e.preventDefault();
+    
+            var formData = new FormData(this);
+    
+            fetch("{% url 'update_process' %}", {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}'
+                }
+            }).then(response => {
+                if (response.ok) {
+                    Swal.fire("Updated!", "The process has been updated.", "success").then(() => {
+                        window.location.reload(); // Reload the page after updating
+                    });
+                } else {
+                    Swal.fire("Failed!", "Failed to update process.", "error");
+                }
+            });
+        });
+    });
+</script>
+<script>
+    function confirmDelete(processId) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch('{% url "delete_gewog" 0 %}'.replace('0', processId), {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}',
+                    }
+                }).then(response => {
+                    if (response.ok) {
+                        Swal.fire('Deleted!', 'The gewog has been deleted.', 'success').then(() => {
+                            window.location.reload(); // or redirect to another page
+                        });
+                    } else {
+                        Swal.fire('Failed to delete gewog.', '', 'error');
+                    }
+                });
+            }
+        })
+    }
+    
+    $(document).ready(function() {
+        $('.edit-btn').on('click', function() {
+            var gewogId = $(this).data('id');
+            var gewogName = $(this).data('name');
+            var gewogDzongkhag = $(this).data('dzongkhag');
+            var gewogStatus = $(this).data('status');
+            
+            $('#gewogId').val(gewogId);
+            $('#gewogName').val(gewogName);
+            $('#gewogDzongkhag').val(gewogDzongkhag);
+            $('#gewogStatus').val(gewogStatus);
+        });
+    });
+</script>
+<script>
+    //dzokhags updates & delete
+    function confirmDeleteDzongkhag(dzongkhagId) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch('{% url "delete_dzongkhag" 0 %}'.replace('0', dzongkhagId), {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}',
+                    }
+                }).then(response => {
+                    if (response.ok) {
+                        Swal.fire('Deleted!', 'The dzongkhag has been deleted.', 'success').then(() => {
+                            window.location.reload(); // or redirect to another page
+                        });
+                    } else {
+                        Swal.fire('Failed to delete dzongkhag.', '', 'error');
+                    }
+                });
+            }
+        })
+    }
+    
+    $(document).ready(function() {
+        $('.edit-btn').on('click', function() {
+            var dzongkhagId = $(this).data('id');
+            var dzongkhagName = $(this).data('name');
+            
+            $('#dzongkhagId').val(dzongkhagId);
+            $('#dzongkhagName').val(dzongkhagName);
+        });
+    });
+    </script>
+{% endblock %}

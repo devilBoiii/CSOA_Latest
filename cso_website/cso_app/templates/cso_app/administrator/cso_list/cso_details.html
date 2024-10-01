@@ -1,0 +1,369 @@
+{% extends 'cso_app/layouts/back_end_navbar.html' %}
+{% load static %}
+{% block content %}
+<title>{{cso.cso_name}} - CSOA</title>
+<link rel="stylesheet" href="{% static 'css/admin_home.css' %}">
+
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900&display=swap');
+    body {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        overflow-x: hidden;
+    }
+    #back_end_home{
+        z-index: -1;
+        width: 100%;
+    }
+    #back_end_home .banner{
+        background-color: #888;
+        width:100%;
+        height: 37px;
+    }
+    #back_end_home .banner h3{
+        font-size:1em;
+        display: inline-block;
+    }
+    .banner h3 a i{
+        padding-top: 5px;
+    }
+    .banner a{
+        color: #000;
+        text-decoration: none;
+    }
+    .banner a:hover{
+        text-decoration: underline;
+    }
+    #cso_details{
+        margin-left:12em;
+        font-size: 0.8em;
+    }
+    .logo{
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+    }
+    .card-header{
+        background-color: #888;
+        color: #fff;
+    }
+    .card-body{
+        background: lightblue;
+    }
+    #cso_overview i{
+        color: green;
+    }
+    #cso_details p i{
+        color: rgb(0, 191, 255);
+    }
+    .card{
+        border: none !important;
+        margin-bottom: 3em;
+    }
+    .table tr td, .table tr th{
+        border: 1px solid black;
+    }
+</style>
+<br><br><br><br><br>
+<div id="back_end_home" class="container">
+    <div class="banner">
+        <h3 style="padding: 0em 9em;"><a href="{% url 'administrator' %}"><i class="fa fa-home"></i>Home</a> > <a href="#">CSO Details</a> > <a href="{% url 'cso_master_links' %}">Manage CSO Details</a> > View CSO</h3>
+    </div>
+    <br>
+    <div class="row" id="cso_details"> 
+        <span id="cso_overview"><i class="fa-solid fa-database"></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Overview: {{cso.registration_no}}</span>
+        <hr>
+        <br>
+        <div class="card">
+            <h5 class="card-header">CSO Details: </h5>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col">
+                        <p><i class="fa-solid fa-square-caret-right"></i> <b>CSO Name:</b> {{cso.cso_name}}</p>
+                        <p><i class="fa-solid fa-square-caret-right"></i> <b>CSO Acronym:</b> {{cso.cso_acronym}}</p>
+                        <p><i class="fa-solid fa-square-caret-right"></i> <b>CSO Type:</b> {{cso.cso_type}}</p>
+                        <p><i class="fa-solid fa-square-caret-right"></i> <b>Application Date:</b> {{cso.application_date}}</p>
+                        <p><i class="fa-solid fa-square-caret-right"></i> <b>CSO logo:</b> <img src="{{cso.cso_logo.url}}" alt="CSO Logo" class="logo"></p>
+                    </div>
+                    <div class="col">
+                        <p><i class="fa-solid fa-square-caret-right"></i> <b>Registration Number:</b> {{cso.registration_no}}</p>
+                        <p><i class="fa-solid fa-square-caret-right"></i> <b>Registration Date:</b> {{cso.cso_registered_date}}</p>
+                        <p><i class="fa-solid fa-square-caret-right"></i> <b>Reporting Period:</b> {{cso.reporting_time}}</p>
+                        <p><i class="fa-solid fa-square-caret-right"></i> <b>Thematic Areas:</b> {{cso.thematic_area}}</p>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <br>
+        <div class="card">
+            <h5 class="card-header">Purpose & Objectives: </h5>
+            <div class="card-body">
+                <p>
+                    <i class="fa-solid fa-square-caret-right"></i>
+                    <b>CSO Purpose :</b> <span class="purpose-text">{{ cso.purpose }}</span>
+                </p>                                
+                <p>
+                    <i class="fa-solid fa-square-caret-right"></i>
+                    <b>CSO Objective :</b> <span class="purpose-text">{{ cso.objectives }}</span>
+                </p>                
+            </div>
+        </div>
+
+        <div class="card">
+            <h5 class="card-header">Address & Contact Details:</h5>
+            <div class="card-body">
+                <h5>1. Public Contact Address</h5>
+                <div class="row">
+                    <div class="col">
+                        <p><i class="fa-solid fa-square-caret-right"></i> <b>Fixed Phone No.:</b> {{cso.fixed_phone_no}}</p>
+                        <p><i class="fa-solid fa-square-caret-right"></i> <b>P.O. Box:</b> {{cso.po_box}}</p>
+                        <p><i class="fa-solid fa-square-caret-right"></i> <b>Mobile No.:</b> {{cso.cso_contact}}</p>
+                        <p><i class="fa-solid fa-square-caret-right"></i> <b>Fax: </b> {{cso.fax}}</p>
+                    </div>
+                    <div class="col">
+                        <p><i class="fa-solid fa-square-caret-right"></i> <b>Email:</b> {{cso.public_email}}</p>
+                        <p><i class="fa-solid fa-square-caret-right"></i> <b>Website:</b> {{cso.cso_url}}</p>
+                        <p><i class="fa-solid fa-square-caret-right"></i> <b>Toll Free No.:</b> {{cso.toll_free_no}}</p>
+                        <p><i class="fa-solid fa-square-caret-right"></i> <b>Address:</b> {{cso.address}}</p>
+
+                    </div>
+                </div>
+                <h5>2. Executive Director</h5>
+                <div class="row">
+                    <div class="col">
+                        <p><i class="fa-solid fa-square-caret-right"></i> <b>Executive Director :</b> {{cso.executive_director}}</p>
+                        <p><i class="fa-solid fa-square-caret-right"></i> <b>ID Number :</b> {{cso.executive_ID}}</p>
+                    </div>
+                    <div class="col">
+                        <p><i class="fa-solid fa-square-caret-right"></i> <b>Email :</b> {{cso.executive_email}}</p>
+                        <p><i class="fa-solid fa-square-caret-right"></i> <b>Phone :</b> {{cso.executive_phone}}</p>
+                    </div>
+                </div>
+                <h5>3. CSO Focal Person</h5>
+                <div class="row">
+                    <div class="col">
+                        <p><i class="fa-solid fa-square-caret-right"></i> <b>Focal Person :</b> {{cso.cso_focal_name}}</p>
+                        <p><i class="fa-solid fa-square-caret-right"></i> <b>ID Number :</b> {{cso.cso_focal_ID}}</p>
+                    </div>
+                    <div class="col">
+                        <p><i class="fa-solid fa-square-caret-right"></i> <b>Email :</b> {{cso.cso_focal_email}}</p>
+                        <p><i class="fa-solid fa-square-caret-right"></i> <b>Phone :</b> {{cso.cso_focal_phone}}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h5 class="card-header">Board of Director/Trustees: 
+                <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#exampleModalCenter" style="float: right;">
+                Edit/Add
+                </button>
+            </h5>
+            <div class="card-body">
+                <table class="table">
+                    <tr>
+                        <th>Name</th>
+                        <th>Position</th>
+                        <th>Appointed Date</th>
+                        <th>Phone No.</th>
+                        <th>Email</th>
+                        <th>Other Trusteeship</th>
+                    </tr>
+                    {% for trustee in trustees %}
+                    <tr>
+                        <td>{{ trustee.name }}</td>
+                        <td>{{ trustee.position }}</td>
+                        <td>{{ trustee.appointed_date }}</td>
+                        <td>{{ trustee.phone_no }}</td>
+                        <td>{{ trustee.email }}</td>
+                        <td><b>. </b>{{ trustee.other_trusteeship }}</td>
+                    </tr>
+                    {% endfor %}
+                </table>              
+            </div>
+        </div>
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle">Edit/Add Trustee</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <form id="trusteeForm">
+                        <div class="modal-body">
+                            <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+                            <div class="form-group">
+                                <label for="name">Name</label>
+                                <input type="text" class="form-control" id="name" name="name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="position">Position</label>
+                                <input type="text" class="form-control" id="position" name="position" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="appointed_date">Appointed Date</label>
+                                <input type="date" class="form-control" id="appointed_date" name="appointed_date" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="phone_no">Phone No.</label>
+                                <input type="text" class="form-control" id="phone_no" name="phone_no" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email</label>
+                                <input type="email" class="form-control" id="email" name="email" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="other_trusteeship">Other Trusteeship</label>
+                                <textarea class="form-control" id="other_trusteeship" name="other_trusteeship"></textarea>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Save changes</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h5 class="card-header">Places of Operation: </h5>
+            <div class="card-body">
+                <p>
+                    <i class="fa-solid fa-square-caret-right"></i>
+                    <b>Area's of Operation : </b> <span class="purpose-text">{{ cso.operation_places }}</span>
+                </p>                                            
+            </div>
+        </div>
+        <div class="card">
+            <h5 class="card-header">Attachments:</h5>
+            <div class="card-body">
+                {% for payment in payments %}
+                    <p>
+                        <i class="fa-solid fa-square-caret-right"></i>
+                        <b>Annual Report:</b>
+                        {% if payment.annual_report %}
+                            <a href="{{ payment.annual_report.url }}" target="_blank">View Annual Report</a>
+                        {% else %}
+                            No annual report available.
+                        {% endif %}
+                    </p>
+                    <p>
+                        <i class="fa-solid fa-square-caret-right"></i>
+                        <b>Audit Report:</b>
+                        {% if payment.audit_report %}
+                            <a href="{{ payment.audit_report.url }}" target="_blank">View Audit Report</a>
+                        {% else %}
+                            No audit report available.
+                        {% endif %}
+                    </p>
+                    <p>
+                        <i class="fa-solid fa-square-caret-right"></i>
+                        <b>Two Years Report:</b>
+                        {% if payment.two_yrs_report %}
+                            <a href="{{ payment.two_yrs_report.url }}" target="_blank">View Two Years Report</a>
+                        {% else %}
+                            No two years report available.
+                        {% endif %}
+                    </p>
+                    {% if cso_types == 'MBO' %}
+                        <p>
+                            <i class="fa-solid fa-square-caret-right"></i>
+                            <b>Annual General Report:</b>
+                            {% if payment.annual_general_report %}
+                                <a href="{{ payment.annual_general_report.url }}" target="_blank">View Annual General Report</a>
+                            {% else %}
+                                No annual general report available.
+                            {% endif %}
+                        </p>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+        <div class="card">
+            <h5 class="card-header">Remarks: </h5>
+            <div class="card-body">
+                <p>
+                    <i class="fa-solid fa-square-caret-right"></i>
+                    <span class="purpose-text">{{ cso.remarks }}</span>
+                </p>                                         
+            </div>
+        </div>
+
+
+    </div>
+    
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    // Adjust the width of the banner dynamically if needed
+    function adjustBannerWidth() {
+        const banner = document.querySelector('.banner');
+        banner.style.width = `${window.innerWidth}px`;
+    }
+    // Call the function on load and resize
+    window.onload = adjustBannerWidth;
+    window.onresize = adjustBannerWidth;
+
+    document.addEventListener('DOMContentLoaded', function() {
+    var purposeTextElements = document.getElementsByClassName('purpose-text');
+
+    // Iterate over each element with the class name 'purpose-text'
+    for (var i = 0; i < purposeTextElements.length; i++) {
+        var purposeTextElement = purposeTextElements[i];
+        var purposeText = purposeTextElement.innerHTML;
+
+        // Replace patterns like "1}", "2}", "3}", etc. with "<br>1}", "<br>2}", "<br>3}", etc.
+        var formattedText = purposeText.replace(/(\d+\})/g, '<br>$1')
+                                        .replace(/(\d+\))/g, '<br>$1');
+
+        // Update the innerHTML with the formatted text
+        purposeTextElement.innerHTML = formattedText;
+    }
+});
+$(document).ready(function() {
+        $('#trusteeForm').on('submit', function(e) {
+            e.preventDefault();
+
+            $.ajax({
+                type: 'POST',
+                url: "{% url 'update_trustees' cso.cso_id %}",
+                data: $(this).serialize(),
+                success: function(response) {
+                    if (response.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success',
+                            text: response.message,
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                location.reload();
+                            }
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: response.message,
+                        });
+                    }
+                },
+                error: function() {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'An unexpected error occurred.',
+                    });
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

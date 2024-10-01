@@ -1,0 +1,445 @@
+{% extends 'cso_app/layouts/back_end_navbar.html' %}
+{% load static %}
+{% block content %}
+<title>CSOA Admin - Payment Details</title>
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css"/>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+    body {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        overflow-x: hidden;
+    }
+    #back_end_home{
+        z-index: -1;
+        width: 100%;
+    }
+    #back_end_home .banner{
+        background-color: #888;
+        width:100%;
+        height: 37px;
+    }
+    #back_end_home .banner h3, #back_end_home .banner i{
+        font-size:1em;
+        display: inline-block;
+        padding: 0em 14em;
+    }
+    #back_end_home .banner i{
+        padding-top: 0.5em;
+    }
+    #back_end_home .banner h3{
+        margin-left: -3em;
+    }
+    .banner a{
+        color: #000;
+        text-decoration: none;
+    }
+    .banner a:hover{
+        text-decoration: underline;
+    }
+    #payment_data{
+        margin-left:12em;
+        width: 700px;
+        font-size: .8em;
+    }
+    #payment_details_filter {
+        float: right;
+        margin-right: -20em; 
+    }
+    .dropdown-menu a button{
+        width: 100%;
+    }
+    /* Optional: Styling for spinner */
+    .spinner-border-sm {
+        width: 1rem;
+        height: 1rem;
+        border-width: 0.2em;
+    }
+
+</style>
+<br><br><br><br><br>
+<div id="back_end_home" class="container">
+    <div class="banner">
+        <h3><a href="{% url 'administrator' %}">Home</a> > <a href="#">System Setup</a> > <a href="{% url 'master_data' %}">Payment</a> > Payment Details</h3>
+        <hr>
+    </div>
+    <br>
+    <div class="row" id="payment_data">
+        <table id="payment_details" class="table">
+            <thead>
+                <tr>
+                    <th>CSO_Name</th>
+                    <th>Fees Type</th>
+                    <th>Amount Paid</th>
+                    <th>Account Number</th>
+                    <th>Account Name</th>
+                    <th>Bank Type</th>
+                    <th>Email</th>
+                    <th>Pay Date</th>
+                    <th>Payment Status</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for pay in payments %}
+                {% if pay.status == 'Approved' or pay.status == 'Submitted' %}
+                <tr>
+                    <td>{{pay.cso_name}}</td>
+                    <td>{{pay.fees_payment_type}}</td>
+                    <td>{{pay.amount_paid}}</td>
+                    <td>{{pay.account_number}}</td>
+                    <td>{{pay.account_name}}</td>
+                    <td>{{pay.bank_type}}</td>
+                    <td>{{pay.user_email}}</td>
+                    <td>{{pay.payment_date|date:"F j, Y"}}</td>
+                    <td>{{pay.payment_status}}</td>
+                    <td>{{pay.status}}</td>
+                    <td>
+                        <div class="dropdown">
+                            <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Click
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <a class="dropdown-item edit-btn" href="#" data-id="{{pay.payment_id}}"
+                                    data-cso-name="{{pay.cso_name}}" data-fees-payment-type="{{pay.fees_payment_type}}"
+                                    data-amount-paid="{{pay.amount_paid}}" data-amount_needed="{{pay.overall_fines}}"
+                                    data-account-number="{{pay.account_number}}" data-account-name="{{pay.account_name}}"
+                                    data-bank-type="{{pay.bank_type}}" data-jrl_number="{{pay.journal_number}}"
+                                    data-user-email="{{pay.user_email}}" data-mobile-number="{{pay.mobile_number}}"
+                                    data-payment-date="{{pay.payment_date|date:"Y-m-d"}}" data-status="{{pay.status}}" data-pay_status="{{pay.payment_status}}"
+                                    data-reject="{{pay.reject_reasons}}" data-annual-report="{{pay.annual_report.url}}" data-cso_type="{{pay.cso_type}}"
+                                    data-audit-report="{{pay.audit_report.url}}"
+                                    data-two-yrs-report="{{pay.two_yrs_report.url}}"
+                                    data-annual-general-report="{{pay.annual_general_report.url|default_if_none:''}}"
+                                    data-bs-toggle="modal" data-bs-target="#editModal">
+                                    <button type="button" class="btn btn-primary">
+                                        Edit
+                                    </button>
+                                </a>
+                                <a class="dropdown-item delete-btn" href="#" data-url="{% url 'delete_attachment_fees' pay.payment_id %}">
+                                    <button type="button" class="btn btn-danger">Delete</button>
+                                </a>
+                                
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+        <!-- Edit Modal -->
+        <div class="modal fade bd-example-modal-lg" id="editModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editModalLabel">Edit Payment Details</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="editPaymentForm">
+                            {% csrf_token %}
+                            <input type="hidden" id="paymentId" name="payment_id">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-sm">
+                                        <label for="csoName" class="form-label">CSO Name</label>
+                                        <input type="text" class="form-control" id="csoName" name="cso_name">
+                                    </div>
+                                    <div class="col-sm">
+                                        <label for="feesPaymentType" class="form-label">Fees Payment Type</label>
+                                        <input type="text" class="form-control" id="feesPaymentType" name="fees_payment_type" readonly>
+                                    </div>
+                                    <div class="col-sm">
+                                        <label for="amountNeeded" class="form-label">Amount Needed To Pay</label>
+                                        <div class="input-group mb-3">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">Nu.</span>
+                                            </div>
+                                            <input type="number" class="form-control" id="amountNeeded" name="amountNeeded" readonly> 
+                                        </div>                    
+                                    </div>
+                                    <div class="col-sm">
+                                        <label for="amountPaid" class="form-label">Amount Paid</label><br>
+                                        <div class="input-group mb-3">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">Nu.</span>
+                                            </div>
+                                            <input type="text" class="form-control" id="amountPaid" name="amount_paid" readonly>
+                                        </div>                          
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm">
+                                        <label for="accountNumber" class="form-label">Account Number</label>
+                                        <input type="text" class="form-control" id="accountNumber" name="account_number" readonly>
+                                    </div>
+                                    <div class="col-sm">
+                                        <label for="accountName" class="form-label">Account Name</label>
+                                        <input type="text" class="form-control" id="accountName" name="account_name" readonly>  
+                                    </div>
+                                    <div class="col-sm">
+                                        <label for="bankType" class="form-label">Bank Type</label>
+                                        <input type="text" class="form-control" id="bankType" name="bank_type" readonly>
+                                    </div>
+                                    <div class="col-sm">
+                                        <label for="jrl_number" class="form-label">Journal Number</label>
+                                        <input type="text" class="form-control" id="jrl_number" name="jrl_number" readonly>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm">
+                                        <label for="userEmail" class="form-label">Email</label>
+                                        <input type="text" class="form-control" id="userEmail" name="user_email" readonly>
+                                    </div>
+                                    <div class="col-sm">
+                                        <label for="mobileNumber" class="form-label">Mobile Number</label>
+                                        <input type="text" class="form-control" id="mobileNumber" name="mobile_number" readonly>
+                                    </div>
+                                    <div class="col-sm">
+                                        <label for="paymentDate" class="form-label">Payment Date</label>
+                                        <input type="text" class="form-control" id="paymentDate" name="payment_date" readonly>
+                                    </div>
+                                </div>
+                                <h5 class="mt-3">Attached Documents</h5>
+
+                                <div class="row" id="reportLinks">
+                                    <div class="col">
+                                        <label for="annualReportLink" class="form-label">Annual Report:</label>
+                                        <a id="annualReportLink" href="#" target="_blank" class="btn btn-info form-control">View Annual Report</a>
+                                    </div>
+                                    <div class="col">
+                                        <label for="auditReportLink" class="form-label">Audit Report:</label>
+                                        <a id="auditReportLink" href="#" target="_blank" class="btn btn-info form-control">View Annual Report</a>
+                                    </div>
+                                    <div class="col">
+                                        <label for="twoYearsReportLink" class="form-label">Two Years Planning Report:</label>
+                                        <a id="twoYearsReportLink" href="#" target="_blank" class="btn btn-info form-control">View Annual Report</a>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col" id="annualGeneralReportDiv">
+                                        <label for="annualGeneralReportLink" class="form-label">Annual General Report:</label>
+                                        <a id="annualGeneralReportLink" href="#" target="_blank" class="btn btn-info form-control">View Annual Report</a>
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="row">
+                                    <div class="col-sm">
+                                        <label for="amendment_type" class="form-label">Amendment Type</label>
+                                        <select class="form-select form-control" aria-label="Default select example" id="amendment_type" name="amendment_type">
+                                            <option selected>Select an amendment type</option>
+                                            <option value="one_amendment">One Amendment</option>
+                                            <option value="two_amendment">Two Amendment</option>
+                                            <option value="three_amendment">Three Amendment</option>
+                                            <option value="four_amendment">Four Amendment</option>
+                                            <option value="five_amendment">Five Amendment</option>
+                                            <option value="whole_amendment">Whole Amendment</option>
+                                        </select>
+                                    </div>
+                                    <br>
+                                    <div class="col-sm">
+                                        <label for="amendment_fees" class="form-label">Amendment Fees</label>
+                                        <div class="input-group mb-3">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">Nu.</span>
+                                            </div>
+                                            <input type="text" class="form-control" id="amendment_fees" name="amendment_fees" readonly required>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm">
+                                        <label for="total_amount" class="form-label">Total Amount</label>
+                                        <div class="input-group mb-3">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">Nu.</span>
+                                            </div>
+                                            <input type="text" class="form-control" id="total_amount" name="total_amount" readonly required>
+                                        </div>
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="row">
+                                    <div class="col-sm input-group">
+                                        <div class="input-group-prepend">
+                                            <label class="input-group-text" for="statusSelect">Status</label>
+                                        </div>
+                                        <select class="form-select" id="statusSelect" name="status">
+                                            <option value="Approved">Approved</option>
+                                            <option value="Rejected">Reject</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-sm input-group">
+                                        <div class="input-group-prepend">
+                                            <label class="input-group-text" for="payment_status">Payment Status</label>
+                                        </div>
+                                        <input type="text" class="form-control" id="payment_status" name="payment_status" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Hidden textarea for rejection reason -->
+                            <div id="rejectionReasonDiv" class="mb-3" style="display: none;">
+                                <label for="rejectionReason" class="form-label">Rejection Reason</label>
+                                <textarea class="form-control" id="rejectionReason" name="rejection_reason" rows="3"></textarea>
+                            </div>
+                            <br>
+                            <button type="button" class="btn btn-primary" id="saveChanges">Save changes</button>
+                            <span id="loadingSpinner" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+<script src = "https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+    new DataTable('#payment_details');
+
+    // Adjust the width of the banner dynamically if needed
+    function adjustBannerWidth() {
+        const banner = document.querySelector('.banner');
+        banner.style.width = `${window.innerWidth}px`;
+    }
+
+    // Call the function on load and resize
+    window.onload = adjustBannerWidth;
+    window.onresize = adjustBannerWidth;
+    
+    // Fetch and populate modal with details for editing
+    $(document).ready(function() {
+    $('.edit-btn').on('click', function() {
+        var $this = $(this);
+        $('#paymentId').val($this.data('id'));
+        $('#csoName').val($this.data('csoName'));
+        $('#feesPaymentType').val($this.data('feesPaymentType'));
+        $('#amountNeeded').val($this.data('amount_needed'));
+        $('#amountPaid').val($this.data('amountPaid'));
+        $('#accountNumber').val($this.data('accountNumber'));
+        $('#accountName').val($this.data('accountName'));
+        $('#bankType').val($this.data('bankType'));
+        $('#jrl_number').val($this.data('jrl_number'));
+        $('#userEmail').val($this.data('userEmail'));
+        $('#mobileNumber').val($this.data('mobileNumber'));
+        $('#paymentDate').val($this.data('paymentDate'));
+        $('#payment_status').val($this.data('pay_status'));
+        $('#statusSelect').val($this.data('status'));
+        $('#rejectionReason').val($this.data('reject') || '');
+
+        // Update report links
+        $('#annualReportLink').attr('href', $this.data('annual-report') || '#').text($this.data('annualReport') ? 'View Annual Report' : 'No Report Uploaded');
+
+        $('#auditReportLink').attr('href', $this.data('audit-report') || '#').text($this.data('auditReport') ? 'View Audit Report' : 'No Report Uploaded');
+        $('#twoYearsReportLink').attr('href', $this.data('two-yrs-report') || '#').text($this.data('two-yrs-report') ? 'View Two Years Work Plan' : 'No Report Uploaded');
+        $('#annualGeneralReportLink').attr('href', $this.data('annual-general-report') || '#')
+        .text($this.data('annual-general-report') ? 'View Annual General Report' : 'No Report Uploaded');
+
+        // Show or hide rejection reason textarea based on status
+        if ($this.data('status') === 'Rejected') {
+            $('#rejectionReasonDiv').show();
+        } else {
+            $('#rejectionReasonDiv').hide();
+        }
+
+        // Hide or show the Annual General Report div based on cso_type
+    console.log("$this.data('cso_type')", $this.data('cso_type'));
+    if ($this.data('cso_type') === 'MBO') {
+            $('#annualGeneralReportDiv').show();
+        } else {
+            $('#annualGeneralReportDiv').hide();
+        }
+    });
+
+    // Toggle textarea visibility when status is changed
+    $('#statusSelect').on('change', function() {
+        if ($(this).val() === 'Rejected') {
+            $('#rejectionReasonDiv').show();
+        } else {
+            $('#rejectionReasonDiv').hide();
+        }
+    });
+
+    // Handle form submission
+    $('#saveChanges').on('click', function() {
+        var form = $('#editPaymentForm');
+        var formData = new FormData(form[0]);
+        let amendmentFees = document.getElementById('amendment_fees').value;
+
+        if (amendmentFees === '') {
+            Swal.fire({
+                title: 'Error!',
+                text: 'Please select an Amendment Type to calculate the Amendment Fees.',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+            return;  // Stop further execution if amendment fees are not calculated
+        }
+        // Show loading spinner and hide button text
+        $('#saveChanges').prop('disabled', true);
+        $('#loadingSpinner').show();
+
+        fetch("{% url 'update_payment_details' %}", { // Update URL to match your view
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}'
+            }
+        }).then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                Swal.fire("Updated!", "The payment details have been updated.", "success")
+                .then(() => {
+                    window.location.reload(); // Reload the page after updating
+                });
+            } else {
+                Swal.fire("Failed!", "Failed to update payment details.", "error");
+            }
+        }).catch(error => {
+            Swal.fire("Error!", "An error occurred while updating.", "error");
+        }).finally(() => {
+            // Hide loading spinner and show button text
+            $('#saveChanges').prop('disabled', false);
+            $('#loadingSpinner').hide();
+        });
+    });
+    
+});
+
+document.addEventListener("DOMContentLoaded", function() {
+    document.querySelectorAll('.delete-btn').forEach(button => {
+        button.addEventListener('click', function(event) {
+            event.preventDefault(); // Prevent the default action (navigating to the URL)
+            
+            const deleteUrl = this.getAttribute('data-url'); // Get the URL from the data-url attribute
+            console.log(deleteUrl);
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to recover this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Proceed to delete
+                    window.location.href = deleteUrl;
+                }
+            });
+        });
+    });
+});
+
+</script>
+{% endblock %}

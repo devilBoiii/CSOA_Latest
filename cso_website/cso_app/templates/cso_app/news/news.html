@@ -1,0 +1,265 @@
+{% extends 'cso_app/layouts/main.html' %}
+{% load static %}
+{% block content %}
+<head> 
+    <title>CSOA News - CSOA</title>
+    <link rel="stylesheet" href="{% static 'css/news.css' %}">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script> 
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/simplePagination.js/1.6/jquery.simplePagination.min.js"></script> 
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/simplePagination.js/1.6/simplePagination.min.css"> 
+	<style type="text/css">
+        #important_links{
+            margin-top: -10em;
+        } 
+        #pagination { 
+            margin-left: 500px; 
+        } 
+        .row .news{
+            float: right
+        }
+        .news_pic{
+            width: 200px;
+            height: 200px;
+            float: left
+        }
+        .status{
+            font-size: 1.3em;
+            color: #666;
+        }
+        .categories h3{
+            text-align: center;
+        }
+        .categories_list{
+            list-style: none;
+        }
+        .categories_list li a{
+            line-height: 1.5em;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+        .categories_list span{
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #222;
+        }
+        a:hover{
+            cursor: pointer;
+        }
+
+    /* for extraLinks starts*/
+
+    .form {
+    background: #fff;
+    padding: 40px;
+    max-width: 600px;
+    margin: 40px auto;
+    border-radius: 4px;
+    box-shadow: 0 4px 10px 4px rgba(19, 35, 47, 0.3);
+    }
+    
+    .tab-group {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 40px 0;
+    }
+    .tab-group:after {
+    content: "";
+    display: table;
+    clear: both;
+    }
+    .tab-group li a {
+    display: block;
+    text-decoration: none;
+    padding: 15px;
+    background: rgba(160, 179, 176, 0.25);
+    color: #a0b3b0;
+    font-size: 20px;
+    float: left;
+    width: 50%;
+    text-align: center;
+    cursor: pointer;
+    transition: .5s ease;
+    }
+    .tab-group li a:hover {
+    background: #777;
+    color: #000;
+    }
+    .tab-group .active a {
+    background: #095788;
+    color: #ffffff;
+    border-radius: 10%;
+    }
+    
+    .tab-content > div:last-child {
+    display: none;
+    }
+    .tab-content p a{
+
+    }
+    /* for extraLinks ends*/
+	</style> 
+</head> 
+
+<body> 
+    <div class='container1' tabindex='1'>
+      <div class='search-container' tabindex='1'>
+        <input placeholder='search' type='text'>
+        <a class='button'>
+          <i class='fa fa-search'></i>
+        </a>
+      </div>
+    </div>
+
+	<div class="container"> 
+		<div class="row news">
+            <div class="col-lg-8">
+                <div class="row">
+                <!--News starts-->
+                    <h2>Data Structure and Algorithm</h2> 
+                    <div class="col-lg-12 status">
+                        <i class="fa fa-tags" aria-hidden="true"></i>
+                        <span>News</span>
+                        <span style="float:right;">
+                            <i class="fa fa-clock-o" aria-hidden="true"></i> April 26, 2024
+                            <i class="fa fa-eye" aria-hidden="true"></i>2004
+                        </span>
+                    </div>
+                    <br><br>
+                    <img src="{% static 'img/staff3.jpg' %}" class="news_pic">
+                    <div class="col-lg-8">
+                        <p> 
+                            Learn Data Structures & Algorithms 
+                            at your own pace to prepare for top 
+                            product-based companies like Amazon, 
+                            Uber, Adobe, etc. It contains 200+ 
+                            algorithmic coding problems, Lifetime 
+                            access to the Course, Premium Lecture 
+                            videos by Mr. Sandeep Jain 
+                            (CEO & Founder, GeeksforGeeks) 
+                        </p> 
+                        <button type="button" class="btn btn-primary">See More</button>
+                    </div>
+                </div> 
+                <hr>
+                <div class="row">
+                    <!--News starts-->
+                        <h2>Data Structure and Algorithm</h2> 
+                        <div class="col-lg-12 status">
+                            <i class="fa fa-tags" aria-hidden="true"></i>
+                            <span>News</span>
+                            <span style="float:right;">
+                                <i class="fa fa-clock-o" aria-hidden="true"></i> April 26, 2024
+                                <i class="fa fa-eye" aria-hidden="true"></i>2004
+                            </span>
+                        </div>
+                        <br><br>
+                        <img src="{% static 'img/staff3.jpg' %}" class="news_pic">
+                        <div class="col-lg-8">
+                            <p> 
+                                Learn Data Structures & Algorithms 
+                                at your own pace to prepare for top 
+                                product-based companies like Amazon, 
+                                Uber, Adobe, etc. It contains 200+ 
+                                algorithmic coding problems, Lifetime 
+                                access to the Course, Premium Lecture 
+                                videos by Mr. Sandeep Jain 
+                                (CEO & Founder, GeeksforGeeks) 
+                            </p> 
+                            <button type="button" class="btn btn-primary">See More</button>
+                        </div>
+                    </div> 
+                    <hr>
+                <!--News Ends-->
+            </div>
+            <div class="col-lg-4" class="categories">
+                <ul class="categories_list"><span>CATEGORIES</span>
+                    <br><br>
+                    <li><a href="#">All (33)</a></li>
+                    <hr>
+                    <li><a href="#">News (12)</a></li>
+                    <hr>
+                    <li><a href="#">Anouncement (6)</a></li>
+                    <hr>
+                    <li><a href="#">Vacancy (6)</a></li>
+                    <hr>
+                    <li><a href="#">Tender (9)</a></li>
+                    <hr>
+                </ul>
+                <!--For ExtraLinks Starts-->
+                    <div class="form">
+        
+                        <ul class="tab-group">
+                        <li class="tab active"><a href="#popular">Popular</a></li>
+                        <li class="tab"><a href="#recent">Recent</a></li>
+                        </ul>
+                        
+                        <div class="tab-content">
+                        <div id="popular">   
+                            <p>
+                                <a href="#">Interview Selection Result for the post of Assistant Program Coordinator</a><br>April 13, 2018 | by Vacancy <br><br>
+                                <a href="#">NOTICE INVITING TENDER</a><br>October 28, 2019 | by Tender<br><br>
+                                <a href="#">Shortlisted Candidates for the post of Assistant Program Coordinator</a><br>April 9, 2018 | by Vacancy<br><br>
+                                <a href="#">Notice Inviting Request for Quotation</a><br>January 24, 2019 | by Tender<br><br>
+                                <a href="#">IFA, Germany invites application for Remote Fellowships 2021</a><br>March 29, 2021 | by Announcement<br><br>
+                            </p>
+                        </div>
+                        
+                        <div id="recent">                               
+                            <p>
+                                <a href="#">Collaborate for Change: Inaugural CSOs Quarterly Summit</a><br>April 26, 2024 | In News<br><br>
+                                <a href="#">ANNOUNCEMENT: RESULT OF AUTHORITY MEMBER’S ELECTION</a><br>March 5, 2024 | In Announcement<br><br>
+                                <a href="#">Bhutan Film Institute registered as CSO</a><br>December 6, 2023 | In News<br><br>
+                                <a href="#">ANNOUNCEMENT: RESULT OF AUTHORITY MEMBER’S ELECTION</a><br>November 25, 2023 | In Announcement<br><br>
+                                <a href="#">OFFICE RELOCATION NOTICE</a><br>July 20, 2023 | In Announcement<br><br>
+                            </p>
+                
+                        </div>
+                        
+                        </div><!-- tab-content -->
+                        
+                </div> <!-- /form -->
+                <!--For ExtraLinks Ends-->
+            </div>
+        </div>
+	</div> 
+
+	<div id="pagination"></div> 
+
+
+{% include 'cso_app/layouts/footer.html' %}
+
+<script> 
+    $(".wrapper .item").slice(4).hide(); 
+    $('#pagination').pagination({ 
+
+        // Total number of items present 
+        // in wrapper class 
+        items: 9, 
+
+        // Items allowed on a single page 
+        itemsOnPage: 4, 
+        onPageClick: function (noofele) { 
+            $(".wrapper .item").hide() 
+                .slice(4*(noofele-1), 
+                4+ 4* (noofele - 1)).show(); 
+        } 
+    }); 
+
+    //for ExtraLinks
+      
+      $('.tab a').on('click', function (e) {
+        
+        e.preventDefault();
+        
+        $(this).parent().addClass('active');
+        $(this).parent().siblings().removeClass('active');
+        
+        target = $(this).attr('href');
+      
+        $('.tab-content > div').not(target).hide();
+        
+        $(target).fadeIn(600);
+        
+      });
+</script> 
+{% endblock %}

@@ -1,0 +1,267 @@
+{% extends 'cso_app/layouts/main.html' %}
+{% load static %}
+{% block content %}
+<title>CSOA Staff - CSOA</title>
+<link rel="stylesheet" href="{% static 'css/registered_csos.css' %}">
+<style>
+    #important_links{
+        margin-top: -10em;
+    }
+    table,th,td,tr{
+        text-align: center;
+    }
+    thead tr th{
+        font-size: 1.5em;
+        font-weight: bold;
+    }
+</style>
+
+    <div class="container">
+        <table class="table" border="1">
+            <thead>
+              <tr>
+                <th>Sl.No.</th>
+                <th>Thematic area</th>
+                <th colspan="2">CSOs</th>
+              </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td rowspan="2" style="vertical-align: middle;">1</td>
+                    <td rowspan="2" style="vertical-align: middle;">Livelihoods</td>
+                    <td>1</td>
+                    <td>Tarayana Foundation</td>
+                </tr>
+                <tr>
+                    <th colspan="1">2</th>
+                    <td>Menjong Foundation</td>
+                </tr>
+                <tr>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td rowspan="11" style="vertical-align: middle;">2</td>
+                    <td rowspan="11" style="vertical-align: middle;">Care-giving & Rehabilitation</td>
+                    <td>1</td>
+                    <td>LHAK-SAM</td>
+                </tr>
+                <tr>
+                    <th colspan="1">2</th>
+                    <td>Bhutan Kidney Foundation</td>
+                </tr>
+                <tr>
+                    <th colspan="1">3</th>
+                    <td>Bhutan Cancer Society</td>
+                </tr>
+                <tr>
+                    <th colspan="1">4</th>
+                    <td>Bumthang Health Association</td>
+                </tr>
+                <tr>
+                    <th colspan="1">5</th>
+                    <td>Royal Society for Senior Citizens (RSSC)</td>
+                </tr>
+                <tr>
+                    <th colspan="1">6</th>
+                    <td>Chithuen Phenday</td>
+                </tr>
+                <tr>
+                    <th colspan="1">7</th>
+                    <td>Disabled Persons' Association of Bhutan (DPAB)</td>
+                </tr>
+                <tr>
+                    <th colspan="1">8</th>
+                    <td>Draktsho</td>
+                </tr>
+                <tr>
+                    <th colspan="1">9</th>
+                    <td>Respect, Educate, Nurture and Empower Women (RENEW)</td>
+                </tr>
+                <tr>
+                    <th colspan="1">10</th>
+                    <td>Bhutan Network for Empowering Women (BNEW)</td>
+                </tr>
+                <tr>
+                    <th colspan="1">11</th>
+                    <td>Ability Bhutan Society (ABS)</td>
+                </tr>
+                <tr>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td rowspan="3" style="vertical-align: middle;">3</td>
+                    <td rowspan="3" style="vertical-align: middle;">Youth</td>
+                    <td>1</td>
+                    <td>Bhutan Youth Development fund (BYDF)</td>
+                </tr>
+                <tr>
+                    <th colspan="1">2</th>
+                    <td>Nazhoen Lamtoen</td>
+                </tr>
+                <tr>
+                    <th colspan="1">3</th>
+                    <td>Bhutan Jamchong Thuendrel Foundation</td>
+                </tr>
+                <tr>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td rowspan="3" style="vertical-align: middle;">4</td>
+                    <td rowspan="3" style="vertical-align: middle;">Good Governance</td>
+                    <td>1</td>
+                    <td>Bhutan Center for Media & Democracy</td>
+                </tr>
+                <tr>
+                    <th colspan="1">2</th>
+                    <td>Bhutan Media Foundation</td>
+                </tr>
+                <tr>
+                    <th colspan="1">3</th>
+                    <td>Bhutan Transparency Initiative</td>
+                </tr>
+                <tr>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td rowspan="4" style="vertical-align: middle;">5</td>
+                    <td rowspan="4" style="vertical-align: middle;">Arts, Heritage and Cultue</td>
+                    <td>1</td>
+                    <td>Music Bhutan</td>
+                </tr>
+                <tr>
+                    <th colspan="1">2</th>
+                    <td>Royal Textile Academy (RTA)</td>
+                </tr>
+                <tr>
+                    <th colspan="1">3</th>
+                    <td>Peldrukdraling Foundation</td>
+                </tr>
+                <tr>
+                    <th colspan="1">4</th>
+                    <td>Ogyencholing Foundation</td>
+                </tr>
+                <tr>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td rowspan="3" style="vertical-align: middle;">6</td>
+                    <td rowspan="3" style="vertical-align: middle;">Environment</td>
+                    <td>1</td>
+                    <td>Royal Society for Protection of Nature (RSPN)</td>
+                </tr>
+                <tr>
+                    <th colspan="1">2</th>
+                    <td>Clean Bhutan</td>
+                </tr>
+                <tr>
+                    <th colspan="1">3</th>
+                    <td>Bhutan Ecological Society</td>
+                </tr>
+                <tr>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td rowspan="3" style="vertical-align: middle;">7</td>
+                    <td rowspan="3" style="vertical-align: middle;">Animal Welfare</td>
+                    <td>1</td>
+                    <td>Jangsa Animal Saving Trust</td>
+                </tr>
+                <tr>
+                    <th colspan="1">2</th>
+                    <td>Royal Society for Protection and Care of Animals</td>
+                </tr>
+                <tr>
+                    <th colspan="1">3</th>
+                    <td>Bhutan Animal Rescue and Care (BARC)</td>
+                </tr>
+                <tr>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td rowspan="1" style="vertical-align: middle;">8</td>
+                    <td rowspan="1" style="vertical-align: middle;">Recreation</td>
+                    <td>1</td>
+                    <td>Phuntsholing Sports Association (PSA)</td>
+                </tr>
+                <tr>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td rowspan="5" style="vertical-align: middle;">9</td>
+                    <td rowspan="5" style="vertical-align: middle;">Other PBOs</td>
+                    <td>1</td>
+                    <td>GNH Centre Bhutan (GNHCB)</td>
+                </tr>
+                <tr>
+                    <th colspan="1">2</th>
+                    <td>Bhutan Toilet Organization</td>
+                </tr>
+                <tr>
+                    <th colspan="1">3</th>
+                    <td>Gyalyum Charitable Trust</td>
+                </tr>
+                <tr>
+                    <th colspan="1">4</th>
+                    <td>Peldrukdraling Foundation</td>
+                </tr>
+                <tr>
+                    <th colspan="1">5</th>
+                    <td>Contractors Association of Bhutan</td>
+                </tr>
+                <tr>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td rowspan="9" style="vertical-align: middle;">10</td>
+                    <td rowspan="9" style="vertical-align: middle;">MBOs</td>
+                    <td>1</td>
+                    <td>Guides Association of Bhutan</td>
+                </tr>
+                <tr>
+                    <th colspan="1">2</th>
+                    <td>Association of Bhutanese Tour Operators</td>
+                </tr>
+                <tr>
+                    <th colspan="1">3</th>
+                    <td>Journalists Association of Bhutan</td>
+                </tr>
+                <tr>
+                    <th colspan="1">4</th>
+                    <td>Association of Bhutanese Industries</td>
+                </tr>
+                <tr>
+                    <th colspan="1">5</th>
+                    <td>VAST</td>
+                </tr>
+                <tr>
+                    <th colspan="1">6</th>
+                    <td>Hotels & Restaurent Association of Bbhutan</td>
+                </tr>
+                <tr>
+                    <th colspan="1">7</th>
+                    <td>Film Association of Bhutan</td>
+                </tr>
+                <tr>
+                    <th colspan="1">8</th>
+                    <td>Handicrafts Association of Bhutan (HAB)</td>
+                </tr>
+                <tr>
+                    <th colspan="1">9</th>
+                    <td>Evaluation Association of Bhutan</td>
+                </tr>
+            </tbody>
+          </table>
+    </div>
+
+
+    <hr>
+    <div class="row" id="important_links">
+        {% include 'cso_app/layouts/important_links.html' %}
+    </div>
+</div>
+
+
+
+{% include 'cso_app/layouts/footer.html' %}
+
+{% endblock %}

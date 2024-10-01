@@ -1,0 +1,558 @@
+{% extends 'cso_app/layouts/back_end_navbar.html' %}
+{% load static %}
+{% block content %}
+<title>CSOA - Page Contents</title>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css"/>
+<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/43.0.0/classic/ckeditor.css"/>
+
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+    body {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        overflow-x: hidden;
+    }
+    #back_end_home{
+        z-index: -1;
+        width: 100%;
+    }
+    #back_end_home .banner{
+        background-color: #888;
+        width:100%;
+        height: 37px;
+    }
+    #back_end_home .banner h3{
+        font-size:1em;
+        display: inline-block;
+    }
+    .banner h3 i{
+        padding-top: 5px;
+    }
+    .banner a{
+        color: #000;
+        text-decoration: none;
+    }
+    .banner a:hover{
+        text-decoration: underline;
+    }
+    #registered_users{
+        margin-left:9em;
+        font-family: "Kanit", sans-serif;
+    }
+    td,th{
+        border: #333 solid 1px;
+    }
+    #table tr th{
+        font-size: 0.8em;
+        text-align: center;
+        font-weight: bold;
+    }
+    #table tr td, .btn{
+        font-size: 0.8em;
+        text-align: center;
+    }
+    thead .sorting .sorting_asc{
+        display: none;
+    }
+    .modal-header .close {
+        margin-left: auto; /* This pushes the button to the far right within the flex container */
+        border: none;
+        outline: none;    
+    }
+    @media(max-width:1008px){
+        body{
+            overflow-x: auto;
+        }
+    }
+    .thumbnail{
+        width: 50px;
+        height:50px;
+    }
+    #image_preview{
+        height:50px;
+        width: 50px;
+    }
+</style>
+<br><br><br><br><br>
+<div id="back_end_home" class="container">
+    <div class="banner">
+        <h3 style="padding: 0em 7em;"><i class="fa fa-home" aria-hidden="true"></i><a href="{% url 'administrator' %}">Home</a> > <a href="#">System</a> > Page Content</h3>
+        <hr>
+    </div>
+    <br>
+    <div class="row" id="registered_users">
+        <div class="d-flex justify-content-end">
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bd-example-modal-lg"><i class="fa-solid fa-plus"></i>Add Page Content</button>
+        </div>
+        <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add New Content</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form id="post_form" method="POST" action="{% url 'content_page_upload' %}" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="modal-body">
+                        <div class="form-row row">
+                            <div class="form-group col">
+                                <label for="content_header">Title</label>
+                                <input type="text" class="form-control" id="content_header" name="content_header" placeholder="Type a page title" required>
+                            </div>
+                            <div class="form-group col">
+                                <label for="website_page">Select The Website Page</label>
+                                <select id="website_page" class="form-control" name="website_page" required>
+                                    <option selected>Select</option>
+                                    <option name="annual_report_declaration">Annual Report Declaration</option>
+                                    <option name="submit_annual_report">Submit Annual Report</option>
+                                    <option name="setup_register">Set Up & Register</option>
+                                    <option name="sector_overview_info">Sector Overview Info Page</option>
+                                    <option name="history_data_info">History Data Info Page</option>
+                                    <option name="pbos_details_category">PBOs Details Category Info Page</option>
+                                    <option name="income_category">Income Category Info Page</option>
+                                    <option name="find_csos">Find CSOs</option>
+                                    <option name="login">Login</option>
+                                    <option name="recent_feedbacks">Recent Feedbacks</option>
+                                    <option name="faqs">FAQs</option>
+                                    <option name="contact_us">Contact Us</option>
+                                    <option name="download_forms">Download Forms</option>
+                                    <option name="publications">Publications</option>
+                                    <option name="rules_acts">Rules & Acts</option>
+                                    <option name="csoa_secretarait">CSOA Working Secretariat</option>
+                                    <option name="csoa_authority">CSOA Authority Board</option>
+                                    <option name="home">Home</option>
+                                </select>
+                            </div>
+                            <div class="form-group col">
+                                <label for="display_header">Display Content Header</label><br>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="display_header" id="yesRadio" value="Yes">
+                                    <label class="form-check-label" for="yesRadio">Yes</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="display_header" id="noRadio" value="No">
+                                    <label class="form-check-label" for="noRadio">No</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-row row">
+                            <div class="col">
+                                <label for="page_content">Please enter your content here. <b>[Please don't use the image and videos from here]</b></label>
+                                <textarea class="form-control" name="page_content" id="page_content"></textarea>
+                            </div>
+                        </div>
+                        <div class="form-row row">
+                            <div class="col">
+                                <label for="content_img">Please select an image for content page</label>
+                                <input type="file" class="form-control" id="content_img" name="content_img" accept=".jpg, .jpeg, .png" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Upload</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        </div>
+        {% if contents %}
+            <table id="table" class="table" border="5">
+                <thead>
+                    <th>Id</th>
+                    <th>Header</th>
+                    <th>Activity</th>
+                    <th>Published Date</th>
+                    <th>Status</th>
+                    <th>Featured</th>
+                    <th>Attachments</th>
+                    <th>Thumbnails</th>
+                    <th>Action</th>
+                </thead>
+                {% for i in contents %}
+                <tbody>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ i.content_header }}</td>
+                    <td>{{ i.content_display }}</td>
+                    <td>{{ i.contents }}</td>
+                    <td>{{ i.page }}</td>
+                    <td>{{ i.attachments }}</td>
+                    <td>{{ i.content_created }}</td>
+                    <td><img src="{{ i.content_img.url }}" alt="" class="thumbnail"></td>
+                    <td>
+                        <a class="btn btn-primary edit-post-btn" href="#" data-toggle="modal" data-target="#editModal" 
+                        data-id="{{ i.id }}" 
+                        data-title="{{ i.post_header }}" 
+                        data-date="{{ i.published_date|date:'Y-m-d' }}" 
+                        data-tag="{{ i.activity }}" 
+                        data-featured="{{ i.featured }}"
+                        data-status="{{ i.status }}"
+                        data-attachment="{{ i.attachments }}"
+                        data-post_img="{{ i.post_img }}"
+                        data-content="{{ i.post_description }}">Edit</a>
+                        <a href="" class="btn btn-danger">Delete</a>
+                    </td>
+                </tbody>
+                {% endfor %}
+            </table>
+            <!-- Edit Modal -->
+            <div id="editModal" class="modal fade bd-edit-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Edit Post</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <form id="edit_post_form" method="POST" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label for="edit_post_title">Title</label>
+                                            <input type="text" class="form-control" id="edit_post_title" name="post_title" required>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label for="edit_post_date">Date</label>
+                                            <input type="date" class="form-control" id="edit_post_date" name="edit_post_date" required>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label for="edit_post_tag">Tag</label>
+                                            <select id="edit_post_tag" class="form-control" name="post_tag" required>
+                                                <option value="News">News</option>
+                                                <option value="Announcement">Announcement</option>
+                                                <option value="Vaccancy">Vaccancy</option>
+                                                <option value="Tender">Tender</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label for="post_attachment">Attachments</label>
+                                            <input type="text" class="form-control" id="post_attachment" name="post_attachment" required>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label for="edit_featured_post">Featured Post</label><br>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="featured_post" id="edit_yesRadio" value="Yes">
+                                                <label class="form-check-label" for="edit_yesRadio">Yes</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="featured_post" id="edit_noRadio" value="No">
+                                                <label class="form-check-label" for="edit_noRadio">No</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label>Status</label><br>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="post_status" id="activeRadio" value="Active">
+                                                <label class="form-check-label" for="activeRadio">Active</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="post_status" id="inactiveRadio" value="Inactive">
+                                                <label class="form-check-label" for="inactiveRadio">Inactive</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group">
+                                        <label for="edit_post_content">Content</label>
+                                        <textarea class="form-control" id="edit_post_content" name="post_content"></textarea>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label for="post_image">Image</label>
+                                            <input type="file" class="form-control" id="post_image" name="post_img">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <input type="text" class="form-control" id="image_url_display" readonly>
+                                    </div>
+                                    <div class="col">
+                                        <img id="image_preview" src="" alt="Image Preview" style="display: none; max-width: 100%; margin-top: 10px;">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Save changes</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>            
+
+        {% else %}
+            <p>No user record available</p>
+        {% endif %}
+    </div>
+    
+</div>
+<!-- CKEditor Script -->
+<script src="https://cdn.ckeditor.com/ckeditor5/12.3.1/classic/ckeditor.js"></script>
+
+<!-- jQuery Script -->
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+
+<!-- DataTables Script -->
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.min.js" integrity="sha512-ykZ1QQr0Jy/4ZkvKuqWn4iF3lqPZyij9iRv6sGqLRdTPkY69YX6+7wvVGmsdBbiIfN/8OdsI7HABjvEok6ZopQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('#post_form');
+    let ckEditor;
+
+    // Initialize CKEditor
+    ClassicEditor
+        .create(document.querySelector('#page_content'))
+        .then(editor => {
+            ckEditor = editor;
+        })
+        .catch(error => {
+            console.error('There was a problem initializing CKEditor:', error);
+        });
+
+    form.addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent form submission
+
+        // Ensure CKEditor content is synced with the textarea before form submission
+        if (ckEditor) {
+            document.querySelector('#page_content').value = ckEditor.getData();
+        }
+
+        const title = document.querySelector('#post_title').value.trim();
+        const date = document.querySelector('#post_date').value.trim();
+        const tag = document.querySelector('#post_tag').value.trim();
+        const content = document.querySelector('#page_content').value.trim();
+        const fileInput = document.querySelector('#post_img');
+        const file = fileInput.files[0];
+        const allowedTypes = ['image/jpeg', 'image/png'];
+        const maxSize = 2 * 1024 * 1024;
+
+        // Validate input fields
+        if (!title || !date || !tag || !content || !file) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Incomplete Form',
+                text: 'Please fill out all required fields',
+            });
+            return;
+        }
+
+        // Validate file
+        if (!allowedTypes.includes(file.type) || file.size > maxSize) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Invalid File',
+                text: 'Please ensure the file is a JPG, JPEG, or PNG image and is below 2MB.',
+            });
+            return;
+        }
+
+        // Create FormData object
+        const formData = new FormData(form);
+
+        // Use fetch API to submit the form data
+        fetch('{% url "content_page_upload" %}', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success!',
+                    text: 'Your form has been successfully submitted.',
+                    confirmButtonText: 'OK'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = data.redirect_url; // Redirect to the URL provided by the server
+                    }
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Submission Failed',
+                    text: data.message || 'An error occurred.',
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Submission Failed',
+                text: 'An error occurred during submission.',
+            });
+        });
+    });
+});
+
+let editorInstance; // Declare a variable to hold the CKEditor instance
+
+$(document).on('click', '.edit-post-btn', function() {
+    var id = $(this).data('id');
+    var title = $(this).data('title');
+    var date = $(this).data('date');
+    var tag = $(this).data('tag');
+    var featured = $(this).data('featured');
+    var attachment = $(this).data('attachment');
+    var content = $(this).data('content');
+    var status = $(this).data('status');
+    var post_image = $(this).data('post_img');
+    var imageUrl = '/media/' + post_image;
+
+    if (editorInstance) {
+        // If the editor is already initialized, just set the data
+        editorInstance.setData(content);
+    } else {
+        // If the editor is not initialized, create it and save the instance
+        ClassicEditor
+            .create(document.querySelector('#edit_post_content'), {
+                // CKEditor configuration
+            })
+            .then(editor => {
+                editorInstance = editor; // Save the editor instance
+                editorInstance.setData(content); // Set the initial content
+            })
+            .catch(error => {
+                console.error(error);
+            });
+    }
+
+    console.log("This is the image URL path: ", imageUrl);
+    
+    $('#edit_post_title').val(title);
+    $('#edit_post_date').val(date);
+    $('#edit_post_tag').val(tag);
+    $('#edit_post_content').val(content);
+    $('#post_attachment').val(attachment);
+
+    // Display the image URL in a read-only text input field
+    $('#image_url_display').val(post_image);
+
+    if (featured === 'Yes') {
+        $('#edit_yesRadio').prop('checked', true);
+    } else {
+        $('#edit_noRadio').prop('checked', true);
+    }
+    if (status === 'Active') {
+        $('#activeRadio').prop('checked', true);
+    } else {
+        $('#inactiveRadio').prop('checked', true);
+    }
+
+    // Set the image source and make the preview visible
+    $('#image_preview').attr('src', imageUrl).show();
+
+    $('#edit_post_form').attr('action', '/update_post_form/' + id + '/'); // Update the form action
+});
+
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+    // Attach event listener to the edit button
+    document.querySelectorAll('.edit-post-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const id = this.getAttribute('data-id');
+            const form = document.querySelector('#edit_post_form');
+            form.setAttribute('data-id', id); // Set the ID on the form
+        });
+    });
+
+    const form = document.querySelector('#edit_post_form');
+
+    form.addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent form submission
+
+        const postId = form.getAttribute('data-id'); // Get the ID from the form
+
+        const formData = new FormData(form);
+        formData.append('id', postId); // Append ID to FormData if needed
+
+        fetch(`/update_post_form/${postId}/`, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success!',
+                    text: 'Your form has been successfully updated.',
+                    confirmButtonText: 'OK'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = data.redirect_url; // Redirect to the URL provided by the server
+                    }
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Update Failed',
+                    text: data.message || 'An error occurred.',
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Update Failed',
+                text: 'An error occurred during the update.',
+            });
+        });
+    });
+});
+
+</script>
+<script>
+    // Initialize DataTables
+    $(document).ready(function() {
+        $('#table').DataTable();
+    });
+    
+    // Adjust the width of the banner dynamically if needed
+    function adjustBannerWidth() {
+        const banner = document.querySelector('.banner');
+        banner.style.width = `${window.innerWidth}px`;
+    }
+
+    // Call the function on load and resize
+    window.onload = adjustBannerWidth;
+    window.onresize = adjustBannerWidth;
+</script>
+{% endblock %}

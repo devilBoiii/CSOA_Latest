@@ -1,0 +1,48 @@
+{% extends 'cso_app/layouts/main.html' %}
+{% load static %}
+{% block content %}
+<title>CSOA Authority - CSOA</title>
+<link rel="stylesheet" href="{% static 'css/cso_about.css' %}">
+<style>
+    #important_links{
+        margin-top: -10em;
+    }
+    #authority p, #authority span, #authority li{
+        font-size: 1.3em;
+    }
+    .title{
+        text-align: center;
+        text-decoration: underline;
+        text-underline-offset: 8px;
+    }
+</style>
+
+<div class="container" id="authority">
+    <h3 class='title'>Composition of Authority</h3>
+    <div class="row">
+        <div class="col-md-auto">
+            <span>The Authority shall, for the purpose of Section 9 of the CSO(Amendment) Act 2022, comprise:</span>
+            <ul>
+                <li>A representative in executive positions from the;
+                    <ul>
+                        <li style='font-size: 0.9em;'>Ministry of Foriegn Affairs</li>
+                        <li style='font-size: 0.9em;'>Gross National Happiness Commission</li>
+                        <li style='font-size: 0.9em;'>Department of Law and Order</li>
+                    </ul>
+                </li>
+                <li>Two representatives for the CSOs</li>
+                <li>The Director of the Authority, who shall be the member secretary.</li>
+            </ul>
+        </div>
+    </div>
+    <hr>
+    <div class="row" id="important_links">
+        {% include 'cso_app/layouts/important_links.html' %}
+    </div>
+</div>
+
+
+
+{% include 'cso_app/layouts/footer.html' %}
+
+{% endblock %}

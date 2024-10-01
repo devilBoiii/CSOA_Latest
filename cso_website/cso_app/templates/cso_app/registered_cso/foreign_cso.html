@@ -1,0 +1,25 @@
+{% extends 'cso_app/layouts/main.html' %}
+{% load static %}
+{% block content %}
+<title>CSOA Staff - CSOA</title>
+<link rel="stylesheet" href="{% static 'css/registered_csos.css' %}">
+<style>
+    #important_links{
+        margin-top: -10em;
+    }
+</style>
+
+    <h3><b>List of Foreign CSO</b></h3>
+    <p>Information not available now.</p>
+
+
+    <hr>
+    <div class="row" id="important_links">
+        {% include 'cso_app/layouts/important_links.html' %}
+    </div>
+
+
+
+{% include 'cso_app/layouts/footer.html' %}
+
+{% endblock %}

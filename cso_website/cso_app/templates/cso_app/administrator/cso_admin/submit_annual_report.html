@@ -1,0 +1,310 @@
+{% extends 'cso_app/layouts/back_end_navbar.html' %}
+{% load static %}
+{% block content %}
+<title>CSOA-Certificate Renewal</title>
+<style>
+    @import url("https://fonts.googleapis.com/css?family=DM+Sans:400,500|Jost:400,500,600&display=swap");
+
+    body {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    overflow-x: hidden;
+    background-color: #ffffff;
+    }
+    #back_end_home{
+    z-index: -1;
+    width: 100%;
+    }
+    #back_end_home .banner{
+    background-color: #888;
+    width:100%;
+    height: 37px;
+    }
+    #back_end_home .banner h3{
+    font-size:1em;
+    display: inline-block;
+    }
+    .banner h3 i{
+    padding-top: 5px;
+    }
+    .banner a{
+    color: #000;
+    text-decoration: none;
+    }
+    .banner a:hover{
+    text-decoration: underline;
+    }
+    #annual_report{
+    margin-left:13em;
+    }
+    .nav-link{
+        color: #888;
+    }
+    #nav-overview-tab.nav-link.active i {
+        color: red;
+    } 
+    #nav-activity-tab.nav-link.active i {
+        color: green;
+    }
+    
+    /* Income Statement tab */
+    #nav-income-tab.nav-link.active i, #nav-income h4 i {
+        color: blue;
+    }
+    
+    /* Balance Sheet tab */
+    #nav-balance-tab.nav-link.active i {
+        color: orange;
+    }
+    
+    /* File Attachment tab */
+    #nav-attachment-tab.nav-link.active i {
+        color: purple;
+    }
+    #nav-tab i{
+        font-size: 1.1em;
+    }
+    .title i{
+        color: rgb(4, 190, 4);
+    }
+
+    .input-group-text {
+        width: 200px; /* Adjust width as needed */
+        text-align: center;
+    }
+    ul{
+        list-style: none;
+    }
+</style>
+<body>
+<br><br><br><br><br>
+    <div id="back_end_home" class="container">
+        <div class="banner">
+            <h3 style="padding: 0em 10em;"><i class="fa fa-home" aria-hidden="true"></i><a
+                    href="{% url 'administrator' %}">Home</a> > Submit Annual Report</h3>
+            <hr>
+        </div>
+        <br>
+        <div class="row" id="annual_report">
+            <nav>
+                <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                    <a class="nav-item nav-link active" id="nav-overview-tab" data-toggle="tab" href="#nav-overview" role="tab" aria-controls="nav-overview" aria-selected="true"><i class="fa-regular fa-file"></i> Overview</a>
+                    <a class="nav-item nav-link" id="nav-activity-tab" data-toggle="tab" href="#nav-activity" role="tab" aria-controls="nav-activity" aria-selected="false"><i class="fa-solid fa-database"></i> Annual Activities</a>
+                    <a class="nav-item nav-link" id="nav-income-tab" data-toggle="tab" href="#nav-income" role="tab" aria-controls="nav-income" aria-selected="false"><i class="fa-regular fa-compass"></i> Income Statement</a>
+                    <a class="nav-item nav-link" id="nav-balance-tab" data-toggle="tab" href="#nav-balance" role="tab" aria-controls="nav-balance" aria-selected="false"><i class="fa-solid fa-sheet-plastic"></i> Balance Sheet</a>
+                    <a class="nav-item nav-link" id="nav-attachment-tab" data-toggle="tab" href="#nav-attachment" role="tab" aria-controls="nav-attachment" aria-selected="false"><i class="fa-solid fa-paperclip"></i> File Attachment</a>
+                </div>
+            </nav>
+            <div class="tab-content" id="nav-tabContent">
+                <div class="tab-pane fade show active" id="nav-overview" role="tabpanel" aria-labelledby="nav-home-tab">
+                    <br>
+                    <h4 class="title"><i class="fa-solid fa-database"></i> Annual Report</h4>
+                    <hr>
+                    <ul>
+                        <b> Main Activities :</b>
+                        <li>1.Education support</li>   
+                        <li>2.Provide health care</li>
+                        <li>3.Preserve Culture and Religion</li>
+                        <li>4.Environment Protection</li>
+                        <li>5.To provide socio economic development</li>
+                        <br>  
+                        <b> Direct Beneficiary :</b>
+                        <li>Youth</li>
+                        <br>
+                        <b>Number of Employees: </b>4 <br>
+                        <b>Number of Volunteer: </b>4 <br>
+                        <b>Number of Member: </b>4 <br>
+                    </ul><br>
+                    <h5><i class="fa-regular fa-compass"></i> Income Statement</h5>
+                    <hr>
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <td>Gross Income</td>
+                                <td>9,250,252.71</td>
+                            </tr>
+                            <tr>
+                                <td>Gross Expenditure</td>
+                                <td>2,487,973.85</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <br>
+                    <h5><i class="fa-solid fa-sheet-plastic"></i> Balance Sheet</h5>
+                    <hr>
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <td>Total Assets</td>
+                                <td>0.00</td>
+                            </tr>
+                            <tr>
+                                <td>Total Liabilities</td>
+                                <td>0.00</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <br>
+                    <h5><i class="fa-solid fa-paperclip"></i> Attachment</h5>
+                    <hr>
+                    <p>
+                        AF202404226go9348d6.pdf - ( Annual Fee Receipt )<i class="fa-solid fa-download"></i><br>
+                        TR202404226go9348d6.pdf - ( Annual Report/Trustee Report )<i class="fa-solid fa-download"></i><br>
+                        AR202404226go9348d6.pdf - ( Audited Report )<i class="fa-solid fa-download"></i><br>
+                        FS202404226go9348d6.pdf - ( Audited Financial Statement ) <i class="fa-solid fa-download"></i><br>
+                    </p>
+                    <!-- Navigation Buttons -->
+                    <div class="d-flex justify-content-between">
+                        <button class="btn btn-info w-100 mx-1" data-target="#nav-activity" onclick="navigateToTab(this)">Next</button>
+                    </div>
+
+                </div>
+                <div class="tab-pane fade" id="nav-activity" role="tabpanel" aria-labelledby="nav-profile-tab">
+                    <br>
+                    <h4 class="title"><i class="fa-solid fa-database"></i> Annual Activities</h4>
+                    <hr>
+                    <label for="main_activities" class="form-label">Main Activities</label>
+                    <div class="form-floating">
+                        <textarea class="form-control" placeholder="Write the main activities here" id="main_activities" style="height: 100px"></textarea>
+                        <label for="main_activities">Write the main activities here</label>
+                    </div>
+                    <br>
+                    <label for="direct_beneficiary" class="form-label">Direct Beneficiary</label>
+                    <div class="form-floating">
+                        <textarea class="form-control" placeholder="Write direct beneficiary here" id="direct_beneficiary" style="height: 100px"></textarea>
+                        <label for="direct_beneficiary">Write direct beneficiary here</label>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <label for="employees_no" class="form-label">Number Of Employees</label>
+                            <div class="input-group mb-3">
+                            <span class="input-group-text" id="employees_no">Employees No.</span>
+                            <input type="number" class="form-control" id="employees_no" name="employees_no" aria-describedby="employees_no">
+                            </div>
+                        </div>
+                        <div class="col">
+                            <label for="volunteers_no" class="form-label">Number Of Volunteers</label>
+                            <div class="input-group mb-3">
+                            <span class="input-group-text" id="volunteers_no">Volunteers No.</span>
+                            <input type="number" class="form-control" id="volunteers_no" aria-describedby="volunteers_no" name="volunteers_no">
+                            </div>
+                        </div>
+                        <div class="col">
+                            <label for="member_no" class="form-label">Number Of Members</label>
+                            <div class="input-group mb-3">
+                            <span class="input-group-text" id="member_no">Members No.</span>
+                            <input type="number" class="form-control" id="member_no" name="member_no" aria-describedby="member_no">
+                            </div>
+                        </div>
+                        <!-- Navigation Buttons -->
+                        <div class="d-flex justify-content-between">
+                            <button class="btn btn-warning w-100 mx-1" data-target="#nav-overview" onclick="navigateToTab(this)">Previous</button>
+                            <button class="btn btn-info w-100 mx-1" data-target="#nav-income" onclick="navigateToTab(this)">Next</button>
+                        </div>
+                        
+                    </div>
+                    <br><br>
+                </div>
+                <div class="tab-pane fade" id="nav-income" role="tabpanel" aria-labelledby="nav-contact-tab">
+                    <br>
+                    <h4 class="title"><i class="fa-regular fa-compass"></i> Income Statement</h4>
+                    <hr>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="gross_income">Gross Income</span>
+                        </div>
+                        <input type="text" class="form-control" placeholder="Type gross income here" aria-describedby="gross_income" name="gross_income">
+                    </div>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="gross_expenditure">Gross Expenditure</span>
+                        </div>
+                        <input type="text" class="form-control" placeholder="Type gross expenditure here" aria-describedby="gross_expenditure" name="gross_expenditure">
+                    </div>
+
+                    <!-- Navigation Buttons -->
+                    <div class="d-flex justify-content-between">
+                        <button class="btn btn-warning w-100 mx-1" data-target="#nav-activity" onclick="navigateToTab(this)">Previous</button>
+                        <button class="btn btn-info w-100 mx-1" data-target="#nav-balance" onclick="navigateToTab(this)">Next</button>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="nav-balance" role="tabpanel" aria-labelledby="nav-balance-tab">
+                    <br>
+                    <h4 class="title"><i class="fa-solid fa-sheet-plastic"></i> Balance Sheet</h4>
+                    <hr>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="total_assets">Total Assets</span>
+                        </div>
+                        <input type="text" class="form-control" placeholder="Type gross income here" aria-describedby="total_assets" name="total_assets">
+                    </div>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="total_liabilities">Total Liabilities</span>
+                        </div>
+                        <input type="text" class="form-control" placeholder="Type the liabilities here" aria-describedby="total_liabilities" name="total_liabilities">
+                    </div>
+                    <!-- Navigation Buttons -->
+                    <div class="d-flex justify-content-between">
+                        <button class="btn btn-warning w-100 mx-1" data-target="#nav-income" onclick="navigateToTab(this)">Previous</button>
+                        <button class="btn btn-info w-100 mx-1" data-target="#nav-attachment" onclick="navigateToTab(this)">Next</button>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="nav-attachment" role="tabpanel" aria-labelledby="nav-attachment-tab">
+                    <br>
+                    <h4 class="title"><i class="fa-solid fa-paperclip"></i> File Attachment</h4>
+                    <hr>
+                    
+                    <div class="row">
+                        <div class="col">
+                            <label for="audited_report" class="form-label">Auditaed Financial Statement</label>
+                            <input type="file" class="form-control" id="audited_report" name="audited_report">
+                        </div>
+                        <div class="col">
+                            <label for="audit_report" class="form-label">Audited Report</label>
+                            <input type="file" class="form-control" id="audit_report" name="audit_report">
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col">
+                            <label for="annual_report_file" class="form-label">Annual Report/Trustee Report</label>
+                            <input type="file" class="form-control" id="annual_report_file" name="annual_report_file">
+                        </div>
+                        <div class="col">
+                            <label for="annual_fee_receipt" class="form-label">Annual Fee Receipt</label>
+                            <input type="file" class="form-control" id="annual_fee_receipt" name="annual_fee_receipt">
+                        </div>
+                    </div>
+                    <br>
+                    <!-- Navigation Buttons -->
+                    <div class="d-flex justify-content-between">
+                        <button class="btn btn-warning w-100 mx-1" data-target="#nav-balance" onclick="navigateToTab(this)">Previous</button>
+                        <button class="btn btn-primary w-100 mx-1" data-target="#nav-balance" onclick="navigateToTab(this)">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Adjust the width of the banner dynamically if needed
+        function adjustBannerWidth() {
+            const banner = document.querySelector('.banner');
+            banner.style.width = `${window.innerWidth}px`;
+        }
+    
+        // Call the function on load and resize
+        window.onload = adjustBannerWidth;
+        window.onresize = adjustBannerWidth;
+    </script>
+<script>
+    function navigateToTab(button) {
+        var target = $(button).data('target');
+        $('.nav-tabs a[href="' + target + '"]').tab('show');
+    }
+</script>
+
+</body>
+{% endblock %}

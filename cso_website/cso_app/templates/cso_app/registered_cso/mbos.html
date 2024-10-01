@@ -1,0 +1,69 @@
+{% extends 'cso_app/layouts/main.html' %}
+{% load static %}
+{% block content %}
+<title>List of PBOs - CSOA</title>
+<link rel="stylesheet" href="{% static 'css/registered_csos.css' %}">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vanilla-datatables@latest/dist/vanilla-dataTables.min.css" />
+
+<style>
+    #important_links{
+        margin-top: -10em;
+    }
+    tr[data-href] {
+        cursor: pointer;
+    }
+    tbody tr:hover{
+        background-color: #888;
+    }
+</style>
+
+<div class="container">
+    <h3><b>List of Public Benefit Organizations</b></h3>
+    <hr>
+    <table class="table" id="table">
+        <thead>
+            <tr>
+                <th>CSO_Name</th>
+                <th>Acronym</th>
+                <th>Website</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for mbo in mbos %}
+            <tr data-href="{% url 'home_cso_detail' mbo.cso_id %}">
+                <td>{{ mbo.cso_name }}</td>
+                <td>{{ mbo.cso_acronym }}</td>
+                <td>{{ mbo.cso_url }}</td>
+                <td>{{ mbo.status }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+<br><br><br>
+<div class="row" id="important_links">
+    {% include 'cso_app/layouts/important_links.html' %}
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/vanilla-datatables@latest/dist/vanilla-dataTables.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const table = document.querySelector('#table');
+        new DataTable(table, {
+            perPage: 20, // Adjust this number as needed
+            perPageSelect: [20, 30, 40, 50] // Options for user to select how many rows per page
+        });
+
+        // Make table rows clickable
+        document.querySelectorAll('tr[data-href]').forEach(row => {
+            row.addEventListener('click', function() {
+                window.location.href = this.dataset.href;
+            });
+        });
+    });
+</script>
+
+{% include 'cso_app/layouts/footer.html' %}
+
+{% endblock %}

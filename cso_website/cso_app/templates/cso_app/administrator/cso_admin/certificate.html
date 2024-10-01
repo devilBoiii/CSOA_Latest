@@ -1,0 +1,547 @@
+{% extends 'cso_app/layouts/back_end_navbar.html' %}
+{% load static %}
+{% block content %}
+<title>CSOA-Certificate Renewal</title>
+<link rel="stylesheet" type="text/css" href="{% static 'css/admin_pay_fees.css' %}">
+<style>
+    #renewalForm {
+        transition: opacity 0.5s ease, transform 0.5s ease;
+        opacity: 0;
+        transform: translateY(-20px);
+        display: none; /* Ensure it's hidden initially */
+    }
+
+    #renewalForm.show {
+        display: block;
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    #closeButton{
+        float: right;
+        font-size: 1.3em;
+    }
+        
+    .custom-btn {
+    width: 130px;
+    height: 40px;
+    color: #fff;
+    border-radius: 5px;
+    padding: 10px 25px;
+    font-family: 'Lato', sans-serif;
+    font-weight: 500;
+    background: transparent;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    display: inline-block;
+    box-shadow:inset 2px 2px 2px 0px rgba(255,255,255,.5),
+    7px 7px 20px 0px rgba(0,0,0,.1),
+    4px 4px 5px 0px rgba(0,0,0,.1);
+    outline: none;
+    }
+    a{
+        text-decoration: none;
+        color: #000;
+    }
+    a:hover{
+        text-decoration: none;
+    }
+        
+    /* 13 */
+    .btn-13 {
+    background-color: #89d8d3;
+    background-image: linear-gradient(315deg, #89d8d3 0%, #03c8a8 74%);
+    border: none;
+    z-index: 1;
+    }
+    .btn-13:after {
+    position: absolute;
+    content: "";
+    width: 100%;
+    height: 0;
+    bottom: 0;
+    left: 0;
+    z-index: -1;
+    border-radius: 5px;
+    background-color: #4dccc6;
+    background-image: linear-gradient(315deg, #4dccc6 0%, #96e4df 74%);
+    box-shadow:
+    -7px -7px 20px 0px #fff9,
+    -4px -4px 5px 0px #fff9,
+    7px 7px 20px 0px #0002,
+    4px 4px 5px 0px #0001;
+    transition: all 0.3s ease;
+    }
+    .btn-13:hover {
+    color: #fff;
+    }
+    .btn-13:hover:after {
+    top: 0;
+    height: 100%;
+    }
+    .btn-13:active {
+    top: 2px;
+    }
+    h5{
+        font-size: 0.8em;
+        font-weight: 600;
+    }
+</style>
+<body>
+<br><br><br><br><br>
+    <div id="back_end_home" class="container">
+    <div class="banner">
+        <h3 style="padding: 0em 7em;"><i class="fa fa-home" aria-hidden="true"></i><a
+                href="{% url 'administrator' %}">Home</a> > CSO Admin Renewal</h3>
+        <hr>
+    </div>
+    <br>
+    <div class="row" id="registered_users">
+        <div class="card" data-state="#about">
+            <div class="card-header">
+                <div class="card-cover"
+                    style="background-image: url('https://wallpapers.com/images/high/bhutan-national-team-grunge-art-dwcoc61p3l2v2jt9.webp')">
+                </div>
+                <img class="card-avatar" src="{{cso_details.cso_logo.url}}" alt="avatar" />
+                <h1 class="card-fullname">{{cso_details}} ({{cso_details.cso_acronym}})</h1>
+                <h2 class="card-jobtitle">CSO Type: {{cso_details.cso_type}}</h2>
+            </div>
+            <div class="card-main">
+                <div class="card-section is-active" id="about">
+                    <div class="card-content">
+                        <div class="row">
+                            <div class="col">
+                                <ul>
+                                    <li>CSO Executive Director: {{cso_details.executive_director}}</li>
+                                    <li>CSO Phone Number: {{cso_details.fixed_phone_no}}</li>
+                                    <li>PO Box: {{cso_details.po_box}}</li>
+                                    <li>Toll Free Number: {{cso_details.toll_free_no}}</li>
+                                </ul>
+                            </div>
+                            <div class="col">
+                                <ul>
+                                    <li>Registration Number: <b>{{cso_details.registration_no}}</b></li>
+                                    <li>CSO Address: {{cso_details.address}}</li>
+                                    <li>Fax Number: {{cso_details.fax}}</li>
+                                    <li>CSO Website: <a href="https://{{cso_details.cso_url}}" target="_blank"><button
+                                                class="custom-btn btn-13">Click Here </button></a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <li>Operation Places: {{cso_details.operation_places}}</li>
+                    </div>
+                </div>
+                <div class="card-section" id="experience">
+                    <div class="card-content">
+                        <div class="card-subtitle">Fines Status</div>
+                        {% if days_diff > 0 %}
+                        <h5>Your validity date was till {{cso_details.cso_validity_date}} and today is {{current_date}}.
+                            So, you are late by {{days_diff}} days. The fines for your organization has been stated
+                            below: </h5>
+                        {% else %}
+                        <h5>Great!! No fines applicable as your validity date is till {{cso_details.validity_date}}</h5>
+                        {% endif %}
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Fine Types</th>
+                                    <th></th>
+                                    <th></th>
+                                    <th>Fees Calculation</th>
+                                    <th>Remarks</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Late Renewal Fines</td>
+                                    <td>Registration Date: {{cso_details.cso_registered_date|date:"Y-m-d"}}</td>
+                                    <td>Validity Date: {{cso_details.cso_validity_date}}</td>
+                                    {% if days_diff > 90 %}
+                                    <td>90*100+{{morethan3months}}*200 + 3000 = <br>Nu. {{morethan3monthsfine|add:3000}}
+                                    </td>
+                                    <td>First 90 days will be multiplied by nu.100 and remaining days with nu.200 & nu.3000 is the renewal fees.</td>
+                                    {% elif days_diff <= 0 %}
+                                    <td>None</td>
+                                    <td>Great! Your renewal date is {{days_diff}} days away!</td>
+
+                                    {% else %}
+                                    <td>{{days_diff}} * 100 = {{lessthan3monthsfine|add:3000}}</td>
+                                    <td>First 90 days will be multiplied by nu.100 & nu. 3000 is the renewal fees.
+                                    </td>
+                                    {% endif %}
+                                </tr>
+                                {% if invalid_certificate_fines != '' and invalid_certificate_fines > 0 %}
+                                <tr>
+                                    <td>Invalid Certificate Fine</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>Nu. {{invalid_certificate_fines}}</td>
+                                    <td></td>
+                                </tr>
+                                {% endif %}
+                                <tr>
+                                    <td>Late Report Submission Fines</td>
+                                    <td>Validity Date: {{cso_details.cso_validity_date}}</td>
+                                    <td>Days Delayed Till Current Date: <br><b>{{days_diff}}</b></td>
+                                    <td>Nu. {{late_report_fine}}</td>
+                                    <td>
+                                        If your delayed days are up to 90 days past the due date, the fee is Nu. 10,000.
+                                        If your delayed days are more than 90 days but less than 180 days past the due
+                                        date, the fee is Nu. 30,000. <br> If your delayed days are more than 180 days
+                                        past the due date, the fee is Nu. 100,000.
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><b>Total</b></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td><b>Nu. {{ invalid_certificate_fines|add:days_fines|add:3000 }}</b></td>
+                                    <td></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="card-section" id="pay_fines">
+                    <div class="card-content">
+                        <div class="card-subtitle">Renew Certificate</div>
+                        <div class="card-contact-wrapper">
+                            <button class="contact-me" id="payNowButton">Upload</button>
+                            <!-- Hidden Form -->
+                            <div id="renewalForm" style="display: none;">
+                                <br>
+                                <form method="POST" enctype="multipart/form-data"
+                                    action="{% url 'cso_admin_pay_fees_form' %}" id="csoAdminPayFeesForm">
+                                    {% csrf_token %}
+                                    <a href="#" id="closeButton" title="Close Button"><i
+                                            class="fa-solid fa-circle-xmark"></i></a><br>
+                                    <input type="hidden" class="form-control" id="cso_name" name="cso_name"
+                                        value="{{cso_details}}">
+                                    <input type="hidden" class="form-control" id="user_name" value="{{user.full_name}}"
+                                        name="user_name">
+                                    <input type="hidden" class="form-control" id="user_email" value="{{user.email}}"
+                                        name="user_email">
+                                    <input type="hidden" class="form-control" id="user_cid" name="user_cid"
+                                        value="{{user.CID}}">
+                                    <input type="hidden" class="form-control" id="mobile_no" name="mobile_no"
+                                        value="{{user.mobile_no}}">
+                                    <input type="hidden" name="cso_id_id" value="{{cso_details.cso_id}}">
+                                    <input type="hidden" name="cso_type" value="{{cso_details.cso_type}}">
+                                    <div class="row">
+                                        <div class="col">
+                                            <label for="registration_date" class="form-label">Registration Date</label>
+                                            <input type="text" class="form-control" id="registration_date" name="registration_date" value="{{cso_details.cso_registered_date|date:'Y-m-d'}}" readonly>
+                                        </div>
+                                        <div class="col">
+                                            <label for="renewal_fee" class="form-label">Renewal Fees</label>
+                                            <div class="input-group mb-3">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text">Nu.</span>
+                                                </div>
+                                                <input type="text" class="form-control" id="renewal_fee" name="renewal_fee" value="3000" readonly>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            <label for="validity_date" class="form-label">Validity Date</label>
+                                            <input type="text" class="form-control" id="validity_date"
+                                                name="validity_date" value="{{cso_details.cso_validity_date}}" readonly>
+                                        </div>
+                                        <div class="col">
+                                            <label for="delayed_days" class="form-label">Delayed Days</label>
+                                            <input type="number" class="form-control" id="delayed_days"
+                                                name="delayed_days" value="{{days_diff}}" readonly>
+                                        </div>
+                                        <div class="col">
+                                            <label for="late_renewal_fees">Late Renewal Fees Total</label>
+                                            <div class="input-group mb-3">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text">Nu.</span>
+                                                </div>
+                                                {% if days_diff > 90 %}
+                                                <input type="number" class="form-control" id="late_renewal_fees"
+                                                    name="late_renewal_fees" value="{{morethan3monthsfine}}"
+                                                    readonly>
+                                                {% elif days_diff <= 0 %}
+                                                <input type="number" class="form-control" id="late_renewal_fees"
+                                                    name="late_renewal_fees" value="0" readonly>
+                                                {% else %}
+                                                <input type="number" class="form-control" id="late_renewal_fees"
+                                                    name="late_renewal_fees" value="{{lessthan3monthsfine}}"
+                                                    readonly>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <!-- <div class="col">
+                                            <label for="amendment_type">Amendment Type</label>
+                                            <select class="form-select" aria-label="Default select example"
+                                                id="amendment_type" name="amendment_type" required>
+                                                <option selected>Select Amendment Type</option>
+                                                <option value="one_amendment">One Amendment</option>
+                                                <option value="two_amendment">Two Amendment</option>
+                                                <option value="three_amendment">Three Amendment</option>
+                                                <option value="four_amendment">Four Amendment</option>
+                                                <option value="five_amendment">Five Amendment</option>whole_amendment
+                                                <option value="whole_amendment">Whole Amendment</option>
+                                            </select>
+                                        </div>
+                                        <div class="col">
+                                            <label for="amendment_fees">Amendment Fees</label>
+                                            <div class="input-group mb-3">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text">Nu.</span>
+                                                </div>
+                                                <input type="text" class="form-control" id="amendment_fees" name="amendment_fees" readonly required>
+                                            </div>
+                                        </div> -->
+                                        <div class="col">
+                                            <label for="late_report_fees">Late Report Fees</label>
+                                            <div class="input-group mb-3">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text">Nu.</span>
+                                                </div>
+                                                <input type="text" class="form-control" id="late_report_fees"
+                                                name="late_report_fees" value="{{late_report_fine}}" readonly>                                            
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <div class="row">
+                                        <h5>Report Files Attach Here</h5>
+                                        <div class="col">
+                                            <label for="annual_report">Annual Report</label>
+                                            <input type="file" class="form-control" id="annual_report"
+                                                name="annual_report">
+                                        </div>
+                                        <div class="col">
+                                            <label for="audit_report">Audit Report</label>
+                                            <input type="file" class="form-control" id="audit_report"
+                                                name="audit_report">
+                                        </div>
+                                        <div class="col">
+                                            <label for="two_years_report">Two Years Report</label>
+                                            <input type="file" class="form-control" id="two_years_report"
+                                                name="two_years_report">
+                                        </div>
+                                        {% if cso_details.cso_type == 'MBO' %}
+                                        <div class="col">
+                                            <label for="annual_general_report">Annual General Report</label>
+                                            <input type="file" class="form-control" id="annual_general_report"
+                                                name="annual_general_report">
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                    <br>
+                                    <div class="row">
+                                        <label for="overall_fines">Total Fees</label>
+                                        <div class="input-group mb-3">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">Nu.</span>
+                                            </div>
+                                            <input type="text" class="form-control" id="overall_fines" name="overall_fines" readonly>
+                                        </div>
+                                    </div>
+                                    <button type="submit" class="contact-me">Submit</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-buttons">
+                    <button data-section="#about" class="is-active">GENERATE CERTIFICATE</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    // Adjust the width of the banner dynamically if needed
+    function adjustBannerWidth() {
+        const banner = document.querySelector('.banner');
+        banner.style.width = `${window.innerWidth}px`;
+    }
+
+    // Call the function on load and resize
+    window.onload = adjustBannerWidth;
+    window.onresize = adjustBannerWidth;
+</script>
+<script>
+    const buttons = document.querySelectorAll(".card-buttons button");
+    const sections = document.querySelectorAll(".card-section");
+    const card = document.querySelector(".card");
+
+    const handleButtonClick = e => {
+    const targetSection = e.target.getAttribute("data-section");
+    const section = document.querySelector(targetSection);
+    targetSection !== "#about" ?
+    card.classList.add("is-active") :
+    card.classList.remove("is-active");
+    card.setAttribute("data-state", targetSection);
+    sections.forEach(s => s.classList.remove("is-active"));
+    buttons.forEach(b => b.classList.remove("is-active"));
+    e.target.classList.add("is-active");
+    section.classList.add("is-active");
+    };
+
+    buttons.forEach(btn => {
+    btn.addEventListener("click", handleButtonClick);
+});
+
+document.getElementById('payNowButton').addEventListener('click', function() {
+    var renewalForm = document.getElementById('renewalForm');
+
+    // Add the 'show' class to display the form with animation
+    renewalForm.classList.add('show');
+    const lateRenewalFees = parseInt(document.getElementById('late_renewal_fees').value) || 0;
+    const lateReportFees = parseInt(document.getElementById('late_report_fees').value) || 0;
+    console.log("This are the fees: ", lateRenewalFees, lateReportFees);
+    const totalFees = lateRenewalFees + lateReportFees;
+    const formattedTotalFees = Number(totalFees).toFixed(2);
+    document.getElementById('overall_fines').value = `${formattedTotalFees}`;
+    // Optionally, populate the form with data if needed
+    // Example:
+    // document.getElementById('amount').value = '100';
+    // document.getElementById('full_name').value = 'John Doe';
+    // document.getElementById('email').value = 'john.doe@example.com';
+});
+    // Show the form with a smooth animation
+    $('#payNowButton').click(function() {
+        var renewalForm = $('#renewalForm');
+        renewalForm.css('display', 'block'); // Ensure the form is visible first
+        setTimeout(function() { // Add a delay to allow for smooth transition
+            renewalForm.addClass('show');
+        }, 10); // Small delay for smooth transition
+    });
+
+    // Hide the form with a smooth animation
+    $('#closeButton').click(function(e) {
+        e.preventDefault(); // Prevent default action of the anchor tag
+        var renewalForm = $('#renewalForm');
+        renewalForm.removeClass('show');
+        setTimeout(function() { // Wait for the animation to complete before hiding
+            renewalForm.css('display', 'none');
+        }, 500); // Match the delay with the transition duration
+    });
+
+//     // Add this script to handle the amendment fee calculation
+//     document.getElementById('amendment_type').addEventListener('change', function () {
+//     const amendmentType = this.value;
+//     let amendmentFees = 0;
+
+//     switch (amendmentType) {
+//         case 'one_amendment':
+//             amendmentFees = 500;
+//             break;
+//         case 'two_amendment':
+//             amendmentFees = 1000;
+//             break;
+//         case 'three_amendment':
+//             amendmentFees = 1500;
+//             break;
+//         case 'four_amendment':
+//             amendmentFees = 2000;
+//             break;
+//         case 'five_amendment':
+//             amendmentFees = 2500;
+//             break;
+//         case 'whole_amendment':
+//             amendmentFees = 3000;
+//             break;
+//         default:
+//             amendmentFees = 0;
+//     }
+
+//     document.getElementById('amendment_fees').value = `${amendmentFees}`;
+
+//     const lateRenewalFees = parseInt(document.getElementById('late_renewal_fees').value) || 0;
+//     const lateReportFees = parseInt(document.getElementById('late_report_fees').value) || 0;
+//     console.log("This are the fees: ", lateRenewalFees, lateReportFees, amendmentFees);
+//     const totalFees = lateRenewalFees + lateReportFees + amendmentFees;
+//     const formattedTotalFees = Number(totalFees).toFixed(2);
+//     document.getElementById('overall_fines').value = `${formattedTotalFees}`;
+// });
+
+</script>
+
+<script>
+    document.getElementById('csoAdminPayFeesForm').onsubmit = function(event) {
+    event.preventDefault();  // Prevent the default form submission
+
+    // Check if all required files are selected
+    let annualReport = document.getElementById('annual_report').files.length;
+    let auditReport = document.getElementById('audit_report').files.length;
+    let twoYearsReport = document.getElementById('two_years_report').files.length;
+    let annualGeneralReport = document.getElementById('annual_general_report');
+
+    // let amendmentFees = document.getElementById('amendment_fees').value;
+
+    // if (amendmentFees === '') {
+    //     Swal.fire({
+    //         title: 'Error!',
+    //         text: 'Please select an Amendment Type to calculate the Amendment Fees.',
+    //         icon: 'error',
+    //         confirmButtonText: 'OK'
+    //     });
+    //     return;  // Stop further execution if amendment fees are not calculated
+    // }
+
+    if (!annualReport || !auditReport || !twoYearsReport || (annualGeneralReport && !annualGeneralReport.files.length)) {
+        Swal.fire({
+            title: 'Error!',
+            text: 'Please upload all the required report files before submitting the form.',
+            icon: 'error',
+            confirmButtonText: 'OK'
+        });
+        return;  // Stop further execution if files are missing
+    }
+
+    let formData = new FormData(this);
+
+    fetch(this.action, {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-CSRFToken': '{{ csrf_token }}',
+        },
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            Swal.fire({
+                title: 'Success!',
+                text: data.message,
+                icon: 'success',
+                confirmButtonText: 'OK'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.reload();  // Reload the page after confirmation
+                }
+            });
+        } else {
+            Swal.fire({
+                title: 'Error!',
+                text: data.message,
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+        }
+    })
+    .catch(error => {
+        Swal.fire({
+            title: 'Error!',
+            text: 'An unexpected error occurred.',
+            icon: 'error',
+            confirmButtonText: 'OK'
+        });
+    });
+};
+
+</script>
+{% endblock %}

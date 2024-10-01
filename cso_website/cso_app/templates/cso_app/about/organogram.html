@@ -1,0 +1,30 @@
+{% extends 'cso_app/layouts/main.html' %}
+{% load static %}
+{% block content %}
+<title>CSOA Authority - CSOA</title>
+<link rel="stylesheet" href="{% static 'css/cso_about.css' %}">
+<style>
+    #important_links{
+        margin-top: -10em;
+    }
+    #organogram img{
+        
+    }
+</style>
+
+<div class="container" id="organogram">
+    <div class="row">
+        <div class="col-md-auto">
+            <img src='{% static 'img/organogram.jpg' %}' class='diagram'>
+        </div>
+    </div>
+    <div class="row" id="important_links">
+        {% include 'cso_app/layouts/important_links.html' %}
+    </div>
+</div>
+
+
+
+{% include 'cso_app/layouts/footer.html' %}
+
+{% endblock %}

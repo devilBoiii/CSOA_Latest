@@ -1,0 +1,228 @@
+{% extends 'cso_app/layouts/back_end_navbar.html' %}
+{% load static %}
+{% block content %}
+<title>Setup & Register - CSOA</title>
+<link rel="stylesheet" href="{% static 'css/admin_home.css' %}">
+
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900&display=swap');
+    body {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        overflow-x: hidden;
+    }
+    #back_end_home{
+        z-index: -1;
+        width: 100%;
+    }
+    #back_end_home .banner{
+        background-color: #888;
+        width:100%;
+        height: 37px;
+    }
+    #back_end_home .banner h3{
+        font-size:1em;
+        display: inline-block;
+    }
+    .banner h3 a i{
+        padding-top: 5px;
+    }
+    .banner a{
+        color: #000;
+        text-decoration: none;
+    }
+    .banner a:hover{
+        text-decoration: underline;
+    }
+    #creating_cso, #registration_form{
+        margin-left:12em;
+    }
+    .new_cso_details ul li{
+        list-style: none;
+    }
+    #registration_form h3{
+        text-align: center;
+    }
+    #registration_form hr{
+        border-top: 3px double #000000;
+    }
+</style>
+<br><br><br><br><br>
+<div id="back_end_home" class="container">
+    <div class="banner">
+        <h3 style="padding: 0em 7em;"><a href="{% url 'administrator' %}"><i class="fa fa-home"></i>Home</a> > <a href="#">CSO Details</a> > <a href="{% url 'cso_master_links' %}">Manage CSO Details</a> > Setup & Register</h3>
+        <hr>
+    </div>
+    <br>
+    <div class="row" id="creating_cso"> 
+        <span class="new_cso_details">
+            <h3>Setup & Register a New CSO Requirements</h3>
+            <hr>
+            Guide - Steps to register new CSO
+            <ul>
+                <li>1. Find trustees for your CSO.</li>
+                <li>2. Make sure the CSO is operating in line with the CSO Act and its regulations including MoA and AoA.</li>
+                <li>3. Choose a name for your CSO.</li>
+                <li>4. Choose a structure for your CSO.</li>
+                <li>5. Create a ‘governing document’.</li>
+            </ul>
+            <a href="#" id="register_btn" class="btn btn-info">Register A New CSO To The CSOA</a>
+        </span>
+    </div>
+    
+    <div class="row" id="registration_form" style="display: none;">
+        <h3>Register a New CSO</h3>
+        <hr>
+        <form method="post" role="form" enctype="multipart/form-data" action="{% url 'creating_new_cso_form' %}" id="new_cso_form">
+            {% csrf_token %}
+            <div class="row">
+                <div class="form-group col-4">
+                    <label for="cso_type">Type Of CSO</label>
+                    <select class="form-select" id="cso_type" name="cso_type">
+                        <option selected>Select the type of CSO</option>
+                        {% for types in cso_type %}
+                        <option value="{{types.cso_prefix}}">{{types.cso_type_name}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group col-4">
+                    <label for="cso_name">CSO Name</label>
+                    <input type="text" class="form-control" id="cso_name" placeholder="Name of CSO" name="cso_name" required>
+                </div>
+                <div class="form-group col-4">
+                    <label for="cso_acronym">CSO Acronym</label>
+                    <input type="text" class="form-control" id="cso_acronym" placeholder="Type the CSO acronym" name="cso_acronym" required>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="form-group col-4">
+                    <label for="cso_focal">CSO Focal Person</label>
+                    <input type="text" class="form-control" id="cso_focal" placeholder="Name of CSO focal person" name="cso_focal" required>
+                </div>
+                <div class="form-group col-4">
+                    <label for="cso_contact">CSO Contact Number</label>
+                    <input type="number" class="form-control" id="cso_contact" placeholder="Contact number of CSO" name="cso_contact" required>
+                </div>
+                <div class="form-group col-4">
+                    <label for="cso_email">CSO Email</label>
+                    <input type="email" class="form-control" id="cso_email" placeholder="Eg: cso_name@mail.com" name="cso_email" required>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="form-group col-4">
+                    <label for="cso_url">CSO Website</label>
+                    <input type="text" class="form-control" id="cso_url" placeholder="Ex: www.cso_name.com" name="cso_url" required>
+                </div>
+                <div class="form-group col-4">
+                    <label for="cso_logo">CSO Logo</label>
+                    <input type="file" class="form-control" id="cso_logo" placeholder="Contact number of CSO" name="cso_logo" required>
+                </div>
+                <div class="form-group col-4">
+                    <label for="cso_thematic">Choose CSO Thematic Area</label>
+                    <select class="form-select" id="cso_thematic" name="cso_thematic">
+                        <option selected>Select thematic area of CSO</option>
+                        {% for i in thematic_areas %}
+                        <option value="{{i.cso_name}}">{{i.cso_name}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <br>
+            <button type="submit" class="btn btn-primary">Submit</button>
+
+            {% if messages %}
+                <div class="alert alert-info" role="alert">
+                    {% for message in messages %}
+                        {{ message }}
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </form>
+    </div>
+    
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    // Adjust the width of the banner dynamically if needed
+    function adjustBannerWidth() {
+        const banner = document.querySelector('.banner');
+        banner.style.width = `${window.innerWidth}px`;
+    }
+
+    // Call the function on load and resize
+    window.onload = adjustBannerWidth;
+    window.onresize = adjustBannerWidth;
+
+    $(document).ready(function() {
+        $("#register_btn").click(function(e) {
+            e.preventDefault();
+            $(".new_cso_details").hide();
+            $("#registration_form").show();
+        });
+
+        $("#new_cso_form").on("submit", function(e) {
+        e.preventDefault(); // Prevent default form submission
+        
+        var cso_name = $("#cso_name").val(); // Get the CSO name value
+
+        if (cso_name) {
+            $.ajax({
+                url: "{% url 'check_cso_name' %}",
+                type: "GET",
+                data: {
+                    'cso_name': cso_name
+                },
+                success: function(data) {
+                    if (data.exists) {
+                            Swal.fire({
+                                title: 'Error!',
+                                text: 'CSO name already exists. Please choose a different name.',
+                                icon: 'error',
+                                confirmButtonText: 'Okay'
+                            }).then(() => {
+                                $("#new_cso_form button[type=submit]").attr("disabled", true);
+                                location.reload(); // Refresh the page after clicking "Okay"
+                            });
+                        }else {
+                        // CSO name is unique, proceed to save the form data
+                        $("#new_cso_form button[type=submit]").attr("disabled", false);
+
+                        var formData = new FormData($("#new_cso_form")[0]); // Serialize the form data
+
+                        $.ajax({
+                            url: "{% url 'creating_new_cso_form' %}", // URL to the view
+                            type: "POST",
+                            data: formData,
+                            processData: false, // Prevent jQuery from automatically transforming the data into a query string
+                            contentType: false, // Prevent jQuery from overriding the content type
+                            success: function(response) {
+                                Swal.fire({
+                                    title: 'Success!',
+                                    text: 'CSO has been successfully registered.',
+                                    icon: 'success',
+                                    confirmButtonText: 'Okay'
+                                }).then(() => {
+                                    location.reload();
+                                });
+                            },
+                            error: function(response) {
+                                Swal.fire({
+                                    title: 'Error!',
+                                    text: 'Something went wrong while trying to save a new CSO.',
+                                    icon: 'error',
+                                    confirmButtonText: 'Okay'
+                                });
+                            }
+                        });
+                    }
+                }
+            });
+        }
+    });
+    });
+</script>
+{% endblock %}
